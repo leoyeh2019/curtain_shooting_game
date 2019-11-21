@@ -16,7 +16,9 @@ FPS = 60
 PLAYERFASTSPEED = 4
 PLAYERSLOWSPEED = 2
 PLAYERBULLETSIZE = 2
+PLAYERBULLETDAMAGE = 10
 ENEMYSIZE = 20
+ENEMYHP = 100
 
 
 
@@ -74,9 +76,9 @@ class player(body):
   # Place the Bullet on the Screen
   def shootBullet(self, shooting, time, gamearea, patternX, patternY):
     # Set playerBullet = bullet(self, name, rect, image, damage)
-    playerBullet1 = bullet("playerBullet", pygame.Rect(self.rect.centerx - PLAYERBULLETSIZE / 2, self.rect.top + PLAYERBULLETSIZE * 2, PLAYERBULLETSIZE, PLAYERBULLETSIZE*2), None, 10)
-    playerBullet2 = bullet("playerBullet", pygame.Rect(self.rect.left                          , self.rect.top + PLAYERBULLETSIZE * 2, PLAYERBULLETSIZE, PLAYERBULLETSIZE*2), None, 10)
-    playerBullet3 = bullet("playerBullet", pygame.Rect(self.rect.right - PLAYERBULLETSIZE      , self.rect.top + PLAYERBULLETSIZE * 2, PLAYERBULLETSIZE, PLAYERBULLETSIZE*2), None, 10)
+    playerBullet1 = bullet(name = "playerBullet", rect = pygame.Rect(self.rect.centerx - PLAYERBULLETSIZE / 2, self.rect.top + PLAYERBULLETSIZE * 2, PLAYERBULLETSIZE, PLAYERBULLETSIZE*2), image = None, damage = PLAYERBULLETDAMAGE)
+    playerBullet2 = bullet(name = "playerBullet", rect = pygame.Rect(self.rect.left                          , self.rect.top + PLAYERBULLETSIZE * 2, PLAYERBULLETSIZE, PLAYERBULLETSIZE*2), image = None, damage = PLAYERBULLETDAMAGE)
+    playerBullet3 = bullet(name = "playerBullet", rect = pygame.Rect(self.rect.right - PLAYERBULLETSIZE      , self.rect.top + PLAYERBULLETSIZE * 2, PLAYERBULLETSIZE, PLAYERBULLETSIZE*2), image = None, damage = PLAYERBULLETDAMAGE)
     if shooting:
       # For every 5 frames, generate a new bullet
       if time % 5 == 0:
@@ -138,7 +140,7 @@ def player1BulletPatternX(t):
   return 0
 def player1BulletPatternY(t):
   return -10 
-player1 = player("1", pygame.Rect(GAMEAREA.centerx - PLAYERSIZE / 2, GAMEAREA.bottom - PLAYERSIZE *2, PLAYERSIZE, PLAYERSIZE), None, 1, [], player1BulletPatternX, player1BulletPatternY, PLAYERFASTSPEED, PLAYERSLOWSPEED)
+player1 = player(name = "1", rect = pygame.Rect(GAMEAREA.centerx - PLAYERSIZE / 2, GAMEAREA.bottom - PLAYERSIZE *2, PLAYERSIZE, PLAYERSIZE), image = None, hp = 1, bulletList = [], bulletPatternX = player1BulletPatternX, bulletPatternY = player1BulletPatternY, fastspeed = PLAYERFASTSPEED, slowspeed = PLAYERSLOWSPEED)
 
 
 
@@ -203,7 +205,7 @@ while True:
 
     # Generate Enemy in a Time Dependent Rate
     if generateEnemyTimer % (generateEnemyParameter(generateEnemyTimer)) == 0:
-      enemy_list.append(enemy("enemyA", pygame.Rect(random.randint(50, (50 + GAMEAREAWIDTH - ENEMYSIZE)), random.randint(50, (50 + GAMEAREAHEIGHT/4 - ENEMYSIZE)), ENEMYSIZE, ENEMYSIZE), None, 10, random.randint(-1, 1), random.randint(1, 7)))
+      enemy_list.append(enemy(name = "enemyA", rect = pygame.Rect(random.randint(50, (50 + GAMEAREAWIDTH - ENEMYSIZE)), random.randint(50, (50 + GAMEAREAHEIGHT/4 - ENEMYSIZE)), ENEMYSIZE, ENEMYSIZE), image = None, hp = ENEMYHP, movingPatternX = random.randint(-1, 1), movingPatternY = random.randint(1, 7)))
               
     
     # Move Enemy
