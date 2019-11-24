@@ -2,25 +2,23 @@
 ## Game Design
 ```
 class body():
-	
 ```
 ```
 class bullet(name, rect, image, damage):
-	void bulletMove(patternX, patternY)
+	void bulletMove(pattern(x(t), y(t)))
+```
+```
+class player(name, rect, image, hp, fastspeed, slowspeed, bulletList, bulletPattern(x(t), y(t))):
+	void playerMove(gamearea, slowModeKeyControl, movingKeyControl(moveLeft, moveRight, moveUp, moveDown))
+		self.rect.move_ip(bulletPattern(x(t), y(t)))
+	void shootBullet(shootingKeyControl, time, gamearea, movingPattern(x(t), y(t)))
+		append bullet in bulletList
 	
 ```
 ```
-class player(name, rect, image, hp, bulletList, bulletPatternX, bulletPatternY, fastspeed, slowspeed):
-	void playerMove(gamearea, slowMode, moveLeft, moveRight, moveUp, moveDown)
-		# self.rect.move_ip(bulletPatternX, bulletPatternY)
-	void shootBullet(shooting, time, gamearea, patternX, patternY)
-		# append bullet in bulletList
-	
-```
-```
-class enemy(name, rect, image, hp, movingPatternX, movingPatternY):
+class enemy(name, rect, image, hp, movingPattern(x(t), y(t))):
 	void enemyMove()
-		# self.rect.move_ip(movingPatternX, movingPatternY)
+		# self.rect.move_ip(movingPattern(x(t), y(t)))
 ```
 ```
 class boss:
