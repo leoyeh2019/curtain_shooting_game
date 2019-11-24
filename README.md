@@ -1,33 +1,26 @@
 # Final Project - Bullet Hell
 ## Game Design
 ```
-class body:
-	name
-	box
-	image
-	speed
-	hp
-	movement()     #player: 以鍵盤操控；enemy: 以時間對位置函數決定 
-	placeBullet()  #在哪個位置放出子彈
-	deathAnimate() #死亡動畫
-	dropItem()     #要噴幾個item，放置在何處
+class body():
+	
 ```
 ```
-class player:
-	highSpeedPlayer
-		body         #*
-		bomb         #*
-	lowSpeedPlayer #低速模式
-		body         #*
-		bomb         #*
-	switchType()
-    life           #有幾條命
-	bombQuantity   #一條life有幾個bomb
+class bullet(name, rect, image, damage):
+	void bulletMove(patternX, patternY)
+	
 ```
 ```
-class enemy:
-	body           #*
-	timer          #紀錄在場上時間
+class player(name, rect, image, hp, bulletList, bulletPatternX, bulletPatternY, fastspeed, slowspeed):
+	void playerMove(gamearea, slowMode, moveLeft, moveRight, moveUp, moveDown)
+		# self.rect.move_ip(bulletPatternX, bulletPatternY)
+	void shootBullet(shooting, time, gamearea, patternX, patternY)
+		# append bullet in bulletList
+	
+```
+```
+class enemy(name, rect, image, hp, movingPatternX, movingPatternY):
+	void enemyMove()
+		# self.rect.move_ip(movingPatternX, movingPatternY)
 ```
 ```
 class boss:
@@ -39,15 +32,6 @@ class item:
 	name
 	box
 	speed          #掉落速度
-```
-```
-class bullet:
-	name
-	box
-	image
-	damage
-	timer          #紀錄在場上時間
-	pattern()      #決定移動軌跡: 建立一個x = f(t), y = g(t)的函數
 ```
 ```
 class bomb:
