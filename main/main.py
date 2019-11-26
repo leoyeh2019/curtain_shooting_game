@@ -1,11 +1,13 @@
-import pygame, sys, random, time
+import pygame, sys, random, math 
 from pygame.locals import *
+from os import path
 
+
+# ----------------------Unchangeable Variables----------------------
 WINDOWWIDTH = 800
 WINDOWHEIGHT = 600
-GAMEAREAWIDTH = 375
-GAMEAREAHEIGHT = 500
-PLAYERSIZE = 20
+GAMEAREAWIDTH = 480
+GAMEAREAHEIGHT = 560
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -13,239 +15,153 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 LIGHTBLUE = (0, 255, 255)
 FPS = 60
-PLAYERFASTSPEED = 4
-PLAYERSLOWSPEED = 2
-PLAYERBULLETSIZE = 2
-PLAYERBULLETDAMAGE = 10
-ENEMYSIZE = 20
-ENEMYHP = 100
 
+PLAYERWIDTH = 20
+PLAYERHEIGHT = 20
+PLAYERCOLISIONBOXSIZE = 10
 
-
-class body:
-  def __init__(self, name, rect, image, hp, bulletList, bulletPatternX, bulletPatternY):
-    self.name = name
-    self.rect = rect
-    self.image = image
-    self.hp = hp
-    self.bulletList = bulletList
-    self.bulletPatternX = bulletPatternX
-    self.bulletPatternY = bulletPatternY
-
-class bullet():
-  def __init__(self, name, rect, image, damage):
-    self.name = name
-    self.rect = rect
-    self.image = image
-    self.damage = damage
-
-  def bulletMove(self, patternX, patternY):
-    self.rect.move_ip(patternX, patternY)
-  
-  
-class player(body):
-  def __init__(self, name, rect, image, hp, bulletList, bulletPatternX, bulletPatternY, fastspeed, slowspeed):
-    body.__init__(self, name, rect, image, hp, bulletList, bulletPatternX, bulletPatternY)
-    self.fastspeed = fastspeed
-    self.slowspeed = slowspeed
-  
-  # Control the Movement of Plaer  
-  def playerMove(self, gamearea, slowMode, moveLeft, moveRight, moveUp, moveDown):
-    if slowMode:
-      speed = self.slowspeed
-    else:
-      speed = self.fastspeed
-
-    if moveLeft and self.rect.left > gamearea.left:
-      self.rect.move_ip(-1 * speed, 0)
-      if self.rect.left < gamearea.left:
-        self.rect.left = gamearea.left
-    if moveRight and self.rect.right < gamearea.right:
-      self.rect.move_ip(speed, 0)
-      if self.rect.right > gamearea.right:
-        self.rect.right = gamearea.right
-    if moveUp and self.rect.top > gamearea.top:
-      self.rect.move_ip(0, -1 * speed)
-      if self.rect.top < gamearea.top:
-        self.rect.top = gamearea.top
-    if moveDown and self.rect.bottom < gamearea.bottom:
-      self.rect.move_ip(0, speed)
-      if self.rect.bottom > gamearea.bottom:
-        self.rect.bottom = gamearea.bottom  
-
-  # Place the Bullet on the Screen
-  def shootBullet(self, shooting, time, gamearea, patternX, patternY):
-    # Set playerBullet = bullet(self, name, rect, image, damage)
-    playerBullet1 = bullet(name = "playerBullet", rect = pygame.Rect(self.rect.centerx - PLAYERBULLETSIZE / 2, self.rect.top + PLAYERBULLETSIZE * 2, PLAYERBULLETSIZE, PLAYERBULLETSIZE*2), image = None, damage = PLAYERBULLETDAMAGE)
-    playerBullet2 = bullet(name = "playerBullet", rect = pygame.Rect(self.rect.left                          , self.rect.top + PLAYERBULLETSIZE * 2, PLAYERBULLETSIZE, PLAYERBULLETSIZE*2), image = None, damage = PLAYERBULLETDAMAGE)
-    playerBullet3 = bullet(name = "playerBullet", rect = pygame.Rect(self.rect.right - PLAYERBULLETSIZE      , self.rect.top + PLAYERBULLETSIZE * 2, PLAYERBULLETSIZE, PLAYERBULLETSIZE*2), image = None, damage = PLAYERBULLETDAMAGE)
-    if shooting:
-      # For every 5 frames, generate a new bullet
-      if time % 5 == 0:
-        self.bulletList.append(playerBullet1)
-        self.bulletList.append(playerBullet2)
-        self.bulletList.append(playerBullet3)
-        
-    for b in self.bulletList:
-      b.bulletMove(patternX, patternY)
-      if b.rect.top < gamearea.top:
-        self.bulletList.remove(b)
-
-class enemy():
-  def __init__(self, name, rect, image, hp, movingPatternX, movingPatternY):
-    self.name = name
-    self.rect = rect
-    self.image = image
-    self.hp = hp
-    self.movingPatternX = movingPatternX
-    self.movingPatternY = movingPatternY
-  def enemyMove(self):
-    self.rect.move_ip(self.movingPatternX, self.movingPatternY)
+ENEMYWIDTH = 20
+ENEMYHEIGHT = 20
+# ----------------------Classes----------------------
+class playerCollisionBox(pygame.sprite.Sprite):
+    def __init__(self, collisionBoxImage, playerRect):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = collisionBoxImage
+        self.image.set_colorkey(WHITE)
+        self.rect = self.image.get_rect(center = playerRect.center)
     
+        
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self, name, lifes, image, collisionBoxImage, playerBulletImage, playerSpeed, putbulletPattern, shootBulletPattern):
+        pygame.sprite.Sprite.__init__(self)
+        self.name = name
+        self.lifes = lifes
+        self.image = image
+        self.collisionBoxImage = collisionBoxImage
+        self.playerBulletImage = playerBulletImage
+        self.playerFastSpeed = playerSpeed[0]
+        self.playerSlowSpeed = playerSpeed[1]
+        self.putbulletPattern = putbulletPattern
+        self.shootBulletPattern = shootBulletPattern
+
+        self.rect = self.image.get_rect()
+        self.rect.center = (GAMEAREA.centerx, GAMEAREA.bottom - 50)
+
+        self.collisionBox = playerCollisionBox(collisionBoxImage = self.collisionBoxImage, playerRect = self.rect)
+
+        self.radius = int(self.collisionBox.rect.width / 2)
+        
+
+    def update(self):
+        keystate = pygame.key.get_pressed()
+        if keystate[pygame.K_LSHIFT]:
+            speed = self.playerSlowSpeed
+        else:
+            speed = self.playerFastSpeed
+        if keystate[pygame.K_LEFT] and self.rect.left > GAMEAREA.left:
+            self.rect.move_ip(-1 * speed, 0)
+            if self.rect.left < GAMEAREA.left:
+                self.rect.left = GAMEAREA.left
+        if keystate[pygame.K_RIGHT] and self.rect.right < GAMEAREA.right:
+            self.rect.move_ip(speed, 0)
+            if self.rect.right > GAMEAREA.right:
+                self.rect.right = GAMEAREA.right
+        if keystate[pygame.K_UP] and self.rect.top > GAMEAREA.top:
+            self.rect.move_ip(0, -1 * speed)
+            if self.rect.top < GAMEAREA.top:
+                self.rect.top = GAMEAREA.top
+        if keystate[pygame.K_DOWN] and self.rect.bottom < GAMEAREA.bottom:
+            self.rect.move_ip(0, speed)
+            if self.rect.bottom > GAMEAREA.bottom:
+                self.rect.bottom = GAMEAREA.bottom  
+        
+        self.collisionBox.rect.center = self.rect.center
+
+                
+    def drawCollisionBox(self):
+        pass
+
+
+
+# ----------------------Function----------------------
 def terminate():
-  pygame.quit()
-  sys.exit()
+    pygame.quit()
+    sys.exit()
 
-def generateEnemyParameter(time):
-  if time in range(0, 1800):
-    return 10
-  elif time in range(1800, 3600):
-    return 8
-  elif time in range(3600, 5400):
-    return 6
-  elif time in range(5400, 7200): 
-    return 4
-  else:
-    return 2
-
-def ifEnemyHasHitPlayer(player, enemyList):
-  for e in enemyList:
-    if player.rect.colliderect(e.rect):
-      return True
-  return False
-  
-# Pygame Initiate
+# ----------------------Pygame Initiate----------------------
 pygame.init()
 mainClock = pygame.time.Clock()
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-pygame.display.set_caption("Curtain_Shooting_Game_ver0.2")
+pygame.display.set_caption("Curtain_Shooting_Game")
 pygame.mouse.set_visible(False)
 
+# ----------------------Load Image----------------------
+img_dir = path.join(path.dirname(__file__), 'img')
+
+background_row = pygame.image.load(path.join(img_dir, 'background2.png')).convert()
+background = pygame.transform.scale(background_row, (WINDOWWIDTH, WINDOWHEIGHT))
+background.set_colorkey(WHITE)
+background_rect = background.get_rect()
+
+palyerImg_row = pygame.image.load(path.join(img_dir, 'player1.png')).convert()
+playerImg = pygame.transform.scale(palyerImg_row, (PLAYERWIDTH, PLAYERHEIGHT))
+playerCollisionBoxImg_row = pygame.image.load(path.join(img_dir, 'playerCollisionBox.png')).convert()
+playerCollisionBoxImg = pygame.transform.scale(playerCollisionBoxImg_row, (PLAYERCOLISIONBOXSIZE, PLAYERCOLISIONBOXSIZE))
+
+enemyImg_row = pygame.image.load(path.join(img_dir, 'enemy1.png')).convert()
+enemyImg = pygame.transform.scale(background_row, (ENEMYWIDTH, ENEMYHEIGHT))
+
+
+
+# ----------------------Main----------------------
+
 # Set Gamearea
-GAMEAREA = pygame.Rect(50, 50, GAMEAREAWIDTH, GAMEAREAHEIGHT)
-GAMEAREAFRAME = [pygame.Rect(0, 0, GAMEAREAWIDTH + 50, 50), pygame.Rect(0, 0, 50, GAMEAREAHEIGHT + 50), pygame.Rect(0, GAMEAREAHEIGHT + 50, GAMEAREAWIDTH + 50, 50), pygame.Rect(GAMEAREAWIDTH + 50, 0, 100, GAMEAREAHEIGHT + 50)]
+GAMEAREA = pygame.Rect(40, 20, GAMEAREAWIDTH, GAMEAREAHEIGHT)
+GAMEAREAFRAME = pygame.Rect(20, -10, 400, 400)
 
-# Set player1 = player(name, rect, image, hp, bulletList, bulletPatternX, bulletPatternY, fastspeed, slowspeed)
-def player1BulletPatternX(t):
-  return 0
-def player1BulletPatternY(t):
-  return -10 
-player1 = player(name = "1", rect = pygame.Rect(GAMEAREA.centerx - PLAYERSIZE / 2, GAMEAREA.bottom - PLAYERSIZE *2, PLAYERSIZE, PLAYERSIZE), image = None, hp = 1, bulletList = [], bulletPatternX = player1BulletPatternX, bulletPatternY = player1BulletPatternY, fastspeed = PLAYERFASTSPEED, slowspeed = PLAYERSLOWSPEED)
+# Set parameter
+running = True 
+allSprites = pygame.sprite.Group()
 
+# Set player, enemy, bullet
+player = Player(name = "player", \
+                lifes = 1, \
+                image = playerImg, \
+                collisionBoxImage = playerCollisionBoxImg, \
+                playerBulletImage = None, \
+                playerSpeed = (4, 2), \
+                putbulletPattern = None, \
+                shootBulletPattern = None)
 
+allSprites.add(player)
+allSprites.add(player.collisionBox)
 
-while True:
-  windowSurface.fill(WHITE)
-  pygame.draw.rect(windowSurface, BLUE, GAMEAREA)
-  pygame.draw.rect(windowSurface, RED, player1.rect)
+# Game loop
+while running:
 
-  pygame.display.update()
-
-
-
-  # Setting Parameter
-  moveLeft = moveRight = moveUp = moveDown = False
-  slowMode = False
-  shooting = False
-  shootingTimer = 0
-  generateEnemyTimer = 0
-  enemy_list = []
-
-
-  while True:
-    # Key Control
     for event in pygame.event.get():
-      if event.type == QUIT:
-        terminate()
-      if event.type == KEYDOWN:
-        if event.key == K_LEFT:
-          moveRight = False
-          moveLeft = True
-        if event.key == K_RIGHT:
-          moveRight = True
-          moveLeft = False
-        if event.key == K_UP:
-          moveUp = True
-          moveDown = False
-        if event.key == K_DOWN:
-          moveUp = False
-          moveDown = True
-        if event.key == K_LSHIFT:
-          slowMode = True
-        if event.key == K_z:
-          shooting = True
-          shootingTimer = 0
+        if event.type == QUIT:
+            terminate()
+        if event.type == KEYUP:
+            if event.key == K_ESCAPE:
+                terminate()
 
-      if event.type == KEYUP:
-        if event.key == K_LEFT:
-          moveLeft = False
-        if event.key == K_RIGHT:
-          moveRight = False
-        if event.key == K_UP:
-          moveUp = False
-        if event.key == K_DOWN:
-          moveDown = False
-        if event.key == K_LSHIFT:
-          slowMode = False
-        if event.key == K_z:
-          shooting = False
-        if event.key == K_ESCAPE:
-          terminate()
-      
 
-    # Generate Enemy in a Time Dependent Rate
-    if generateEnemyTimer % (generateEnemyParameter(generateEnemyTimer)) == 0:
-      enemy_list.append(enemy(name = "enemyA", rect = pygame.Rect(random.randint(50, (50 + GAMEAREAWIDTH - ENEMYSIZE)), random.randint(50, (50 + GAMEAREAHEIGHT/4 - ENEMYSIZE)), ENEMYSIZE, ENEMYSIZE), image = None, hp = ENEMYHP, movingPatternX = random.randint(-1, 1), movingPatternY = random.randint(1, 7)))
-              
+    allSprites.update()
     
-    # Move Enemy
-    for e in enemy_list:
-      e.enemyMove()
-      if (e.rect.top > GAMEAREA.bottom) or (e.rect.left > GAMEAREA.right) or (e.rect.right < GAMEAREA.left):
-        enemy_list.remove(e)
-    # Move Player
-    player1.playerMove(GAMEAREA, slowMode, moveLeft, moveRight, moveUp, moveDown)
-    player1.shootBullet(shooting, shootingTimer, GAMEAREA, player1BulletPatternX(shootingTimer), player1BulletPatternY(shootingTimer))
-    
-    # Detect Collidion
-    for b in player1.bulletList:
-      for e in enemy_list:
-        if b.rect.colliderect(e.rect):
-          e.hp -=10
-    if ifEnemyHasHitPlayer(player1, enemy_list):
-      time.sleep(0.5)
-      break
-    
-    for e in enemy_list:
-      if e.hp <= 0:
-        enemy_list.remove(e)
-    
-
-    # Refresh Screen
-    windowSurface.fill(WHITE)
+    windowSurface.fill(BLACK)
     pygame.draw.rect(windowSurface, BLUE, GAMEAREA)
-    for e in enemy_list:
-      pygame.draw.rect(windowSurface, LIGHTBLUE, e.rect)
-    pygame.draw.rect(windowSurface, RED, player1.rect)
-    for b in player1.bulletList:
-      pygame.draw.rect(windowSurface, GREEN, b.rect)
-    for gf in GAMEAREAFRAME:
-      pygame.draw.rect(windowSurface, WHITE, gf)
+    
 
-    shootingTimer += 1
-    generateEnemyTimer += 1
+    
+    allSprites.draw(windowSurface)
+
+    windowSurface.blit(background, background_rect)
+    
     pygame.display.update()
 
     mainClock.tick(FPS)
 
+# terminate()
 
