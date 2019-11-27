@@ -32,19 +32,21 @@ class playerCollisionBox(pygame.sprite.Sprite):
     def __init__(self, collisionBoxImage, playerRect):
         pygame.sprite.Sprite.__init__(self)
         self.image_origin = collisionBoxImage
-        self.image = self.image_origin.copy()
-        self.image.set_colorkey(WHITE)
+        self.image_origin.set_colorkey(WHITE)
+        self.image = pygame.transform.scale(self.image_origin.copy(), (PLAYERCOLISIONBOXSIZE, PLAYERCOLISIONBOXSIZE))
         self.rect = self.image.get_rect(center = playerRect.center)
         self.radius = 0
         self.rotateSpeed = 5 
         self.lastUpdate = pygame.time.get_ticks()
     def rotate(self):
         now = pygame.time.get_ticks() 
-        if now - self.lastUpdate > 100:
-            old_image 
-            self.lastUpdate = pygame.time.get_ticks()
+        if now - self.lastUpdate > 100: 
+            self.lastUpdate = now
             self.radius = (self.radius + self.rotateSpeed) % 360
-            self.image = pygame.transform.rotate(self.image_origin, self.radius)
+            oldCenter = self.rect.center
+            self.image = pygame.transform.scale(pygame.transform.rotate(self.image_origin, self.radius), (PLAYERCOLISIONBOXSIZE, PLAYERCOLISIONBOXSIZE))
+            self.rect = self.image.get_rect()
+            self.rect.center = oldCenter
 
         
     
@@ -95,7 +97,7 @@ class Player(pygame.sprite.Sprite):
                 self.rect.bottom = GAMEAREA.bottom  
         
         self.collisionBox.rect.center = self.rect.center
-        # self.collisionBox.rotate()
+        self.collisionBox.rotate()
 
                 
 
@@ -146,7 +148,7 @@ allSprites = pygame.sprite.Group()
 player = Player(name = "player", \
                 lifes = 1, \
                 image = playerImg, \
-                collisionBoxImage = playerCollisionBoxImg, \
+                collisionBoxImage = playerCollisionBoxImg_row, \
                 playerBulletImage = None, \
                 playerSpeed = (4, 2), \
                 putbulletPattern = None, \
