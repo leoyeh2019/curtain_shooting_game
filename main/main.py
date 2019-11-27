@@ -8,27 +8,45 @@ WINDOWWIDTH = 800
 WINDOWHEIGHT = 600
 GAMEAREAWIDTH = 480
 GAMEAREAHEIGHT = 560
+
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 LIGHTBLUE = (0, 255, 255)
+
 FPS = 60
 
-PLAYERWIDTH = 20
-PLAYERHEIGHT = 20
+PLAYERWIDTH = 30
+PLAYERHEIGHT = 30
 PLAYERCOLISIONBOXSIZE = 10
 
 ENEMYWIDTH = 20
 ENEMYHEIGHT = 20
+
+
+
 # ----------------------Classes----------------------
 class playerCollisionBox(pygame.sprite.Sprite):
     def __init__(self, collisionBoxImage, playerRect):
         pygame.sprite.Sprite.__init__(self)
-        self.image = collisionBoxImage
+        self.image_origin = collisionBoxImage
+        self.image = self.image_origin.copy()
         self.image.set_colorkey(WHITE)
         self.rect = self.image.get_rect(center = playerRect.center)
+        self.radius = 0
+        self.rotateSpeed = 5 
+        self.lastUpdate = pygame.time.get_ticks()
+    def rotate(self):
+        now = pygame.time.get_ticks() 
+        if now - self.lastUpdate > 100:
+            old_image 
+            self.lastUpdate = pygame.time.get_ticks()
+            self.radius = (self.radius + self.rotateSpeed) % 360
+            self.image = pygame.transform.rotate(self.image_origin, self.radius)
+
+        
     
         
 
@@ -77,14 +95,13 @@ class Player(pygame.sprite.Sprite):
                 self.rect.bottom = GAMEAREA.bottom  
         
         self.collisionBox.rect.center = self.rect.center
+        # self.collisionBox.rotate()
 
                 
-    def drawCollisionBox(self):
-        pass
 
 
 
-# ----------------------Function----------------------
+# ----------------------Functions----------------------
 def terminate():
     pygame.quit()
     sys.exit()
@@ -122,6 +139,7 @@ GAMEAREAFRAME = pygame.Rect(20, -10, 400, 400)
 
 # Set parameter
 running = True 
+timer = 0
 allSprites = pygame.sprite.Group()
 
 # Set player, enemy, bullet
@@ -162,6 +180,7 @@ while running:
     pygame.display.update()
 
     mainClock.tick(FPS)
+    timer += 1
 
 # terminate()
 

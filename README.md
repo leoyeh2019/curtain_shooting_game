@@ -1,7 +1,16 @@
 # Final Project - Bullet Hell
 ## Game Design
 ```
-class body():
+https://www.plectica.com/maps/2PZGOB4YP/edit/XVO8LRCRA?fbclid=IwAR2TEoxdSrXTuMBWuuYm5yJp0RdAc9uVFAxQt_G-pHPismyqgdYlE3BYOx0
+```
+```
+class(attribute, function...)
+state(object) # using JSON
+main(load data, logic)
+view(draw)
+```
+```
+class body(name, ):
 ```
 ```
 class bullet(name, rect, image, damage):
