@@ -31,22 +31,22 @@ ENEMYHEIGHT = 20
 class playerCollisionBox(pygame.sprite.Sprite):
     def __init__(self, collisionBoxImage, playerRect):
         pygame.sprite.Sprite.__init__(self)
-        self.image_origin = collisionBoxImage
+        self.image_origin = pygame.transform.scale(collisionBoxImage, (PLAYERCOLISIONBOXSIZE, PLAYERCOLISIONBOXSIZE))
         self.image_origin.set_colorkey(WHITE)
-        self.image = pygame.transform.scale(self.image_origin.copy(), (PLAYERCOLISIONBOXSIZE, PLAYERCOLISIONBOXSIZE))
+        self.image = self.image_origin.copy()
         self.rect = self.image.get_rect(center = playerRect.center)
-        self.radius = 0
+        self.axis = 0
         self.rotateSpeed = 5 
         self.lastUpdate = pygame.time.get_ticks()
     def rotate(self):
         now = pygame.time.get_ticks() 
         if now - self.lastUpdate > 100: 
             self.lastUpdate = now
-            self.radius = (self.radius + self.rotateSpeed) % 360
+            self.axis = (self.axis + self.rotateSpeed) % 360
+            newImage = pygame.transform.rotate(self.image_origin, self.axis)
             oldCenter = self.rect.center
-            self.image = pygame.transform.scale(pygame.transform.rotate(self.image_origin, self.radius), (PLAYERCOLISIONBOXSIZE, PLAYERCOLISIONBOXSIZE))
-            self.rect = self.image.get_rect()
-            self.rect.center = oldCenter
+            self.image = newImage
+            self.rect = self.image.get_rect(center = oldCenter)
 
         
     
