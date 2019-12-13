@@ -110,21 +110,21 @@ class Player(pygame.sprite.Sprite):
         # self.collisionBox.rotate()
     def shoot(self):
         now = pygame.time.get_ticks()
-        # print("now = {0}    lastShootingTime= {1}".format(now, self.lastShootingTime))
         if now - self.lastShootingTime > 100:
             playerBullet = Bullet(name = "playerBullet", \
                                   image = self.playerBulletImage, \
                                   bulletRadius = 1, \
                                   bulletDamage = self.playerDamage, \
-                                  putBulletPattern = self.putbulletPattern, \
+                                  putBulletPattern = self.putbulletPattern(now), \
                                   shootbulletPattern = self.shootBulletPattern)
             self.lastShootingTime = now
             allSprites.add(playerBullet)
-            bulletSprite.add(playerBullet)
+            bulletSprites.add(playerBullet)
+            print(allSprites)
         
         
 class Bullet(pygame.sprite.Sprite):
-    def __init__(name, image, bulletRadius, bulletDamage, putBulletPattern, shootbulletPattern):
+    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootbulletPattern):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.image = image
@@ -207,6 +207,7 @@ player = Player(name = "player", \
                 playerDamage = None, \
                 putbulletPattern = playerPutbulletPattern, \
                 shootBulletPattern = playerShootBulletPattern)
+
 
 allSprites.add(player)
 allSprites.add(player.collisionBox)
