@@ -21,6 +21,8 @@ FPS = 60
 PLAYERWIDTH = 30
 PLAYERHEIGHT = 30
 PLAYERCOLISIONBOXSIZE = 10
+PLAYERBULLETWIDTH = 5
+PLAYERBULLETHEIGHT = 10
 
 ENEMYWIDTH = 20
 ENEMYHEIGHT = 20
@@ -49,17 +51,19 @@ class playerCollisionBox(pygame.sprite.Sprite):
             self.rect = self.image.get_rect(center = oldCenter)
 
         
-    
+
+      
         
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, name, lifes, image, collisionBoxImage, playerBulletImage, playerSpeed, putbulletPattern, shootBulletPattern):
+    def __init__(self, name, lifes, image, collisionBoxImage, playerBulletImage, playerSpeed, playerDamage, putbulletPattern, shootBulletPattern):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.lifes = lifes
         self.image = image
         self.collisionBoxImage = collisionBoxImage
         self.playerBulletImage = playerBulletImage
+        self.playerDamage = playerDamage
         self.playerFastSpeed = playerSpeed[0]
         self.playerSlowSpeed = playerSpeed[1]
         self.putbulletPattern = putbulletPattern
@@ -71,6 +75,10 @@ class Player(pygame.sprite.Sprite):
         self.collisionBox = playerCollisionBox(collisionBoxImage = self.collisionBoxImage, playerRect = self.rect)
 
         self.radius = int(self.collisionBox.rect.width / 2)
+
+        
+
+        self.lastShootingTime = pygame.time.get_ticks()
         
 
     def update(self):
@@ -94,13 +102,49 @@ class Player(pygame.sprite.Sprite):
         if keystate[pygame.K_DOWN] and self.rect.bottom < GAMEAREA.bottom:
             self.rect.move_ip(0, speed)
             if self.rect.bottom > GAMEAREA.bottom:
-                self.rect.bottom = GAMEAREA.bottom  
+                self.rect.bottom = GAMEAREA.bottom
+        if keystate[pygame.K_z]:
+            self.shoot()  
         
         self.collisionBox.rect.center = self.rect.center
-        self.collisionBox.rotate()
+        # self.collisionBox.rotate()
+    def shoot(self):
+        now = pygame.time.get_ticks()
+        # print("now = {0}    lastShootingTime= {1}".format(now, self.lastShootingTime))
+        if now - self.lastShootingTime > 100:
+            playerBullet = Bullet(name = "playerBullet", \
+                                  image = self.playerBulletImage, \
+                                  bulletRadius = 1, \
+                                  bulletDamage = self.playerDamage, \
+                                  putBulletPattern = self.putbulletPattern, \
+                                  shootbulletPattern = self.shootBulletPattern)
+            self.lastShootingTime = now
+            allSprites.add(playerBullet)
+            bulletSprite.add(playerBullet)
+        
+        
+class Bullet(pygame.sprite.Sprite):
+    def __init__(name, image, bulletRadius, bulletDamage, putBulletPattern, shootbulletPattern):
+        pygame.sprite.Sprite.__init__(self)
+        self.name = name
+        self.image = image
+        self.radius = bulletRadius
+        self.damage = bulletDamage
+        self.putBulletPattern = putBulletPattern
+        self.shootbulletPattern = shootbulletPattern
 
+        self.rect = self.image.get_rect(center = putBulletPattern)
+
+        self.generateTime = pygame.time.get_ticks()
+
+    def update(self):
+        now = pygame.time.get_ticks()
+        self.rect.center = self.shootbulletPattern((now - self.generateTime))  
                 
 
+        
+        
+        
 
 
 # ----------------------Functions----------------------
@@ -131,6 +175,10 @@ playerCollisionBoxImg = pygame.transform.scale(playerCollisionBoxImg_row, (PLAYE
 enemyImg_row = pygame.image.load(path.join(img_dir, 'enemy1.png')).convert()
 enemyImg = pygame.transform.scale(background_row, (ENEMYWIDTH, ENEMYHEIGHT))
 
+playerBulletImg_row = pygame.image.load(path.join(img_dir, 'bullet1.png')).convert()
+playerBulletImg = pygame.transform.scale(palyerImg_row, (PLAYERBULLETWIDTH, PLAYERBULLETHEIGHT))
+
+
 
 
 # ----------------------Main----------------------
@@ -143,16 +191,22 @@ GAMEAREAFRAME = pygame.Rect(20, -10, 400, 400)
 running = True 
 timer = 0
 allSprites = pygame.sprite.Group()
+bulletSprites =  pygame.sprite.Group()
 
 # Set player, enemy, bullet
+def playerPutbulletPattern(time):
+    return -20, 0
+def playerShootBulletPattern(time):
+    return -10 * time, 0
 player = Player(name = "player", \
                 lifes = 1, \
                 image = playerImg, \
                 collisionBoxImage = playerCollisionBoxImg_row, \
-                playerBulletImage = None, \
+                playerBulletImage = playerBulletImg, \
                 playerSpeed = (4, 2), \
-                putbulletPattern = None, \
-                shootBulletPattern = None)
+                playerDamage = None, \
+                putbulletPattern = playerPutbulletPattern, \
+                shootBulletPattern = playerShootBulletPattern)
 
 allSprites.add(player)
 allSprites.add(player.collisionBox)
@@ -166,6 +220,9 @@ while running:
         if event.type == KEYUP:
             if event.key == K_ESCAPE:
                 terminate()
+            
+    
+    
 
 
     allSprites.update()
