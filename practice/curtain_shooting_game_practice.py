@@ -252,8 +252,8 @@ while True:
     for gf in GAMEAREAFRAME:
       pygame.draw.rect(windowSurface, WHITE, gf)
 
-    stage = int(generateEnemyParameter(generateEnemyTimer))
-    score += (12 - stage)
+    stage = int((12 - generateEnemyParameter(generateEnemyTimer)) / 2)
+    score += stage * 2
     drawText(windowSurface, "stage : {0:8}".format(stage), 32, 450, 50)
     drawText(windowSurface, "score : {0:8}".format(score), 32, 450, 100)
 

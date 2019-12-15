@@ -3,7 +3,7 @@ from pygame.locals import *
 from os import path
 
 
-# ----------------------Unchangeable Variables----------------------
+# ----------------------Constants----------------------
 WINDOWWIDTH = 800
 WINDOWHEIGHT = 600
 GAMEAREAWIDTH = 480
@@ -28,13 +28,38 @@ ENEMYWIDTH = 20
 ENEMYHEIGHT = 20
 
 
+# ----------------------Pygame Initiate----------------------
+pygame.init()
+mainClock = pygame.time.Clock()
+windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+pygame.display.set_caption("Curtain_Shooting_Game")
+pygame.mouse.set_visible(False)
+
+# ----------------------Load Image----------------------
+img_dir = path.join(path.dirname(__file__), 'img')
+
+background_raw = pygame.image.load(path.join(img_dir, 'background2.png')).convert()
+background = pygame.transform.scale(background_raw, (WINDOWWIDTH, WINDOWHEIGHT))
+background.set_colorkey(WHITE)
+background_rect = background.get_rect()
+
+playerImg_raw = pygame.image.load(path.join(img_dir, 'player1.png')).convert()
+playerImg = pygame.transform.scale(playerImg_raw, (PLAYERWIDTH, PLAYERHEIGHT))
+playerCollisionBoxImg_raw = pygame.image.load(path.join(img_dir, 'playerCollisionBox.png')).convert()
+playerCollisionBoxImg = pygame.transform.scale(playerCollisionBoxImg_raw, (PLAYERCOLISIONBOXSIZE, PLAYERCOLISIONBOXSIZE))
+playerCollisionBoxImg.set_colorkey(WHITE)
+
+enemyImg_raw = pygame.image.load(path.join(img_dir, 'enemy1.png')).convert()
+enemyImg = pygame.transform.scale(background_raw, (ENEMYWIDTH, ENEMYHEIGHT))
+
+playerBulletImg_raw = pygame.image.load(path.join(img_dir, 'bullet1.png')).convert()
+playerBulletImg = pygame.transform.scale(playerBulletImg_raw, (PLAYERBULLETWIDTH, PLAYERBULLETHEIGHT))
 
 # ----------------------Classes----------------------
 class playerCollisionBox(pygame.sprite.Sprite):
     def __init__(self, collisionBoxImage, playerRect):
         pygame.sprite.Sprite.__init__(self)
-        self.image_origin = pygame.transform.scale(collisionBoxImage, (PLAYERCOLISIONBOXSIZE, PLAYERCOLISIONBOXSIZE))
-        self.image_origin.set_colorkey(WHITE)
+        self.image_origin = collisionBoxImage
         self.image = self.image_origin.copy()
         self.rect = self.image.get_rect(center = playerRect.center)
         self.axis = 0
@@ -132,7 +157,6 @@ class Bullet(pygame.sprite.Sprite):
         self.image.set_colorkey(WHITE)
         self.radius = bulletRadius
         self.damage = bulletDamage
-        self.putBulletPattern = putBulletPattern
         self.shootbulletPattern = shootbulletPattern
 
         self.rect = self.image.get_rect(center = putBulletPattern)
@@ -157,31 +181,7 @@ def terminate():
     pygame.quit()
     sys.exit()
 
-# ----------------------Pygame Initiate----------------------
-pygame.init()
-mainClock = pygame.time.Clock()
-windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
-pygame.display.set_caption("Curtain_Shooting_Game")
-pygame.mouse.set_visible(False)
 
-# ----------------------Load Image----------------------
-img_dir = path.join(path.dirname(__file__), 'img')
-
-background_row = pygame.image.load(path.join(img_dir, 'background2.png')).convert()
-background = pygame.transform.scale(background_row, (WINDOWWIDTH, WINDOWHEIGHT))
-background.set_colorkey(WHITE)
-background_rect = background.get_rect()
-
-palyerImg_row = pygame.image.load(path.join(img_dir, 'player1.png')).convert()
-playerImg = pygame.transform.scale(palyerImg_row, (PLAYERWIDTH, PLAYERHEIGHT))
-playerCollisionBoxImg_row = pygame.image.load(path.join(img_dir, 'playerCollisionBox.png')).convert()
-playerCollisionBoxImg = pygame.transform.scale(playerCollisionBoxImg_row, (PLAYERCOLISIONBOXSIZE, PLAYERCOLISIONBOXSIZE))
-
-enemyImg_row = pygame.image.load(path.join(img_dir, 'enemy1.png')).convert()
-enemyImg = pygame.transform.scale(background_row, (ENEMYWIDTH, ENEMYHEIGHT))
-
-playerBulletImg_row = pygame.image.load(path.join(img_dir, 'bullet1.png')).convert()
-playerBulletImg = pygame.transform.scale(palyerImg_row, (PLAYERBULLETWIDTH, PLAYERBULLETHEIGHT))
 
 
 
@@ -206,7 +206,7 @@ def playerShootBulletPattern(time):
 player = Player(name = "player", \
                 lifes = 1, \
                 image = playerImg, \
-                collisionBoxImage = playerCollisionBoxImg_row, \
+                collisionBoxImage = playerCollisionBoxImg, \
                 playerBulletImage = playerBulletImg, \
                 playerSpeed = (4, 2), \
                 playerDamage = None, \
