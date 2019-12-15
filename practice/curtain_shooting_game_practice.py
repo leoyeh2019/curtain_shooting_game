@@ -123,6 +123,14 @@ def ifEnemyHasHitPlayer(player, enemyList):
     if player.rect.colliderect(e.rect):
       return True
   return False
+
+def drawText(surf, text, size, x, y):
+  font = pygame.font.Font(None, size)
+  text_surface = font.render(text, True, BLACK)
+  text_rect = text_surface.get_rect()
+  text_rect.topleft = (x, y)
+  surf.blit(text_surface, text_rect)
+
   
 # Pygame Initiate
 pygame.init()
@@ -160,6 +168,7 @@ while True:
   shootingTimer = 0
   generateEnemyTimer = 0
   enemy_list = []
+  score = 0
 
 
   while True:
@@ -229,6 +238,7 @@ while True:
     for e in enemy_list:
       if e.hp <= 0:
         enemy_list.remove(e)
+        score += 100
     
 
     # Refresh Screen
@@ -241,6 +251,11 @@ while True:
       pygame.draw.rect(windowSurface, GREEN, b.rect)
     for gf in GAMEAREAFRAME:
       pygame.draw.rect(windowSurface, WHITE, gf)
+
+    stage = int(generateEnemyParameter(generateEnemyTimer))
+    score += (12 - stage)
+    drawText(windowSurface, "stage : {0:8}".format(stage), 32, 450, 50)
+    drawText(windowSurface, "score : {0:8}".format(score), 32, 450, 100)
 
     shootingTimer += 1
     generateEnemyTimer += 1

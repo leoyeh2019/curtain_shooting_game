@@ -108,6 +108,7 @@ class Player(pygame.sprite.Sprite):
         
         self.collisionBox.rect.center = self.rect.center
         # self.collisionBox.rotate()
+        
     def shoot(self):
         now = pygame.time.get_ticks()
         if now - self.lastShootingTime > 100:
@@ -115,12 +116,12 @@ class Player(pygame.sprite.Sprite):
                                   image = self.playerBulletImage, \
                                   bulletRadius = 1, \
                                   bulletDamage = self.playerDamage, \
-                                  putBulletPattern = self.putbulletPattern(now), \
+                                  putBulletPattern = (self.putbulletPattern(now)[0] + self.rect.center[0], self.putbulletPattern(now)[1] + self.rect.center[1]), \
                                   shootbulletPattern = self.shootBulletPattern)
             self.lastShootingTime = now
             allSprites.add(playerBullet)
             bulletSprites.add(playerBullet)
-            print(allSprites)
+            
         
         
 class Bullet(pygame.sprite.Sprite):
@@ -128,6 +129,7 @@ class Bullet(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.image = image
+        self.image.set_colorkey(WHITE)
         self.radius = bulletRadius
         self.damage = bulletDamage
         self.putBulletPattern = putBulletPattern
@@ -139,7 +141,10 @@ class Bullet(pygame.sprite.Sprite):
 
     def update(self):
         now = pygame.time.get_ticks()
-        self.rect.center = self.shootbulletPattern((now - self.generateTime))  
+        self.rect.move_ip(self.shootbulletPattern(now - self.generateTime)) 
+
+        if self.rect.bottom < 0:
+            self.kill()
                 
 
         
@@ -195,9 +200,9 @@ bulletSprites =  pygame.sprite.Group()
 
 # Set player, enemy, bullet
 def playerPutbulletPattern(time):
-    return -20, 0
+    return 0, -30
 def playerShootBulletPattern(time):
-    return -10 * time, 0
+    return 0, -10
 player = Player(name = "player", \
                 lifes = 1, \
                 image = playerImg, \
