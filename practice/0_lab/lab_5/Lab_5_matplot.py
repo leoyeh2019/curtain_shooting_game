@@ -2,6 +2,8 @@ import random, math
 import matplotlib.pyplot as plot
 from matplotlib.patches import Circle
 
+########## Classes and Functions ##########
+
 class circle():
     def __init__(self, name, center, radius, edgecolor):
         self.name = name
@@ -33,48 +35,77 @@ def checkIntersection(*circles):
         
     return check
 
+
+########## Inputs ##########
+
+num = int(input("Please input the number of circles: "))
+while True:
+    num = int(input("Please input the number of circles: "))
+    if num < 2:
+        continue
+    elif num in [2, 3]:
+        break
+    elif num > 3:
+        print("It's too big. Do you really want to try.(press y to start)")
+        if input().lower().startswith("y"):
+            break 
+        else:
+            continue
+
 ########## Generate Two Circle ##########
+
+
 checkA = True 
 count = 0
+colorList = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
+
 
 while checkA:
     count += 1
     circleList = []
-    for i in range(1, 4):
+    for i in range(1, num + 1):
         c = circle(name = "Circle_{}".format(i), \
                    center = (random.randint(10, 100), random.randint(10, 100)), \
                    radius = random.randint(1, 10), \
-                   edgecolor = "r")
+                   edgecolor = colorList[i % len(colorList)])
         circleList.append(c)
     
     # if distance(c1.center, c2.center) < abs(c1.radius + c2.radius) and \
     #    distance(c1.center, c2.center) > abs(c1.radius - c2.radius):
     #    checkA = False
 
-    if checkIntersection(circleList[0], circleList[1], circleList[2]):
-        checkA = False
+    # if checkIntersection(circleList[0], circleList[1], circleList[2]):
+    #     checkA = False
     
-    # if checkIntersection(circleList):
-    #     checkA = False 
+    if checkIntersection(*(c for c in circleList)):
+        checkA = False 
+        draw = True
 
     if count % 500 == 0:
-        print("Please wait for a minute.")
+        print("Please wait for a minute.(count = {})".format(count))
+
+    if count == 100000:
+        print("Please try again.")
+        draw = False
+        break
 
 
-print("Iteration of the random processes =",count)
+########## Output ##########
+if draw:
+    print("Iteration of the random processes =",count)
 
-for c in circleList:
-    print("(x, y) of {0} = {1}".format(c.name, c.center))
+    for c in circleList:
+        print("(x, y) of {0} = {1}".format(c.name, c.center))
 
 
-########## Matplot Output ##########
-Lab5_fig = plot.figure("Lab-5")
-figure = Lab5_fig.add_subplot()
-    
-for c in circleList:
-    figure.add_patch(c.Circle)
+    ########## Matplot Output ##########
+    Lab5_fig = plot.figure("Lab-5")
+    figure = Lab5_fig.add_subplot()
+        
+    for c in circleList:
+        figure.add_patch(c.Circle)
 
-plot.axis('scaled')
-figure.set_xlim(0, 110)
-figure.set_ylim(0, 110)
-plot.show()
+    plot.axis('scaled')
+    figure.set_xlim(0, 110)
+    figure.set_ylim(0, 110)
+    plot.show()
