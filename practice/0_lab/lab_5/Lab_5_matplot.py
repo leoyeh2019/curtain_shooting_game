@@ -38,7 +38,7 @@ def checkIntersection(*circles):
 
 ########## Inputs ##########
 
-num = int(input("Please input the number of circles: "))
+
 while True:
     num = int(input("Please input the number of circles: "))
     if num < 2:
@@ -74,8 +74,6 @@ while checkA:
     #    distance(c1.center, c2.center) > abs(c1.radius - c2.radius):
     #    checkA = False
 
-    # if checkIntersection(circleList[0], circleList[1], circleList[2]):
-    #     checkA = False
     
     if checkIntersection(*(c for c in circleList)):
         checkA = False 

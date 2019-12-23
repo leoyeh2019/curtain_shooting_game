@@ -1,0 +1,11 @@
+gender,AGE,CHEMO,RT,vital,SMOKING,SURVIVAL_MONTHS
+0,55,No,No,0,Smoked in the past,110
+0,41,No,No,0,Smoked in the past,98
+1,47,Yes,No,0,Smoked in the past,110
+1,73,NA,NA,0,Never smoked,66
+0,63,NA,NA,1,Currently smoking,29
+1,72,NA,NA,1,Never smoked,7
+0,57,NA,NA,0,Currently smoking,53
+0,55,NA,NA,0,NA,63
+1,64,NA,NA,0,Smoked in the past,23
+0,40,NA,NA,0,Currently smoking,62

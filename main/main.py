@@ -55,6 +55,8 @@ enemyImg = pygame.transform.scale(background_raw, (ENEMYWIDTH, ENEMYHEIGHT))
 playerBulletImg_raw = pygame.image.load(path.join(img_dir, 'bullet1.png')).convert()
 playerBulletImg = pygame.transform.scale(playerBulletImg_raw, (PLAYERBULLETWIDTH, PLAYERBULLETHEIGHT))
 
+enemyBulletImg_raw = pygame.image.load(path.join(img_dir, 'bullet2.png')).convert()
+
 # ----------------------Classes----------------------
 class playerCollisionBox(pygame.sprite.Sprite):
     def __init__(self, collisionBoxImage, playerRect):
@@ -81,7 +83,7 @@ class playerCollisionBox(pygame.sprite.Sprite):
         
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, name, lifes, image, collisionBoxImage, playerBulletImage, playerSpeed, playerDamage, putbulletPattern, shootBulletPattern):
+    def __init__(self, name, lifes, image, collisionBoxImage, playerBulletImage, playerSpeed, playerDamage, putBulletPattern, shootBulletPattern):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.lifes = lifes
@@ -91,11 +93,11 @@ class Player(pygame.sprite.Sprite):
         self.playerDamage = playerDamage
         self.playerFastSpeed = playerSpeed[0]
         self.playerSlowSpeed = playerSpeed[1]
-        self.putbulletPattern = putbulletPattern
+        self.putBulletPattern = putBulletPattern
         self.shootBulletPattern = shootBulletPattern
 
-        self.rect = self.image.get_rect()
-        self.rect.center = (GAMEAREA.centerx, GAMEAREA.bottom - 50)
+        self.rect = self.image.get_rect(center = (GAMEAREA.centerx, GAMEAREA.bottom - 50))
+        
 
         self.collisionBox = playerCollisionBox(collisionBoxImage = self.collisionBoxImage, playerRect = self.rect)
 
@@ -141,23 +143,49 @@ class Player(pygame.sprite.Sprite):
                                   image = self.playerBulletImage, \
                                   bulletRadius = 1, \
                                   bulletDamage = self.playerDamage, \
-                                  putBulletPattern = (self.putbulletPattern(now)[0] + self.rect.center[0], self.putbulletPattern(now)[1] + self.rect.center[1]), \
-                                  shootbulletPattern = self.shootBulletPattern)
+                                  putBulletPattern = (self.putBulletPattern(now)[0] + self.rect.center[0], self.putBulletPattern(now)[1] + self.rect.center[1]), \
+                                  shootBulletPattern = self.shootBulletPattern)
             self.lastShootingTime = now
             allSprites.add(playerBullet)
-            bulletSprites.add(playerBullet)
+            playerBulletSprites.add(playerBullet)
             
-        
+
+
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, name, Hp, image, movePattern, enemyBulletImage, putBulletPattern, shootBulletPattern):
+        pygame.sprite.Sprite.__init__(self)
+        self.name = name
+        self.Hp = Hp
+        self.image = image
+        self.movePattern = movePattern
+        self.enemyBulletImage = enemyBulletImage
+        self.putBulletPattern = putBulletPattern
+        self.shootBulletPattern = shootBulletPattern
+
+        self.rect = self.image.get_rect(center = (movePattern(-1)[0] + GAMEAREA.left, movePattern(-1)[1] + GAMEAREA.top))
+        self.radius = int((self.rect.width / 2) * 0.5)
+
+        self.generateTime = pygame.time.get_ticks()
+
+
+    def update(self):
+        now = pygame.time.get_ticks()
+        self.rect.move_ip(self.movePattern(now - self.generateTime)[0], self.movePattern(now - self.generateTime)[1])
+        if not self.rect.colliderect(GAMEAREA):
+            self.kill()
+            
+
+
         
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootbulletPattern):
+    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.image = image
         self.image.set_colorkey(WHITE)
         self.radius = bulletRadius
         self.damage = bulletDamage
-        self.shootbulletPattern = shootbulletPattern
+        self.shootBulletPattern = shootBulletPattern
 
         self.rect = self.image.get_rect(center = putBulletPattern)
 
@@ -165,10 +193,11 @@ class Bullet(pygame.sprite.Sprite):
 
     def update(self):
         now = pygame.time.get_ticks()
-        self.rect.move_ip(self.shootbulletPattern(now - self.generateTime)) 
+        self.rect.move_ip(self.shootBulletPattern(now - self.generateTime)) 
 
         if self.rect.bottom < 0:
             self.kill()
+            
                 
 
         
@@ -196,7 +225,9 @@ GAMEAREAFRAME = pygame.Rect(20, -10, 400, 400)
 running = True 
 timer = 0
 allSprites = pygame.sprite.Group()
-bulletSprites =  pygame.sprite.Group()
+playerBulletSprites =  pygame.sprite.Group()
+enemySprites = pygame.sprite.Group()
+
 
 # Set player, enemy, bullet
 def playerPutbulletPattern(time):
@@ -209,14 +240,34 @@ player = Player(name = "player", \
                 collisionBoxImage = playerCollisionBoxImg, \
                 playerBulletImage = playerBulletImg, \
                 playerSpeed = (4, 2), \
-                playerDamage = None, \
-                putbulletPattern = playerPutbulletPattern, \
+                playerDamage = 10, \
+                putBulletPattern = playerPutbulletPattern, \
                 shootBulletPattern = playerShootBulletPattern)
+
+
+
+def enemyMovePattern(time):
+    if time < 0:
+        return 0, 0
+    elif 0< time < 3000:
+        return 2, 1
+    else:
+        return -1, 1
+
+enemy = Enemy(name = "enemy", \
+              Hp = 100, \
+              image = enemyImg, \
+              movePattern = enemyMovePattern, \
+              enemyBulletImage = None, \
+              putBulletPattern = None, \
+              shootBulletPattern = None)
+
 
 
 allSprites.add(player)
 allSprites.add(player.collisionBox)
-
+allSprites.add(enemy)
+enemySprites.add(enemy)
 # Game loop
 while running:
 
@@ -225,19 +276,24 @@ while running:
             terminate()
         if event.type == KEYUP:
             if event.key == K_ESCAPE:
-                terminate()
+                running = False
             
     
     
-
-
     allSprites.update()
+
+    
+    for e in enemySprites:
+        for pb in playerBulletSprites:
+            if pygame.sprite.collide_rect(e, pb):
+                pb.kill()
+                e.Hp -= pb.damage
+                if e.Hp < 0:
+                    e.kill()
+                    
     
     windowSurface.fill(BLACK)
     pygame.draw.rect(windowSurface, BLUE, GAMEAREA)
-    
-
-    
     allSprites.draw(windowSurface)
 
     windowSurface.blit(background, background_rect)
@@ -247,5 +303,5 @@ while running:
     mainClock.tick(FPS)
     timer += 1
 
-# terminate()
+terminate()
 
