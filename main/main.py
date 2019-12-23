@@ -183,14 +183,15 @@ class Enemy(pygame.sprite.Sprite):
     def shoot(self):
         now =  pygame.time.get_ticks()
         if now - self.generateTime > self.putBulletPattern(now)["delateTime"]:
-            if now - self.lastShootingTime > 500:
+            if now - self.lastShootingTime > self.putBulletPattern(now)["intermediateTime"]:
                 for i in range(self.putBulletPattern(now)["numbers"]):
                     enemyBullet = Bullet(name = "enemyBullet", \
-                                        image = self.enemyBulletImage, \
-                                        bulletRadius = 1, \
-                                        bulletDamage = None, \
-                                        putBulletPattern = (self.putBulletPattern(now)["position"][i][0] + self.rect.center[0], self.putBulletPattern(now)["position"][i][1] + self.rect.center[1]), \
-                                        shootBulletPattern = self.shootBulletPattern)
+                                         image = self.enemyBulletImage, \
+                                         bulletRadius = 1, \
+                                         bulletDamage = None, \
+                                         putBulletPattern = (self.putBulletPattern(now)["position"][i][0] + self.rect.center[0], \
+                                                             self.putBulletPattern(now)["position"][i][1] + self.rect.center[1]), \
+                                         shootBulletPattern = self.shootBulletPattern(i))
                     allSprites.add(enemyBullet)
                 self.lastShootingTime = now
                 
@@ -278,10 +279,18 @@ def enemyMovePattern(time):
         return -1, 1
 
 def enemyPutBulletPattern(time):
-    return {"numbers" : 4, "position" : ((0, 30), (30, 0), (0, -30), (-30, 0)), "delateTime" : 1000}
+    return {"numbers" : 4, "position" : ((0, 30), (30, 0), (0, -30), (-30, 0)), "delateTime" : 1000, "intermediateTime" : 100}
 
-def enemyshootBulletPattern(time):
-    return 0, 5
+def enemyshootBulletPattern(number):
+    if number == 0:
+        return lambda time : (0, 5)
+    if number == 1:
+        return lambda time : (5, 0)
+    if number == 2:
+        return lambda time : (0, -5)
+    if number == 3:
+        return lambda time : (-5, 0)
+
 
 enemy = Enemy(name = "enemy", \
               Hp = 100, \
