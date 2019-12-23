@@ -18,15 +18,16 @@ LIGHTBLUE = (0, 255, 255)
 
 FPS = 60
 
-PLAYERWIDTH = 30
-PLAYERHEIGHT = 30
-PLAYERCOLISIONBOXSIZE = 10
-PLAYERBULLETWIDTH = 5
-PLAYERBULLETHEIGHT = 10
+PLAYER_WIDTH = 30
+PLAYER_HEIGHT = 30
+PLAYER_COLLISION_BOXSIZE = 10
+PLAYER_BULLET_WIDTH = 5
+PLAYER_BULLET_HEIGHT = 10
 
-ENEMYWIDTH = 20
-ENEMYHEIGHT = 20
-
+ENEMY_WIDTH = 20
+ENEMY_HEIGHT = 20
+ENEMY_BULLET_WIDTH = 5
+ENEMY_BULLET_HEIGHT = 10
 
 # ----------------------Pygame Initiate----------------------
 pygame.init()
@@ -44,18 +45,20 @@ background.set_colorkey(WHITE)
 background_rect = background.get_rect()
 
 playerImg_raw = pygame.image.load(path.join(img_dir, 'player1.png')).convert()
-playerImg = pygame.transform.scale(playerImg_raw, (PLAYERWIDTH, PLAYERHEIGHT))
+playerImg = pygame.transform.scale(playerImg_raw, (PLAYER_WIDTH, PLAYER_HEIGHT))
 playerCollisionBoxImg_raw = pygame.image.load(path.join(img_dir, 'playerCollisionBox.png')).convert()
-playerCollisionBoxImg = pygame.transform.scale(playerCollisionBoxImg_raw, (PLAYERCOLISIONBOXSIZE, PLAYERCOLISIONBOXSIZE))
+playerCollisionBoxImg = pygame.transform.scale(playerCollisionBoxImg_raw, (PLAYER_COLLISION_BOXSIZE, PLAYER_COLLISION_BOXSIZE))
 playerCollisionBoxImg.set_colorkey(WHITE)
 
 enemyImg_raw = pygame.image.load(path.join(img_dir, 'enemy1.png')).convert()
-enemyImg = pygame.transform.scale(background_raw, (ENEMYWIDTH, ENEMYHEIGHT))
+enemyImg = pygame.transform.scale(background_raw, (ENEMY_WIDTH, ENEMY_HEIGHT))
 
 playerBulletImg_raw = pygame.image.load(path.join(img_dir, 'bullet1.png')).convert()
-playerBulletImg = pygame.transform.scale(playerBulletImg_raw, (PLAYERBULLETWIDTH, PLAYERBULLETHEIGHT))
+playerBulletImg = pygame.transform.scale(playerBulletImg_raw, (PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT))
 
 enemyBulletImg_raw = pygame.image.load(path.join(img_dir, 'bullet2.png')).convert()
+enemyBulletImg = pygame.transform.scale(enemyBulletImg_raw, (ENEMY_BULLET_WIDTH, ENEMY_BULLET_HEIGHT))
+enemyBulletImg.set_colorkey(WHITE)
 
 # ----------------------Classes----------------------
 class playerCollisionBox(pygame.sprite.Sprite):
@@ -166,14 +169,33 @@ class Enemy(pygame.sprite.Sprite):
         self.radius = int((self.rect.width / 2) * 0.5)
 
         self.generateTime = pygame.time.get_ticks()
+        self.lastShootingTime = pygame.time.get_ticks()
 
 
     def update(self):
         now = pygame.time.get_ticks()
-        self.rect.move_ip(self.movePattern(now - self.generateTime)[0], self.movePattern(now - self.generateTime)[1])
+        self.rect.move_ip(self.movePattern(now - self.generateTime))
         if not self.rect.colliderect(GAMEAREA):
             self.kill()
-            
+
+        self.shoot()
+
+    def shoot(self):
+        now =  pygame.time.get_ticks()
+        if now - self.generateTime > self.putBulletPattern(now)["delateTime"]:
+            if now - self.lastShootingTime > 500:
+                for i in range(self.putBulletPattern(now)["numbers"]):
+                    enemyBullet = Bullet(name = "enemyBullet", \
+                                        image = self.enemyBulletImage, \
+                                        bulletRadius = 1, \
+                                        bulletDamage = None, \
+                                        putBulletPattern = (self.putBulletPattern(now)["position"][i][0] + self.rect.center[0], self.putBulletPattern(now)["position"][i][1] + self.rect.center[1]), \
+                                        shootBulletPattern = self.shootBulletPattern)
+                    allSprites.add(enemyBullet)
+                self.lastShootingTime = now
+                
+
+
 
 
         
@@ -190,12 +212,13 @@ class Bullet(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = putBulletPattern)
 
         self.generateTime = pygame.time.get_ticks()
+        
 
     def update(self):
         now = pygame.time.get_ticks()
         self.rect.move_ip(self.shootBulletPattern(now - self.generateTime)) 
 
-        if self.rect.bottom < 0:
+        if self.rect.bottom < 0 or self.rect.top >WINDOWHEIGHT:
             self.kill()
             
                 
@@ -254,13 +277,19 @@ def enemyMovePattern(time):
     else:
         return -1, 1
 
+def enemyPutBulletPattern(time):
+    return {"numbers" : 4, "position" : ((0, 30), (30, 0), (0, -30), (-30, 0)), "delateTime" : 1000}
+
+def enemyshootBulletPattern(time):
+    return 0, 5
+
 enemy = Enemy(name = "enemy", \
               Hp = 100, \
               image = enemyImg, \
               movePattern = enemyMovePattern, \
-              enemyBulletImage = None, \
-              putBulletPattern = None, \
-              shootBulletPattern = None)
+              enemyBulletImage = enemyBulletImg, \
+              putBulletPattern = enemyPutBulletPattern, \
+              shootBulletPattern = enemyshootBulletPattern)
 
 
 
