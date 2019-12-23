@@ -295,21 +295,22 @@ def enemyPutBulletPattern(time):
     return {"numbers" : 4, \
             "position" : ((a, b), (c, d), (e, f), (g, h)), \
             "delateTime" : 60, \
-            "intermediateTime" : 3}
+            "intermediateTime" : 2}
 
     
 
 def enemyshootBulletPattern(number):
     a = b = random.randint(1, 5)
     c = d = random.randint(-5, -1)
+    e = f = g = h = random.randint(-3, 3)
     if number == 0:
-        return lambda time : (0, a)
+        return lambda time : (e, a)
     if number == 1:
-        return lambda time : (b, 0)
+        return lambda time : (b, f)
     if number == 2:
-        return lambda time : (0, c)
+        return lambda time : (g, c)
     if number == 3:
-        return lambda time : (d, 0)
+        return lambda time : (d, h)
 
 
 enemy = Enemy(name = "enemy", \
