@@ -139,7 +139,7 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
         now = timer
         if now - self.lastShootingTime > 6:
-            playerBullet = Bullet(name = "playerBullet", \
+            playerBullet = PlayerBullet(name = "playerBullet", \
                                   image = self.playerBulletImage, \
                                   bulletRadius = 1, \
                                   bulletDamage = self.playerDamage, \
@@ -184,7 +184,7 @@ class Enemy(pygame.sprite.Sprite):
                 for i in range(self.putBulletPattern(now)["numbers"]):
                     x = self.putBulletPattern(now)["position"][i][0]
                     y = self.putBulletPattern(now)["position"][i][1]
-                    enemyBullet = Bullet(name = "enemyBullet", \
+                    enemyBullet = EnemyBullet(name = "enemyBullet", \
                                          image = self.enemyBulletImage, \
                                          bulletRadius = 1, \
                                          bulletDamage = None, \
@@ -201,7 +201,7 @@ class Enemy(pygame.sprite.Sprite):
 
 
         
-class Bullet(pygame.sprite.Sprite):
+class PlayerBullet(pygame.sprite.Sprite):
     def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
@@ -211,24 +211,46 @@ class Bullet(pygame.sprite.Sprite):
         self.radius = bulletRadius
         self.damage = bulletDamage
         self.shootBulletPattern = shootBulletPattern
+        self.generateCenter = putBulletPattern
 
-        self.rect = self.image.get_rect(center = putBulletPattern)
+        self.rect = self.image.get_rect(center = self.generateCenter)
 
         self.generateTime = timer
         
 
     def update(self):
         now = timer
-        self.rect.move_ip(self.shootBulletPattern(now - self.generateTime)) 
 
-        self.rotate(now)
+        self.rect.move_ip(self.shootBulletPattern(now - self.generateTime))
 
         if not self.rect.colliderect(GAMEAREA):
             self.kill()
 
+
+
+
+
+class EnemyBullet(PlayerBullet):
+    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern):
+        PlayerBullet.__init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern)
+
+    def update(self):
+        now = timer
+
+        self.rotate(now)
+        self.rect.center = (self.shootBulletPattern["f(x)"](now - self.generateTime)[0] + self.generateCenter[0], \
+                            self.shootBulletPattern["f(x)"](now - self.generateTime)[1] + self.generateCenter[1])
+
+        if not self.rect.colliderect(GAMEAREA):
+            self.kill()
+            
     def rotate(self, now):
-        x = self.shootBulletPattern(now - self.generateTime)[0]
-        y = self.shootBulletPattern(now - self.generateTime)[1]
+        if now - self.generateTime == 0:
+            time = 1
+        else:
+            time = now - self.generateTime
+        x = self.shootBulletPattern["f'(x)"](time)[0]
+        y = self.shootBulletPattern["f'(x)"](time)[1]
         v = pygame.math.Vector2(x, y)
         axis = 90 - v.as_polar()[1]
         newImage = pygame.transform.rotate(self.image_origin, axis)
@@ -295,11 +317,11 @@ def enemyMovePattern(time):
 
 def enemyPutBulletPattern(time):
     r = 50
-    θ = (time ** 2) / 6000
-    θ_1 = θ  % 360
-    θ_2 = (θ + 90) % 360
-    θ_3 = (θ + 180) % 360
-    θ_4 = (θ + 270) % 360
+    θ = (time ** 2) / 120
+    θ_1 = math.radians(θ % 360)
+    θ_2 = math.radians((θ + 90) % 360)
+    θ_3 = math.radians((θ + 180) % 360)
+    θ_4 = math.radians((θ + 270) % 360)
     a = r * math.cos(θ_1)
     b = r * math.sin(θ_1)
     c = r * math.cos(θ_2)
@@ -311,16 +333,17 @@ def enemyPutBulletPattern(time):
     return {"numbers" : 4, \
             "position" : ((a, b), (c, d), (e, f), (g, h)), \
             "delateTime" : 60, \
-            "intermediateTime" : 1}
+            "intermediateTime" : 3}
 
     
 
 def enemyshootBulletPattern(putPattern):
-    speed = 10
+    speed = 5
     vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
-    x = int(speed / vectorLength * putPattern[0])
-    y = int(speed / vectorLength * putPattern[1])
-    return lambda time : (x, y)
+    dx = speed / vectorLength * putPattern[0]
+    dy = speed / vectorLength * putPattern[1]
+    return {"f(x)" : lambda time : (dx * time, dy * time), \
+            "f'(x)" : lambda time : (dx, dy)}
     
     
     
@@ -365,9 +388,9 @@ while running:
                 if e.Hp < 0:
                     e.kill()
 
-    # for eb in enemyBulletSprites:
-    #     if pygame.sprite.collide_circle(eb, player):
-    #         running = False        
+    for eb in enemyBulletSprites:
+        if pygame.sprite.collide_circle(eb, player):
+            running = False        
     
     windowSurface.fill(BLACK)
     pygame.draw.rect(windowSurface, BLUE, GAMEAREA)
