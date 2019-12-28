@@ -318,22 +318,17 @@ def enemyMovePattern(time):
 def enemyPutBulletPattern(time):
     r = 50
     θ = (time ** 2) / 120
-    θ_1 = math.radians(θ % 360)
-    θ_2 = math.radians((θ + 90) % 360)
-    θ_3 = math.radians((θ + 180) % 360)
-    θ_4 = math.radians((θ + 270) % 360)
-    a = r * math.cos(θ_1)
-    b = r * math.sin(θ_1)
-    c = r * math.cos(θ_2)
-    d = r * math.sin(θ_2)
-    e = r * math.cos(θ_3)
-    f = r * math.sin(θ_3)
-    g = r * math.cos(θ_4)
-    h = r * math.sin(θ_4)
-    return {"numbers" : 4, \
-            "position" : ((a, b), (c, d), (e, f), (g, h)), \
+    ways = 8
+    Δθ = 360 / ways 
+    positionList = []
+    for i in range(ways):
+        θ_i = math.radians((θ + (i * Δθ)) % 360)
+        positionList.append((r * math.cos(θ_i), r * math.sin(θ_i)))
+
+    return {"numbers" : ways, \
+            "position" : positionList, \
             "delateTime" : 60, \
-            "intermediateTime" : 3}
+            "intermediateTime" : 2}
 
     
 
@@ -388,9 +383,9 @@ while running:
                 if e.Hp < 0:
                     e.kill()
 
-    for eb in enemyBulletSprites:
-        if pygame.sprite.collide_circle(eb, player):
-            running = False        
+    # for eb in enemyBulletSprites:
+    #     if pygame.sprite.collide_circle(eb, player):
+    #         running = False        
     
     windowSurface.fill(BLACK)
     pygame.draw.rect(windowSurface, BLUE, GAMEAREA)
