@@ -1,4 +1,4 @@
-import pygame, json
+import pygame, json, math
 import parameter
 
 
@@ -56,6 +56,7 @@ class Player(pygame.sprite.Sprite):
 
         self.lastShootingTime = parameter.getTimer()
         
+        self.power = 0
 
     def update(self):
         keystate = pygame.key.get_pressed()
@@ -88,17 +89,75 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
         now = parameter.getTimer()
         if now - self.lastShootingTime > 6:
-            playerBullet = PlayerBullet(name = "playerBullet", \
-                                        image = self.playerBulletImage, \
-                                        bulletRadius = 1, \
-                                        bulletDamage = self.playerDamage, \
-                                        putBulletPattern = (self.putBulletPattern(now)[0] + self.rect.center[0], \
-                                                            self.putBulletPattern(now)[1] + self.rect.center[1]), \
-                                        shootBulletPattern = self.shootBulletPattern, \
-                                        gamearea = self.gamearea)
-            self.lastShootingTime = now
-            parameter.getAllSprites().add(playerBullet)
-            parameter.getPlayerBulletSprites().add(playerBullet)
+            if self.power in range(0, 8):
+                playerBullet = PlayerBullet(name = "playerBullet", \
+                                            image = self.playerBulletImage[0], \
+                                            bulletRadius = 1, \
+                                            bulletDamage = self.playerDamage, \
+                                            putBulletPattern = (self.putBulletPattern[0](now, self.power)[0] + self.rect.center[0], \
+                                                                self.putBulletPattern[0](now, self.power)[1] + self.rect.center[1]), \
+                                            shootBulletPattern = self.shootBulletPattern[0], \
+                                            gamearea = self.gamearea)
+                parameter.getAllSprites().add(playerBullet)
+                parameter.getPlayerBulletSprites().add(playerBullet)
+                self.lastShootingTime = now
+            
+            if self.power in range(8, 24):
+                for i in range(len(self.putBulletPattern[1](now, self.power))):
+                    playerBullet = PlayerBullet_tracking(name = "playerBullet_tracking", \
+                                                        image = self.playerBulletImage[1], \
+                                                        bulletRadius = 1, \
+                                                        bulletDamage = self.playerDamage, \
+                                                        putBulletPattern = (self.putBulletPattern[1](now, self.power)[i][0] + self.rect.center[0], \
+                                                                            self.putBulletPattern[1](now, self.power)[i][1] + self.rect.center[1]), \
+                                                        shootBulletPattern = self.shootBulletPattern[1], \
+                                                        gamearea = self.gamearea, \
+                                                        playerRectCenter = self.rect.center)
+                    parameter.getAllSprites().add(playerBullet)
+                    parameter.getPlayerBulletSprites().add(playerBullet)
+
+                playerBullet = PlayerBullet(name = "playerBullet", \
+                                            image = self.playerBulletImage[0], \
+                                            bulletRadius = 1, \
+                                            bulletDamage = self.playerDamage, \
+                                            putBulletPattern = (self.putBulletPattern[0](now, self.power)[0] + self.rect.center[0], \
+                                                                self.putBulletPattern[0](now, self.power)[1] + self.rect.center[1]), \
+                                            shootBulletPattern = self.shootBulletPattern[0], \
+                                            gamearea = self.gamearea)
+                parameter.getAllSprites().add(playerBullet)
+                parameter.getPlayerBulletSprites().add(playerBullet)
+                self.lastShootingTime = now
+
+            if self.power in range(24, 48):
+                for i in range(len(self.putBulletPattern[0](now, self.power))):
+                    playerBullet = PlayerBullet(name = "playerBullet", \
+                                            image = self.playerBulletImage[0], \
+                                            bulletRadius = 1, \
+                                            bulletDamage = self.playerDamage, \
+                                            putBulletPattern = (self.putBulletPattern[0](now, self.power)[i][0] + self.rect.center[0], \
+                                                                self.putBulletPattern[0](now, self.power)[i][1] + self.rect.center[1]), \
+                                            shootBulletPattern = self.shootBulletPattern[0], \
+                                            gamearea = self.gamearea)
+                    parameter.getAllSprites().add(playerBullet)
+                    parameter.getPlayerBulletSprites().add(playerBullet)
+
+                for i in range(len(self.putBulletPattern[1](now, self.power))):
+                    playerBullet = PlayerBullet_tracking(name = "playerBullet_tracking", \
+                                                        image = self.playerBulletImage[1], \
+                                                        bulletRadius = 1, \
+                                                        bulletDamage = self.playerDamage, \
+                                                        putBulletPattern = (self.putBulletPattern[1](now, self.power)[i][0] + self.rect.center[0], \
+                                                                            self.putBulletPattern[1](now, self.power)[i][1] + self.rect.center[1]), \
+                                                        shootBulletPattern = self.shootBulletPattern[1], \
+                                                        gamearea = self.gamearea, \
+                                                        playerRectCenter = self.rect.center)
+                    parameter.getAllSprites().add(playerBullet)
+                    parameter.getPlayerBulletSprites().add(playerBullet)
+
+
+                    
+            
+                self.lastShootingTime = now
             
 
 
@@ -182,6 +241,31 @@ class PlayerBullet(pygame.sprite.Sprite):
             self.kill()
 
 
+class PlayerBullet_tracking(PlayerBullet):
+    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern, gamearea, playerRectCenter):
+        PlayerBullet.__init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern, gamearea)
+        self.playerRectCenter = playerRectCenter
+
+    def update(self):
+        now = parameter.getTimer()
+        speed = self.shootBulletPattern(now)["speed"]
+        try:
+            enemyCenter = self.shootBulletPattern(now)["track"](self.playerRectCenter)
+            x = enemyCenter[0] - self.rect.center[0] 
+            y = enemyCenter[1] - self.rect.center[1] 
+            self.rotate(x, y)
+            self.rect.move_ip(x / math.sqrt(x**2 + y**2) * speed, y / math.sqrt(x**2 + y**2) * speed)
+        except:
+            self.rect.move_ip(0, -speed)
+
+    def rotate(self, x, y):
+        v = pygame.math.Vector2(x, y)
+        axis = 90 - v.as_polar()[1]
+        newImage = pygame.transform.rotate(self.image_origin, axis)
+        oldCenter = self.rect.center
+        self.image = newImage
+        self.rect = self.image.get_rect(center = oldCenter)
+
 
 
 
@@ -215,6 +299,7 @@ class EnemyBullet(PlayerBullet):
 
 
 
+
 class Item(pygame.sprite.Sprite):
     def __init__(self, name, image, generatePosition, gamearea):
         pygame.sprite.Sprite.__init__(self)
@@ -244,7 +329,7 @@ class Item(pygame.sprite.Sprite):
             
         
         itemMovement(time)
-        if not self.rect.colliderect(self.gamearea):
+        if self.rect.top > self.gamearea.bottom:
             self.kill()
         
 
