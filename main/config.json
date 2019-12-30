@@ -1,0 +1,37 @@
+{
+    "display" : {
+        "WINDOWWIDTH" : 800,
+        "WINDOWHEIGHT" : 600, 
+        "GAMEAREAWIDTH" : 480, 
+        "GAMEAREAHEIGHT" : 560
+    }, 
+    
+    "color" : {
+        "WHITE" : [255, 255, 255], 
+        "BLACK" : [0, 0, 0], 
+        "RED" : [255, 0, 0], 
+        "GREEN" : [0, 255, 0], 
+        "BLUE" : [0, 0, 255],
+        "LIGHTBLUE" : [0, 255, 255]
+    },
+
+
+    "FPS" : 60, 
+
+    "player_config" : {
+        "PLAYER_WIDTH" : 30,    
+        "PLAYER_HEIGHT" : 30, 
+        "PLAYER_COLLISION_BOXSIZE" : 10, 
+        "PLAYER_BULLET_WIDTH" : 5, 
+        "PLAYER_BULLET_HEIGHT" : 10
+    }, 
+
+    "enemy_config" : {
+        "ENEMY_WIDTH" : 20, 
+        "ENEMY_HEIGHT" : 20, 
+        "ENEMY_BULLET_WIDTH" : 5,
+        "ENEMY_BULLET_HEIGHT" : 10
+    }, 
+    "timer" : 0
+
+}
