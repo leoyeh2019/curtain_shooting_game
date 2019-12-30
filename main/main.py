@@ -26,10 +26,13 @@ PLAYER_COLLISION_BOXSIZE = 10
 PLAYER_BULLET_WIDTH = 5
 PLAYER_BULLET_HEIGHT = 10
 
-ENEMY_WIDTH = 20
-ENEMY_HEIGHT = 20
+ENEMY_WIDTH = 50
+ENEMY_HEIGHT = 50
 ENEMY_BULLET_WIDTH = 5
 ENEMY_BULLET_HEIGHT = 10
+
+ITEM_WIDTH = 10
+ITEM_HEIGHT = 10
 
 # ----------------------Pygame Initiate----------------------
 pygame.init()
@@ -62,7 +65,11 @@ enemyBulletImg_raw = pygame.image.load(path.join(img_dir, 'bullet2.png')).conver
 enemyBulletImg = pygame.transform.scale(enemyBulletImg_raw, (ENEMY_BULLET_WIDTH, ENEMY_BULLET_HEIGHT))
 enemyBulletImg.set_colorkey(WHITE)
 
-            
+powerItemImg_raw = pygame.image.load(path.join(img_dir, 'power_item.png')).convert()
+powerItemImg = pygame.transform.scale(powerItemImg_raw, (ITEM_WIDTH, ITEM_HEIGHT))
+
+pointItemImg_raw = pygame.image.load(path.join(img_dir, 'point_item.png')).convert()
+pointItemImg = pygame.transform.scale(pointItemImg_raw, (ITEM_WIDTH, ITEM_HEIGHT))           
                 
 
         
@@ -76,7 +83,18 @@ def terminate():
     sys.exit()
 
 
-
+def generateItem(enemy, name, image):
+    while True:
+        item = classes.Item(name = name, \
+                            image = image, \
+                            generatePosition = (enemy.rect.center[0] + random.randint(0, enemy.rect.width), \
+                                                enemy.rect.center[1] + random.randint(0, enemy.rect.height)), \
+                            gamearea = GAMEAREA)
+        if not pygame.sprite.spritecollideany(item, parameter.getItemSprites()):
+            break
+    
+    parameter.getAllSprites().add(item)
+    parameter.getItemSprites().add(item)
 
 
 
@@ -109,12 +127,13 @@ player = classes.Player(name = "player", \
 
 
 enemy = classes.Enemy(name = "enemy", \
-                      Hp = 1000, \
+                      Hp = 100, \
                       image = enemyImg, \
                       movePattern = custom.enemyMovePattern, \
                       enemyBulletImage = enemyBulletImg, \
                       putBulletPattern = custom.enemyPutBulletPattern, \
                       shootBulletPattern = custom.enemyshootBulletPattern, \
+                      dropItem = (4, 2), \
                       gamearea = GAMEAREA)
 
 
@@ -146,7 +165,12 @@ while running:
                 pb.kill()
                 e.Hp -= pb.damage
                 if e.Hp < 0:
+                    for i in range(e.dropItem[0]):
+                        generateItem(e, "power", powerItemImg)
+                    for i in range(e.dropItem[1]):
+                        generateItem(e, "point", pointItemImg)
                     e.kill()
+
 
     # for eb in parameter.getEnemyBulletSprites():
     #     if pygame.sprite.collide_circle(eb, player):

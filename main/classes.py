@@ -103,7 +103,7 @@ class Player(pygame.sprite.Sprite):
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, name, Hp, image, movePattern, enemyBulletImage, putBulletPattern, shootBulletPattern, gamearea):
+    def __init__(self, name, Hp, image, movePattern, enemyBulletImage, putBulletPattern, shootBulletPattern, dropItem, gamearea):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.Hp = Hp
@@ -112,6 +112,7 @@ class Enemy(pygame.sprite.Sprite):
         self.enemyBulletImage = enemyBulletImage
         self.putBulletPattern = putBulletPattern
         self.shootBulletPattern = shootBulletPattern
+        self.dropItem = dropItem
         self.gamearea = gamearea
 
         self.rect = self.image.get_rect(center = (movePattern(-1)[0] + self.gamearea.left, \
@@ -211,3 +212,40 @@ class EnemyBullet(PlayerBullet):
         oldCenter = self.rect.center
         self.image = newImage
         self.rect = self.image.get_rect(center = oldCenter)
+
+
+
+class Item(pygame.sprite.Sprite):
+    def __init__(self, name, image, generatePosition, gamearea):
+        pygame.sprite.Sprite.__init__(self)
+        self.name = name
+        self.image = image
+        self.generatePosition = generatePosition
+        self.gamearea = gamearea
+        self.rect = self.image.get_rect(center = self.generatePosition)
+
+        self.generateTime = parameter.getTimer()
+
+        self.radius = self.rect.width * 3
+
+    def update(self):
+        now = parameter.getTimer()
+        time = now - self.generateTime
+
+        def itemMovement(time):
+            v0 = -3
+            g = 0.1
+            v = v0 + g * time
+            if v < 3:
+                oldCenterX = self.rect.center[0]
+                self.rect.center = (oldCenterX, v0 * time + 0.5 * g * (time **2) + self.generatePosition[1])
+            else:
+                self.rect.move_ip(0, 3)
+            
+        
+        itemMovement(time)
+        if not self.rect.colliderect(self.gamearea):
+            self.kill()
+        
+
+
