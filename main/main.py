@@ -208,18 +208,20 @@ while running:
     
     windowSurface.fill(BLACK)
     pygame.draw.rect(windowSurface, BLUE, GAMEAREA)
+
     """
     check if the bullet just generated
     use 'blit' to draw sprites one by one
     """
-    # for i in parameter.getAllSprites():
-    #     try:
-    #         if  timer == i.generateTime:
-        
-    #             i.draw(windowSurface)
-    #     except:
-    #         i.draw(windowSurface)
-    parameter.getAllSprites().draw(windowSurface)
+    for i in parameter.getAllSprites():
+        try:
+            if parameter.getTimer() - i.generateTime > 1:
+                windowSurface.blit(i.image, i.rect)
+
+        except:
+            windowSurface.blit(i.image, i.rect)
+
+  
 
     windowSurface.blit(background, background_rect)
 

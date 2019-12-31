@@ -29,9 +29,7 @@ def playerShootBulletPattern_tracking(time):
                 minimun = enemyDistanceList[i]
                 minimunIndex = i
         return enemyList[minimunIndex].rect.center
-        
-       
-
+    
     return {"speed" : 10, "track" : findMostCloseEnemy}
 
             
