@@ -1,7 +1,8 @@
 # Final Project - Bullet Hell
 ## Game Design
 ```
-https://www.plectica.com/maps/2PZGOB4YP/edit/XVO8LRCRA?fbclid=IwAR2TEoxdSrXTuMBWuuYm5yJp0RdAc9uVFAxQt_G-pHPismyqgdYlE3BYOx0
+[Flow Chart](https://www.plectica.com/maps/2PZGOB4YP/edit/XVO8LRCRA?fbclid=IwAR2TEoxdSrXTuMBWuuYm5yJp0RdAc9uVFAxQt_G-pHPismyqgdYlE3BYOx0 "游標顯示")
+
 ```
 ```
 class(attribute, function...)
@@ -49,7 +50,7 @@ class bomb:
 ## Objects Design
 
 ### Sprites
-```
+
 >png檔, 約100*100左右, 比例最好為整數比例(ex: 1:1, 2:3, 4:3...)
 
 >>道中
@@ -58,9 +59,9 @@ class bomb:
 >>>中妖精(比小妖精大一倍以上，二~三種款式)
 
 >>Boss
-```
+
 ### Bullets
-```
+
 >png檔, 約50*50左右, 比例最好為整數比例(ex: 1:1, 2:3, 4:3, 5:1...)
 
 >>(以下以東方為參考，可依照實際設計有增減)
@@ -76,15 +77,15 @@ class bomb:
 
 >>Boss專門彈
 >>>自由發揮
-```
+
 ### Background
-```
-註：遊玩範圍約480*560
-每面都需要一個背景
-或許可以畫大點(約1000*2000)，遊玩過程中移動鏡頭?(技術待克服)
-```
+
+>註：遊玩範圍約480*560
+>每面都需要一個背景
+>或許可以畫大點(約1000*2000)，遊玩過程中移動鏡頭?(技術待克服)
+
 ### Music
-```
+
 >效果音
 >>射擊聲(三~五個)(for enemy and player)
 >>biu (玩家撞彈聲)
@@ -93,4 +94,3 @@ class bomb:
 >>起始畫面(可先不考慮)
 >>每面道中+Boss戰
 >>結尾畫面(可先不考慮)
-```
