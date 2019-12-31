@@ -4,6 +4,7 @@ from os import path
 import parameter
 import classes
 import custom 
+import function
 
 # ----------------------Constants----------------------
 WINDOWWIDTH = 800
@@ -130,7 +131,7 @@ player = classes.Player(name = "player", \
                         collisionBoxImage = playerCollisionBoxImg, \
                         playerBulletImage = (playerBulletImg, playerBulletTrackingImg), \
                         playerSpeed = (4, 2), \
-                        playerDamage = 10, \
+                        playerDamage = (10, 5), \
                         putBulletPattern = (custom.playerPutbulletPattern, custom.playerPutBulletPattern_tracking), \
                         shootBulletPattern = (custom.playerShootBulletPattern, custom.playerShootBulletPattern_tracking), \
                         gamearea = GAMEAREA)
@@ -207,6 +208,17 @@ while running:
     
     windowSurface.fill(BLACK)
     pygame.draw.rect(windowSurface, BLUE, GAMEAREA)
+    """
+    check if the bullet just generated
+    use 'blit' to draw sprites one by one
+    """
+    # for i in parameter.getAllSprites():
+    #     try:
+    #         if  timer == i.generateTime:
+        
+    #             i.draw(windowSurface)
+    #     except:
+    #         i.draw(windowSurface)
     parameter.getAllSprites().draw(windowSurface)
 
     windowSurface.blit(background, background_rect)

@@ -1,6 +1,7 @@
 import pygame, sys, random, math
 from classes import *
 import parameter
+import function
 
 
 # Set player, enemy, bullet
@@ -19,19 +20,17 @@ def playerPutBulletPattern_tracking(time, power):
         return [(-20, 0), (20, 0)]
 def playerShootBulletPattern_tracking(time):
     def findMostCloseEnemy(playerCenter):
-        # global parameter.getEnemySprites()
-        for i in parameter.getEnemySprites():
-            check = 0
-            for j in parameter.getEnemySprites():
-                if i == j:
-                    pass 
-                else:
-                    distanceI = math.sqrt((i.rect.center[0] - playerCenter[0]) ** 2 + (i.rect.center[0] - playerCenter[0]) **2)
-                    distanceJ = math.sqrt((j.rect.center[0] - playerCenter[0]) ** 2 + (i.rect.center[0] - playerCenter[0]) **2)
-                    if distanceI < distanceJ:
-                        check +=1
-            if check == len(parameter.getEnemySprites().sprites()) - 1:
-                return i.rect.center
+        enemyList = [i for i in parameter.getEnemySprites()]
+        enemyDistanceList = [function.distance(i.rect.center, playerCenter) for i in enemyList]
+        minimun = enemyDistanceList[0]
+        minimunIndex = 0
+        for i in range(len(enemyDistanceList)):
+            if enemyDistanceList[i] < minimun:
+                minimun = enemyDistanceList[i]
+                minimunIndex = i
+        return enemyList[minimunIndex].rect.center
+        
+       
 
     return {"speed" : 10, "track" : findMostCloseEnemy}
 

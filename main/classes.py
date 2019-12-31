@@ -1,6 +1,6 @@
 import pygame, json, math
 import parameter
-
+import function
 
 
 def get_parameter(parameter):
@@ -8,6 +8,8 @@ def get_parameter(parameter):
         return parameter
     except NameError:
         return None
+
+
 
 class playerCollisionBox(pygame.sprite.Sprite):
     def __init__(self, collisionBoxImage, playerRect):
@@ -85,78 +87,56 @@ class Player(pygame.sprite.Sprite):
         
         self.collisionBox.rect.center = self.rect.center
         # self.collisionBox.rotate()
-        
+    def newPlayerBullet(self, putBulletPattern):
+        playerBullet = PlayerBullet(name = "playerBullet", \
+                                    image = self.playerBulletImage[0], \
+                                    bulletRadius = 1, \
+                                    bulletDamage = self.playerDamage[0], \
+                                    putBulletPattern = putBulletPattern, \
+                                    shootBulletPattern = self.shootBulletPattern[0], \
+                                    gamearea = self.gamearea)
+        parameter.getAllSprites().add(playerBullet)
+        parameter.getPlayerBulletSprites().add(playerBullet)
+
+    def newPlayerBullet_tracking(self, putBulletPattern):
+        playerBullet = PlayerBullet_tracking(name = "playerBullet_tracking", \
+                                             image = self.playerBulletImage[1], \
+                                             bulletRadius = 1, \
+                                             bulletDamage = self.playerDamage[1], \
+                                             putBulletPattern = putBulletPattern, \
+                                             shootBulletPattern = self.shootBulletPattern[1], \
+                                             gamearea = self.gamearea, \
+                                             playerRectCenter = self.rect.center)
+        parameter.getAllSprites().add(playerBullet)
+        parameter.getPlayerBulletSprites().add(playerBullet)
+
     def shoot(self):
         now = parameter.getTimer()
         if now - self.lastShootingTime > 6:
+            # powerup
             if self.power in range(0, 8):
-                playerBullet = PlayerBullet(name = "playerBullet", \
-                                            image = self.playerBulletImage[0], \
-                                            bulletRadius = 1, \
-                                            bulletDamage = self.playerDamage, \
-                                            putBulletPattern = (self.putBulletPattern[0](now, self.power)[0] + self.rect.center[0], \
-                                                                self.putBulletPattern[0](now, self.power)[1] + self.rect.center[1]), \
-                                            shootBulletPattern = self.shootBulletPattern[0], \
-                                            gamearea = self.gamearea)
-                parameter.getAllSprites().add(playerBullet)
-                parameter.getPlayerBulletSprites().add(playerBullet)
+                # line 1 way
+                self.newPlayerBullet(putBulletPattern = function.raletivePosition(self.putBulletPattern[0](now, self.power), self.rect.center))
                 self.lastShootingTime = now
             
             if self.power in range(8, 24):
+                # line 1 way
+                self.newPlayerBullet(putBulletPattern = function.raletivePosition(self.putBulletPattern[0](now, self.power), self.rect.center))
+                # tracking 2 way
                 for i in range(len(self.putBulletPattern[1](now, self.power))):
-                    playerBullet = PlayerBullet_tracking(name = "playerBullet_tracking", \
-                                                        image = self.playerBulletImage[1], \
-                                                        bulletRadius = 1, \
-                                                        bulletDamage = self.playerDamage, \
-                                                        putBulletPattern = (self.putBulletPattern[1](now, self.power)[i][0] + self.rect.center[0], \
-                                                                            self.putBulletPattern[1](now, self.power)[i][1] + self.rect.center[1]), \
-                                                        shootBulletPattern = self.shootBulletPattern[1], \
-                                                        gamearea = self.gamearea, \
-                                                        playerRectCenter = self.rect.center)
-                    parameter.getAllSprites().add(playerBullet)
-                    parameter.getPlayerBulletSprites().add(playerBullet)
-
-                playerBullet = PlayerBullet(name = "playerBullet", \
-                                            image = self.playerBulletImage[0], \
-                                            bulletRadius = 1, \
-                                            bulletDamage = self.playerDamage, \
-                                            putBulletPattern = (self.putBulletPattern[0](now, self.power)[0] + self.rect.center[0], \
-                                                                self.putBulletPattern[0](now, self.power)[1] + self.rect.center[1]), \
-                                            shootBulletPattern = self.shootBulletPattern[0], \
-                                            gamearea = self.gamearea)
-                parameter.getAllSprites().add(playerBullet)
-                parameter.getPlayerBulletSprites().add(playerBullet)
+                    self.newPlayerBullet_tracking(putBulletPattern = function.raletivePosition(self.putBulletPattern[1](now, self.power)[i], self.rect.center))
+                
                 self.lastShootingTime = now
 
             if self.power in range(24, 49):
+                # line 3 way
                 for i in range(len(self.putBulletPattern[0](now, self.power))):
-                    playerBullet = PlayerBullet(name = "playerBullet", \
-                                            image = self.playerBulletImage[0], \
-                                            bulletRadius = 1, \
-                                            bulletDamage = self.playerDamage, \
-                                            putBulletPattern = (self.putBulletPattern[0](now, self.power)[i][0] + self.rect.center[0], \
-                                                                self.putBulletPattern[0](now, self.power)[i][1] + self.rect.center[1]), \
-                                            shootBulletPattern = self.shootBulletPattern[0], \
-                                            gamearea = self.gamearea)
-                    parameter.getAllSprites().add(playerBullet)
-                    parameter.getPlayerBulletSprites().add(playerBullet)
-
-                for i in range(len(self.putBulletPattern[1](now, self.power))):
-                    playerBullet = PlayerBullet_tracking(name = "playerBullet_tracking", \
-                                                        image = self.playerBulletImage[1], \
-                                                        bulletRadius = 1, \
-                                                        bulletDamage = self.playerDamage, \
-                                                        putBulletPattern = (self.putBulletPattern[1](now, self.power)[i][0] + self.rect.center[0], \
-                                                                            self.putBulletPattern[1](now, self.power)[i][1] + self.rect.center[1]), \
-                                                        shootBulletPattern = self.shootBulletPattern[1], \
-                                                        gamearea = self.gamearea, \
-                                                        playerRectCenter = self.rect.center)
-                    parameter.getAllSprites().add(playerBullet)
-                    parameter.getPlayerBulletSprites().add(playerBullet)
-
-
+                    self.newPlayerBullet(putBulletPattern = function.raletivePosition(self.putBulletPattern[0](now, self.power)[i], self.rect.center))
                     
-            
+                # tracking 2 way
+                for i in range(len(self.putBulletPattern[1](now, self.power))):
+                    self.newPlayerBullet_tracking(putBulletPattern = function.raletivePosition(self.putBulletPattern[1](now, self.power)[i], self.rect.center))
+                
                 self.lastShootingTime = now
             
 
