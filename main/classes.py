@@ -128,7 +128,7 @@ class Player(pygame.sprite.Sprite):
                 parameter.getPlayerBulletSprites().add(playerBullet)
                 self.lastShootingTime = now
 
-            if self.power in range(24, 48):
+            if self.power in range(24, 49):
                 for i in range(len(self.putBulletPattern[0](now, self.power))):
                     playerBullet = PlayerBullet(name = "playerBullet", \
                                             image = self.playerBulletImage[0], \
