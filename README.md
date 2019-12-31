@@ -1,7 +1,8 @@
 # Final Project - Bullet Hell
 ## Game Design
 ```
-[Flow Chart](https://www.plectica.com/maps/2PZGOB4YP/edit/XVO8LRCRA?fbclid=IwAR2TEoxdSrXTuMBWuuYm5yJp0RdAc9uVFAxQt_G-pHPismyqgdYlE3BYOx0 "游標顯示")
+Flow Chart
+<https://www.plectica.com/maps/2PZGOB4YP/edit/XVO8LRCRA?fbclid=IwAR2TEoxdSrXTuMBWuuYm5yJp0RdAc9uVFAxQt_G-pHPismyqgdYlE3BYOx0>
 
 ```
 ```
