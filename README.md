@@ -78,6 +78,13 @@ class bomb:
 		Boss專門彈
 			自由發揮
 ```
+## Items
+```
+	參考東方的Item
+		power(紅點)
+		point(藍點)
+		powerup
+```
 ### Background
 ```
     註：遊玩範圍約480 * 560
