@@ -131,7 +131,7 @@ player = classes.Player(name = "player", \
                         collisionBoxImage = playerCollisionBoxImg, \
                         playerBulletImage = (playerBulletImg, playerBulletTrackingImg), \
                         playerSpeed = (4, 2), \
-                        playerDamage = (10, 5), \
+                        playerDamage = (10, 0), \
                         putBulletPattern = (custom.playerPutbulletPattern, custom.playerPutBulletPattern_tracking), \
                         shootBulletPattern = (custom.playerShootBulletPattern, custom.playerShootBulletPattern_tracking), \
                         gamearea = GAMEAREA)

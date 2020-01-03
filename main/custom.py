@@ -18,19 +18,12 @@ def playerShootBulletPattern(time):
 def playerPutBulletPattern_tracking(time, power):
     if power in range(8, 49):
         return [(-20, 0), (20, 0)]
+
 def playerShootBulletPattern_tracking(time):
-    def findMostCloseEnemy(playerCenter):
-        enemyList = [i for i in parameter.getEnemySprites()]
-        enemyDistanceList = [function.distance(i.rect.center, playerCenter) for i in enemyList]
-        minimun = enemyDistanceList[0]
-        minimunIndex = 0
-        for i in range(len(enemyDistanceList)):
-            if enemyDistanceList[i] < minimun:
-                minimun = enemyDistanceList[i]
-                minimunIndex = i
-        return enemyList[minimunIndex].rect.center
     
-    return {"speed" : 10, "track" : findMostCloseEnemy}
+    return (-10/math.sqrt(2), -10/math.sqrt(2)), (10/math.sqrt(2), -10/math.sqrt(2))
+
+
 
             
 
@@ -40,7 +33,7 @@ def enemyMovePattern(time):
     if time < 0:
         return 0, 0
     elif 0< time < 120:
-        return 2, 1
+        return 2, 2
     else:
         return 0, 0
 

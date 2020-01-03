@@ -1,4 +1,5 @@
 import pygame, random, math
+import parameter
 
 def raletivePosition(pointA, pointB):
     """
@@ -27,6 +28,21 @@ def distance(pointA, pointB):
         print("PointA and PointB must be \"tuple\".")
         raise TypeError
 
+def returnTheComponentOfVectorX(x, y, r):
+    return x / distance((x, y), (0, 0)) * r
+def returnTheComponentOfVectorY(x, y, r):
+    return y / distance((x, y), (0, 0)) * r
+
+def findMostCloseEnemy(playerCenter):
+    enemyList = [i for i in parameter.getEnemySprites()]
+    enemyDistanceList = [distance(i.rect.center, playerCenter) for i in enemyList]
+    minimun = enemyDistanceList[0]
+    minimunIndex = 0
+    for i in range(len(enemyDistanceList)):
+        if enemyDistanceList[i] < minimun:
+            minimun = enemyDistanceList[i]
+            minimunIndex = i
+    return enemyList[minimunIndex].rect.center
 
 
 if __name__ == "__main__":

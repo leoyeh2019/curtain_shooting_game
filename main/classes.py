@@ -98,13 +98,13 @@ class Player(pygame.sprite.Sprite):
         parameter.getAllSprites().add(playerBullet)
         parameter.getPlayerBulletSprites().add(playerBullet)
 
-    def newPlayerBullet_tracking(self, putBulletPattern):
+    def newPlayerBullet_tracking(self, putBulletPattern, shootBulletPattern):
         playerBullet = PlayerBullet_tracking(name = "playerBullet_tracking", \
                                              image = self.playerBulletImage[1], \
                                              bulletRadius = 1, \
                                              bulletDamage = self.playerDamage[1], \
                                              putBulletPattern = putBulletPattern, \
-                                             shootBulletPattern = self.shootBulletPattern[1], \
+                                             shootBulletPattern = shootBulletPattern, \
                                              gamearea = self.gamearea, \
                                              playerRectCenter = self.rect.center)
         parameter.getAllSprites().add(playerBullet)
@@ -124,7 +124,8 @@ class Player(pygame.sprite.Sprite):
                 self.newPlayerBullet(putBulletPattern = function.raletivePosition(self.putBulletPattern[0](now, self.power), self.rect.center))
                 # tracking 2 way
                 for i in range(len(self.putBulletPattern[1](now, self.power))):
-                    self.newPlayerBullet_tracking(putBulletPattern = function.raletivePosition(self.putBulletPattern[1](now, self.power)[i], self.rect.center))
+                    self.newPlayerBullet_tracking(putBulletPattern = function.raletivePosition(self.putBulletPattern[1](now, self.power)[i], self.rect.center), \
+                                                  shootBulletPattern = self.shootBulletPattern[1](now)[i])
                 
                 self.lastShootingTime = now
 
@@ -135,7 +136,8 @@ class Player(pygame.sprite.Sprite):
                     
                 # tracking 2 way
                 for i in range(len(self.putBulletPattern[1](now, self.power))):
-                    self.newPlayerBullet_tracking(putBulletPattern = function.raletivePosition(self.putBulletPattern[1](now, self.power)[i], self.rect.center))
+                    self.newPlayerBullet_tracking(putBulletPattern = function.raletivePosition(self.putBulletPattern[1](now, self.power)[i], self.rect.center), \
+                                                  shootBulletPattern = self.shootBulletPattern[1](now)[i])
                 
                 self.lastShootingTime = now
             
@@ -225,19 +227,28 @@ class PlayerBullet_tracking(PlayerBullet):
     def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern, gamearea, playerRectCenter):
         PlayerBullet.__init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern, gamearea)
         self.playerRectCenter = playerRectCenter
+        self.speed = function.distance(self.shootBulletPattern, (0, 0))
+        self.dx = self.shootBulletPattern[0]
+        self.dy = self.shootBulletPattern[1]
 
     def update(self):
         now = parameter.getTimer()
-        speed = self.shootBulletPattern(now)["speed"]
-        try:
-            enemyCenter = self.shootBulletPattern(now)["track"](self.playerRectCenter)
-            x = enemyCenter[0] - self.rect.center[0] 
-            y = enemyCenter[1] - self.rect.center[1] 
-            self.rotate(x, y)
-            self.rect.move_ip(x / math.sqrt(x**2 + y**2) * speed, y / math.sqrt(x**2 + y**2) * speed)
-        except:
-            self.rect.move_ip(0, -speed)
 
+        try:
+            enemyCenter = function.findMostCloseEnemy(self.playerRectCenter)
+            self.dx += (enemyCenter[0] - self.rect.center[0]) / 5000 * (now - self.generateTime) ** 2
+            self.dy += (enemyCenter[1] - self.rect.center[1]) / 5000 * (now - self.generateTime) ** 2
+            
+        except:
+            pass
+            
+        self.rotate(self.dx, self.dy)
+        self.rect.move_ip(function.returnTheComponentOfVectorX(self.dx, self.dy, self.speed), \
+                          function.returnTheComponentOfVectorY(self.dx, self.dy, self.speed))
+
+        if not self.rect.colliderect(self.gamearea):
+            self.kill() 
+    
     def rotate(self, x, y):
         v = pygame.math.Vector2(x, y)
         axis = 90 - v.as_polar()[1]
@@ -264,10 +275,7 @@ class EnemyBullet(PlayerBullet):
             self.kill()
             
     def rotate(self, now):
-        if now - self.generateTime == 0:
-            time = 1
-        else:
-            time = now - self.generateTime
+        time = now - self.generateTime
         x = self.shootBulletPattern["f'(x)"](time)[0]
         y = self.shootBulletPattern["f'(x)"](time)[1]
         v = pygame.math.Vector2(x, y)
