@@ -60,7 +60,7 @@ playerCollisionBoxImg = pygame.transform.scale(playerCollisionBoxImg_raw, (PLAYE
 playerCollisionBoxImg.set_colorkey(WHITE)
 
 enemyImg_raw = pygame.image.load(path.join(img_dir, 'enemy1.png')).convert()
-enemyImg = pygame.transform.scale(background_raw, (ENEMY_WIDTH, ENEMY_HEIGHT))
+enemyImg = pygame.transform.scale(enemyImg_raw, (ENEMY_WIDTH, ENEMY_HEIGHT))
 
 playerBulletImg_raw = pygame.image.load(path.join(img_dir, 'bullet1.png')).convert()
 playerBulletImg = pygame.transform.scale(playerBulletImg_raw, (PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT))
@@ -92,18 +92,28 @@ def terminate():
     sys.exit()
 
 
-def generateItem(enemy, name, image):
+def generateItem(enemy, number, name, image):
     while True:
-        item = classes.Item(name = name, \
-                            image = image, \
-                            generatePosition = (enemy.rect.center[0] + random.randint(-enemy.rect.width * 2, enemy.rect.width *2), \
-                                                enemy.rect.center[1] + random.randint(-enemy.rect.height *2, enemy.rect.height *2)), \
-                            gamearea = GAMEAREA)
-        if not pygame.sprite.spritecollideany(item, parameter.getItemSprites()):
+        check = True
+        itemList = []
+        for i in range(number):
+            item = classes.Item(name = name, \
+                                image = image, \
+                                generatePosition = (enemy.rect.center[0] + random.randint(-enemy.rect.width * 1, enemy.rect.width *1), \
+                                                    enemy.rect.center[1] + random.randint(-enemy.rect.height *1, enemy.rect.height *1)), \
+                                gamearea = GAMEAREA)
+            itemList.append(item)
+        for i in range(len(itemList)):
+            for j in range(len(itemList) - i - 1):
+                if pygame.sprite.collide_rect(itemList[i], itemList[i + j + 1]):
+                    print("collide")
+                    check = False
+        if check:
             break
-    
-    parameter.getAllSprites().add(item)
-    parameter.getItemSprites().add(item)
+    for i in range(len(itemList)):
+        parameter.getAllSprites().add(itemList[i])
+        parameter.getItemSprites().add(itemList[i])
+
 
 def drawText(text, font, color, surface, x, y):
     textobj = font.render(text, 1, color)
@@ -131,7 +141,7 @@ player = classes.Player(name = "player", \
                         collisionBoxImage = playerCollisionBoxImg, \
                         playerBulletImage = (playerBulletImg, playerBulletTrackingImg), \
                         playerSpeed = (4, 2), \
-                        playerDamage = (10, 0), \
+                        playerDamage = (4, 4), \
                         putBulletPattern = (custom.playerPutbulletPattern, custom.playerPutBulletPattern_tracking), \
                         shootBulletPattern = (custom.playerShootBulletPattern, custom.playerShootBulletPattern_tracking), \
                         gamearea = GAMEAREA)
@@ -181,13 +191,14 @@ while running:
                 e.Hp -= pb.damage
                 point += 100
                 if e.Hp < 0:
-                    for i in range(e.dropItem[0]):
-                        generateItem(e, "power", powerItemImg)
-                    for i in range(e.dropItem[1]):
-                        generateItem(e, "point", pointItemImg)
+                    
+                    generateItem(e, e.dropItem[0], "power", powerItemImg)
+                    
+                    generateItem(e, e.dropItem[1], "point", pointItemImg)
                     e.kill()
                     point += 10000000
-                    newEnemy()
+                    
+                    
                     
 
     # Enemy_Bullet v.s. Player

@@ -40,7 +40,7 @@ def enemyMovePattern(time):
 def enemyPutBulletPattern(time):
     r = 50
     θ = (time ** 2) / 120
-    ways = 8
+    ways = 4
     Δθ = 360 / ways 
     positionList = []
     for i in range(ways):
@@ -50,7 +50,9 @@ def enemyPutBulletPattern(time):
     return {"numbers" : ways, \
             "position" : positionList, \
             "delateTime" : 120, \
-            "intermediateTime" : 2}
+            "intermediateTime" : 3}
+
+
 
     
 
@@ -59,6 +61,7 @@ def enemyshootBulletPattern(putPattern):
     vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
     dx = speed / vectorLength * putPattern[0]
     dy = speed / vectorLength * putPattern[1]
+    
     return {"f(x)" : lambda time : (dx * time, dy * time), \
             "f'(x)" : lambda time : (dx, dy)}
     

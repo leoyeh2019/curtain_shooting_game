@@ -45,5 +45,6 @@ def findMostCloseEnemy(playerCenter):
     return enemyList[minimunIndex].rect.center
 
 
+
 if __name__ == "__main__":
     print(distance([8, 7], (-5, 6)))

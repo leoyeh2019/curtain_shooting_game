@@ -58,7 +58,7 @@ class Player(pygame.sprite.Sprite):
 
         self.lastShootingTime = parameter.getTimer()
         
-        self.power = 0
+        self.power = 9
 
     def update(self):
         keystate = pygame.key.get_pressed()
@@ -172,6 +172,7 @@ class Enemy(pygame.sprite.Sprite):
 
         self.shoot()
 
+
     def shoot(self):
         now =  parameter.getTimer()
         if now - self.generateTime > self.putBulletPattern(now - self.generateTime)["delateTime"]:
@@ -222,6 +223,8 @@ class PlayerBullet(pygame.sprite.Sprite):
         if not self.rect.colliderect(self.gamearea):
             self.kill()
 
+     
+
 
 class PlayerBullet_tracking(PlayerBullet):
     def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern, gamearea, playerRectCenter):
@@ -242,15 +245,15 @@ class PlayerBullet_tracking(PlayerBullet):
         except:
             pass
             
-        self.rotate(self.dx, self.dy)
+        self.rotate()
         self.rect.move_ip(function.returnTheComponentOfVectorX(self.dx, self.dy, self.speed), \
                           function.returnTheComponentOfVectorY(self.dx, self.dy, self.speed))
 
         if not self.rect.colliderect(self.gamearea):
             self.kill() 
     
-    def rotate(self, x, y):
-        v = pygame.math.Vector2(x, y)
+    def rotate(self):
+        v = pygame.math.Vector2(self.dx, self.dy)
         axis = 90 - v.as_polar()[1]
         newImage = pygame.transform.rotate(self.image_origin, axis)
         oldCenter = self.rect.center
