@@ -21,6 +21,9 @@ LIGHTBLUE = (0, 255, 255)
 
 FPS = 60
 
+BACKGROUND_WIDTH = 480
+BACKGROUND_HEIGHT = 900
+
 PLAYER_WIDTH = 30
 PLAYER_HEIGHT = 30
 PLAYER_COLLISION_BOXSIZE = 10
@@ -44,6 +47,7 @@ windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 pygame.display.set_caption("Curtain_Shooting_Game")
 pygame.mouse.set_visible(False)
 
+
 # ----------------------Loading----------------------
 img_dir = path.join(path.dirname(__file__), "img")
 font_dir = path.join(path.dirname(__file__), "font")
@@ -52,6 +56,9 @@ background_raw = pygame.image.load(path.join(img_dir, 'background2.png')).conver
 background = pygame.transform.scale(background_raw, (WINDOWWIDTH, WINDOWHEIGHT))
 background.set_colorkey(WHITE)
 background_rect = background.get_rect()
+
+gameareaBackgroundImg_raw = pygame.image.load(path.join(img_dir, 'background.png')).convert()
+gameareaBackgroundImg = pygame.transform.scale(gameareaBackgroundImg_raw, (BACKGROUND_WIDTH, BACKGROUND_HEIGHT))
 
 playerImg_raw = pygame.image.load(path.join(img_dir, 'player1.png')).convert()
 playerImg = pygame.transform.scale(playerImg_raw, (PLAYER_WIDTH, PLAYER_HEIGHT))
@@ -92,6 +99,8 @@ def terminate():
     sys.exit()
 
 
+
+
 def generateItem(enemy, number, name, image):
     while True:
         check = True
@@ -126,7 +135,7 @@ def drawText(text, font, color, surface, x, y):
 
 # Set Gamearea
 GAMEAREA = pygame.Rect(40, 20, GAMEAREAWIDTH, GAMEAREAHEIGHT)
-GAMEAREAFRAME = pygame.Rect(20, -10, 400, 400)
+
 
 # Set parameter
 running = True 
@@ -134,6 +143,15 @@ point = 0
 
 
 # Set player, enemy, bullet
+gameareaBackground1 = classes.Background(image = gameareaBackgroundImg, \
+                                         topleft = function.raletivePosition(GAMEAREA.topleft, (0, -900)),\
+                                         speed = 1)
+gameareaBackground2 = classes.Background(image = gameareaBackgroundImg, \
+                                         topleft = GAMEAREA.topleft,\
+                                         speed = 1)
+                                    
+parameter.getBackgroundSprites().add(gameareaBackground1)
+parameter.getBackgroundSprites().add(gameareaBackground2)
 
 player = classes.Player(name = "player", \
                         lifes = 1, \
@@ -163,6 +181,7 @@ def newEnemy():
     parameter.getEnemySprites().add(enemy)
 
 
+
 parameter.getAllSprites().add(player)
 parameter.getAllSprites().add(player.collisionBox)
 newEnemy()
@@ -179,7 +198,7 @@ while running:
                 running = False
             
     
-    
+    parameter.getBackgroundSprites().update()
     parameter.getAllSprites().update()
 
     # Collidision Destction
@@ -190,13 +209,13 @@ while running:
                 pb.kill()
                 e.Hp -= pb.damage
                 point += 100
-                if e.Hp < 0:
-                    
-                    generateItem(e, e.dropItem[0], "power", powerItemImg)
-                    
-                    generateItem(e, e.dropItem[1], "point", pointItemImg)
-                    e.kill()
-                    point += 10000000
+        if e.Hp < 0:
+            
+            generateItem(e, e.dropItem[0], "power", powerItemImg)
+            
+            generateItem(e, e.dropItem[1], "point", pointItemImg)
+            e.kill()
+            point += 10000000
                     
                     
                     
@@ -219,6 +238,7 @@ while running:
     
     windowSurface.fill(BLACK)
     pygame.draw.rect(windowSurface, BLUE, GAMEAREA)
+    parameter.getBackgroundSprites().draw(windowSurface)
 
     """
     check if the bullet just generated

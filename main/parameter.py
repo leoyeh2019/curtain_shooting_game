@@ -12,7 +12,11 @@ def getTimer():
     global timer
     return timer
 
+backgroundSprites = pygame.sprite.Group()
 
+def getBackgroundSprites():
+    global backgroundSprites
+    return backgroundSprites
 
 
 allSprites = pygame.sprite.Group()

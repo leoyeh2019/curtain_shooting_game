@@ -20,8 +20,8 @@ def playerPutBulletPattern_tracking(time, power):
         return [(-20, 0), (20, 0)]
 
 def playerShootBulletPattern_tracking(time):
-    
-    return (-10/math.sqrt(2), -10/math.sqrt(2)), (10/math.sqrt(2), -10/math.sqrt(2))
+    speed = 10
+    return (-speed / math.sqrt(2), -speed / math.sqrt(2)), (speed / math.sqrt(2), -speed / math.sqrt(2))
 
 
 

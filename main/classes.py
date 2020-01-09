@@ -9,7 +9,22 @@ def get_parameter(parameter):
     except NameError:
         return None
 
+class Background(pygame.sprite.Sprite):
+    def __init__(self, image, topleft, speed):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = image
+        self.topleft_origin = topleft
+        self.rect = self.image.get_rect(topleft = self.topleft_origin)
+        self.speed = speed
 
+    def update(self):
+        self.rect.move_ip(0, self.speed)
+        if self.rect.top > 580:
+            newBackground = Background(image = self.image, \
+                                       topleft = (40, -1200), \
+                                       speed = self.speed)
+            parameter.getBackgroundSprites().add(newBackground)
+            self.kill()
 
 class playerCollisionBox(pygame.sprite.Sprite):
     def __init__(self, collisionBoxImage, playerRect):
