@@ -54,14 +54,14 @@ def playerShootBulletPattern_tracking(time):
 
  
 
-def enemyshootBulletPattern_1(putPattern):
-    speed = 5
-    vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
-    dx = speed / vectorLength * putPattern[0]
-    dy = speed / vectorLength * putPattern[1]
+# def enemyshootBulletPattern(putPattern):
+#     speed = 5
+#     vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
+#     dx = speed / vectorLength * putPattern[0]
+#     dy = speed / vectorLength * putPattern[1]
     
-    return {"f(x)" : lambda time : (dx * time, dy * time), \
-            "f'(x)" : lambda time : (dx, dy)}
+#     return {"f(x)" : lambda time : (dx * time, dy * time), \
+#             "f'(x)" : lambda time : (dx, dy)}
     
     
 def enemyMovePattern_1(time):
@@ -85,3 +85,73 @@ def enemyPutBulletPattern_1(time):
             "intermediateTime" : 3}
 
 
+
+def enemyshootBulletPattern_1(putPattern):
+    speed = 5
+    vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
+    dx = speed / vectorLength * putPattern[0]
+    dy = speed / vectorLength * putPattern[1]
+    
+    return {"f(x)" : lambda time : (dx * time, dy * time), \
+            "f'(x)" : lambda time : (dx, dy)}
+
+
+def enemyMovePattern_2(time):
+    if time < 0:
+        return 0, 10
+    
+    else:
+        return 3, 1
+
+
+
+def enemyPutBulletPattern_2(time):
+    ways = 3
+    positionList = [(-30, 30), (0, 30), (30, 30)]
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 0, \
+            "intermediateTime" : 9}
+
+
+
+def enemyshootBulletPattern_2(putPattern):
+    speed = 3
+    vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
+    dx = speed / vectorLength * putPattern[0]
+    dy = speed / vectorLength * putPattern[1]
+
+    
+    return {"f(x)" : lambda time : (dx * time, dy * time), \
+            "f'(x)" : lambda time : (dx, dy)}
+
+
+
+def enemyMovePattern_3(time):
+    if time < 0:
+        return 480, 10
+    
+    else:
+        return -3, 1
+
+
+
+def enemyPutBulletPattern_3(time):
+    ways = 3
+    positionList = [(-10, 30), (0, 30), (10, 30)]
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 0, \
+            "intermediateTime" : 10}
+
+
+
+def enemyshootBulletPattern_3(putPattern):
+    speed = 3
+    vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
+    dx = speed / vectorLength * putPattern[0]
+    dy = speed / vectorLength * putPattern[1]
+
+    
+    return {"f(x)" : lambda time : (dx * time, dy * time), \
+            "f'(x)" : lambda time : (dx, dy)}

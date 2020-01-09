@@ -153,7 +153,7 @@ parameter.getBackgroundSprites().add(gameareaBackground1)
 parameter.getBackgroundSprites().add(gameareaBackground2)
 
 player = classes.Player(name = "player", \
-                        lifes = 1, \
+                        lifes = 100, \
                         image = playerImg, \
                         collisionBoxImage = playerCollisionBoxImg, \
                         playerBulletImage = (playerBulletImg, playerBulletTrackingImg), \
@@ -179,7 +179,30 @@ def newEnemy_1():
     parameter.getAllSprites().add(enemy)
     parameter.getEnemySprites().add(enemy)
 
-
+def newEnemy_2():
+    enemy = classes.Enemy(name = "enemy", \
+                          Hp = 30, \
+                          image = enemyImg, \
+                          movePattern = custom.enemyMovePattern_2, \
+                          enemyBulletImage = enemyBulletImg, \
+                          putBulletPattern = custom.enemyPutBulletPattern_2, \
+                          shootBulletPattern = custom.enemyshootBulletPattern_2, \
+                          dropItem = (2, 4), \
+                          gamearea = GAMEAREA)
+    parameter.getAllSprites().add(enemy)
+    parameter.getEnemySprites().add(enemy)
+def newEnemy_3():
+    enemy = classes.Enemy(name = "enemy", \
+                          Hp = 30, \
+                          image = enemyImg, \
+                          movePattern = custom.enemyMovePattern_3, \
+                          enemyBulletImage = enemyBulletImg, \
+                          putBulletPattern = custom.enemyPutBulletPattern_3, \
+                          shootBulletPattern = custom.enemyshootBulletPattern_3, \
+                          dropItem = (1, 4), \
+                          gamearea = GAMEAREA)
+    parameter.getAllSprites().add(enemy)
+    parameter.getEnemySprites().add(enemy)
 
 parameter.getAllSprites().add(player)
 parameter.getAllSprites().add(player.collisionBox)
@@ -199,7 +222,11 @@ while running:
     if parameter.getTimer() >= 100 and parameter.getTimer() <= 1600:
         if (parameter.getTimer()  - 100) % 500 == 0:
             newEnemy_1()
-            
+    
+    if parameter.getTimer() >= 2200 and parameter.getTimer() <= 3200:
+        if (parameter.getTimer()  - 2200) % 50 == 0:
+            newEnemy_2()
+            newEnemy_3()
     
     parameter.getBackgroundSprites().update()
     parameter.getAllSprites().update()
@@ -226,7 +253,7 @@ while running:
     # Enemy_Bullet v.s. Player
     for eb in parameter.getEnemyBulletSprites():
         if pygame.sprite.collide_circle(eb, player):
-            running = False
+            player.lifes -= 1
 
     # Point_Item v.s. Player
     for p in parameter.getItemSprites():
@@ -239,6 +266,11 @@ while running:
                     player.power = 48
             p.kill()
     
+    # Check if player die
+    if player.lifes == 0:
+        running = False
+
+    # Draw
     windowSurface.fill(BLACK)
     pygame.draw.rect(windowSurface, BLUE, GAMEAREA)
     parameter.getBackgroundSprites().draw(windowSurface)
@@ -260,7 +292,8 @@ while running:
     windowSurface.blit(background, background_rect)
 
     drawText("Point  {0:0>12}".format(point), Inconsolata_24, BLACK, windowSurface, 540, 40)
-    drawText("Power  {0:0>3}".format(player.power), Inconsolata_24, BLACK, windowSurface, 540, 80)
+    drawText("Lifes  {0:0>3}".format(player.lifes), Inconsolata_24, BLACK, windowSurface, 540, 80)
+    drawText("Power  {0:0>3}".format(player.power), Inconsolata_24, BLACK, windowSurface, 540, 120)
 
     pygame.display.update()
 
