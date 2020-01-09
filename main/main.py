@@ -30,8 +30,8 @@ PLAYER_COLLISION_BOXSIZE = 10
 PLAYER_BULLET_WIDTH = 5
 PLAYER_BULLET_HEIGHT = 10
 
-ENEMY_WIDTH = 50
-ENEMY_HEIGHT = 50
+ENEMY_WIDTH = 30
+ENEMY_HEIGHT = 30
 ENEMY_BULLET_WIDTH = 5
 ENEMY_BULLET_HEIGHT = 10
 
@@ -115,7 +115,6 @@ def generateItem(enemy, number, name, image):
         for i in range(len(itemList)):
             for j in range(len(itemList) - i - 1):
                 if pygame.sprite.collide_rect(itemList[i], itemList[i + j + 1]):
-                    print("collide")
                     check = False
         if check:
             break
@@ -167,15 +166,15 @@ player = classes.Player(name = "player", \
 
 
 
-def newEnemy():
+def newEnemy_1():
     enemy = classes.Enemy(name = "enemy", \
                           Hp = 100, \
                           image = enemyImg, \
-                          movePattern = custom.enemyMovePattern, \
+                          movePattern = custom.enemyMovePattern_1, \
                           enemyBulletImage = enemyBulletImg, \
-                          putBulletPattern = custom.enemyPutBulletPattern, \
-                          shootBulletPattern = custom.enemyshootBulletPattern, \
-                          dropItem = (4, 2), \
+                          putBulletPattern = custom.enemyPutBulletPattern_1, \
+                          shootBulletPattern = custom.enemyshootBulletPattern_1, \
+                          dropItem = (2, 2), \
                           gamearea = GAMEAREA)
     parameter.getAllSprites().add(enemy)
     parameter.getEnemySprites().add(enemy)
@@ -184,7 +183,7 @@ def newEnemy():
 
 parameter.getAllSprites().add(player)
 parameter.getAllSprites().add(player.collisionBox)
-newEnemy()
+
 
 
 # Game loop
@@ -196,6 +195,10 @@ while running:
         if event.type == KEYUP:
             if event.key == K_ESCAPE:
                 running = False
+    # Generate Enemy
+    if parameter.getTimer() >= 100 and parameter.getTimer() <= 1600:
+        if (parameter.getTimer()  - 100) % 500 == 0:
+            newEnemy_1()
             
     
     parameter.getBackgroundSprites().update()
@@ -221,9 +224,9 @@ while running:
                     
 
     # Enemy_Bullet v.s. Player
-    # for eb in parameter.getEnemyBulletSprites():
-    #     if pygame.sprite.collide_circle(eb, player):
-    #         running = False
+    for eb in parameter.getEnemyBulletSprites():
+        if pygame.sprite.collide_circle(eb, player):
+            running = False
 
     # Point_Item v.s. Player
     for p in parameter.getItemSprites():

@@ -73,7 +73,7 @@ class Player(pygame.sprite.Sprite):
 
         self.lastShootingTime = parameter.getTimer()
         
-        self.power = 9
+        self.power = 0
 
     def update(self):
         keystate = pygame.key.get_pressed()
