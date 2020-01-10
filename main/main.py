@@ -271,6 +271,7 @@ while running:
     # Enemy_Bullet v.s. Player
     for eb in parameter.getEnemyBulletSprites():
         if pygame.sprite.collide_circle(eb, player):
+            player.hide()
             player.lifes -= 1
 
     # Point_Item v.s. Player
@@ -316,6 +317,8 @@ while running:
 
     pygame.display.update()
 
+    # if parameter.getTimer() % 10 == 0:
+    #     print(player.rect.center)
     mainClock.tick(FPS)
     parameter.accTimer()
     

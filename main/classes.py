@@ -75,7 +75,20 @@ class Player(pygame.sprite.Sprite):
         
         self.power = 0
 
+        self.hidden = False
+        self.hiddenTime = parameter.getTimer()
+
     def update(self):
+
+        now = parameter.getTimer()
+        if self.hidden and now - self.hiddenTime < 30:
+            for eb in parameter.getEnemyBulletSprites():
+                eb.kill()
+        elif self.hidden and now - self.hiddenTime == 30:
+            
+            self.hidden = False 
+            self.rect.center = (self.gamearea.centerx, self.gamearea.bottom - 50)
+
         keystate = pygame.key.get_pressed()
         if keystate[pygame.K_LSHIFT]:
             speed = self.playerSlowSpeed
@@ -156,6 +169,13 @@ class Player(pygame.sprite.Sprite):
                                                   shootBulletPattern = self.shootBulletPattern[1](now)[i])
                 
                 self.lastShootingTime = now
+
+    def hide(self):
+        for eb in parameter.getEnemyBulletSprites():
+                eb.kill()
+        self.hidden = True 
+        self.hiddenTime = parameter.getTimer()
+        self.rect.center = (self.gamearea.centerx, self.gamearea.top - 200)
             
 
 
