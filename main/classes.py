@@ -19,9 +19,9 @@ class Background(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.move_ip(0, self.speed)
-        if self.rect.top > 580:
+        if self.rect.top > 928:
             newBackground = Background(image = self.image, \
-                                       topleft = (40, -1200), \
+                                       topleft = (64, -1930), \
                                        speed = self.speed)
             parameter.getBackgroundSprites().add(newBackground)
             self.kill()
@@ -102,6 +102,7 @@ class Player(pygame.sprite.Sprite):
         
         self.collisionBox.rect.center = self.rect.center
         # self.collisionBox.rotate()
+
     def newPlayerBullet(self, putBulletPattern):
         playerBullet = PlayerBullet(name = "playerBullet", \
                                     image = self.playerBulletImage[0], \

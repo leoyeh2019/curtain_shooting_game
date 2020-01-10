@@ -7,20 +7,20 @@ import function
 # Set player, enemy, bullet
 def playerPutbulletPattern(time, power):
     if power in range(0, 24):
-        return 0, -30
+        return 0, -45
     if power in range(24, 49):
-        return [(-15, -30), (0, -30), (15, -30)]
+        return [(-25, -45), (0, -45), (25, -45)]
     
 def playerShootBulletPattern(time):
-    return 0, -10
+    return 0, -15
 
 
 def playerPutBulletPattern_tracking(time, power):
     if power in range(8, 49):
-        return [(-20, 0), (20, 0)]
+        return [(-30, 0), (30, 0)]
 
 def playerShootBulletPattern_tracking(time):
-    speed = 10
+    speed = 15
     return (-speed / math.sqrt(2), -speed / math.sqrt(2)), (speed / math.sqrt(2), -speed / math.sqrt(2))
 
 
@@ -66,7 +66,7 @@ def playerShootBulletPattern_tracking(time):
     
 def enemyMovePattern_1(time):
     if time < 0:
-        return 240, -10
+        return 384, -10
     elif time < 50:
         return 0, 4
     elif time < 400:
@@ -87,7 +87,7 @@ def enemyPutBulletPattern_1(time):
 
 
 def enemyshootBulletPattern_1(putPattern):
-    speed = 5
+    speed = 8
     vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
     dx = speed / vectorLength * putPattern[0]
     dy = speed / vectorLength * putPattern[1]
@@ -111,12 +111,12 @@ def enemyPutBulletPattern_2(time):
     return {"numbers" : ways, \
             "position" : positionList, \
             "delateTime" : 0, \
-            "intermediateTime" : 9}
+            "intermediateTime" : 15}
 
 
 
 def enemyshootBulletPattern_2(putPattern):
-    speed = 3
+    speed = 5
     vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
     dx = speed / vectorLength * putPattern[0]
     dy = speed / vectorLength * putPattern[1]
@@ -129,7 +129,7 @@ def enemyshootBulletPattern_2(putPattern):
 
 def enemyMovePattern_3(time):
     if time < 0:
-        return 480, 10
+        return 768, 10
     
     else:
         return -3, 1
@@ -142,12 +142,12 @@ def enemyPutBulletPattern_3(time):
     return {"numbers" : ways, \
             "position" : positionList, \
             "delateTime" : 0, \
-            "intermediateTime" : 10}
+            "intermediateTime" : 15}
 
 
 
 def enemyshootBulletPattern_3(putPattern):
-    speed = 3
+    speed = 5
     vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
     dx = speed / vectorLength * putPattern[0]
     dy = speed / vectorLength * putPattern[1]

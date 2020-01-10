@@ -7,10 +7,10 @@ import custom
 import function
 
 # ----------------------Constants----------------------
-WINDOWWIDTH = 800
-WINDOWHEIGHT = 600
-GAMEAREAWIDTH = 480
-GAMEAREAHEIGHT = 560
+WINDOWWIDTH = 1280
+WINDOWHEIGHT = 960
+GAMEAREAWIDTH = 768
+GAMEAREAHEIGHT = 896
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -21,22 +21,22 @@ LIGHTBLUE = (0, 255, 255)
 
 FPS = 60
 
-BACKGROUND_WIDTH = 480
-BACKGROUND_HEIGHT = 900
+BACKGROUND_WIDTH = 768
+BACKGROUND_HEIGHT = 1440
 
-PLAYER_WIDTH = 30
-PLAYER_HEIGHT = 30
-PLAYER_COLLISION_BOXSIZE = 10
-PLAYER_BULLET_WIDTH = 5
-PLAYER_BULLET_HEIGHT = 10
+PLAYER_WIDTH = 50
+PLAYER_HEIGHT = 50
+PLAYER_COLLISION_BOXSIZE = 15
+PLAYER_BULLET_WIDTH = 10
+PLAYER_BULLET_HEIGHT = 20
 
-ENEMY_WIDTH = 30
-ENEMY_HEIGHT = 30
-ENEMY_BULLET_WIDTH = 5
-ENEMY_BULLET_HEIGHT = 10
+ENEMY_WIDTH = 50
+ENEMY_HEIGHT = 50
+ENEMY_BULLET_WIDTH = 10
+ENEMY_BULLET_HEIGHT = 20
 
-ITEM_WIDTH = 10
-ITEM_HEIGHT = 10
+ITEM_WIDTH = 20
+ITEM_HEIGHT = 20
 
 
 
@@ -90,7 +90,7 @@ pointItemImg = pygame.transform.scale(pointItemImg_raw, (ITEM_WIDTH, ITEM_HEIGHT
 
 Helvetica_24 = pygame.font.Font(path.join(font_dir, "Helvetica.ttf"), 24)
 Inconsolata_24 = pygame.font.Font(path.join(font_dir, "Inconsolata.otf"), 24)
-        
+Inconsolata_32 = pygame.font.Font(path.join(font_dir, "Inconsolata.otf"), 32)
 
 
 # ----------------------Functions----------------------
@@ -133,7 +133,7 @@ def drawText(text, font, color, surface, x, y):
 # ----------------------Main----------------------
 
 # Set Gamearea
-GAMEAREA = pygame.Rect(40, 20, GAMEAREAWIDTH, GAMEAREAHEIGHT)
+GAMEAREA = pygame.Rect(64, 32, GAMEAREAWIDTH, GAMEAREAHEIGHT)
 
 
 # Set parameter
@@ -143,7 +143,7 @@ point = 0
 
 # Set player, enemy, bullet
 gameareaBackground1 = classes.Background(image = gameareaBackgroundImg, \
-                                         topleft = function.raletivePosition(GAMEAREA.topleft, (0, -900)),\
+                                         topleft = function.raletivePosition(GAMEAREA.topleft, (0, -1440)),\
                                          speed = 1)
 gameareaBackground2 = classes.Background(image = gameareaBackgroundImg, \
                                          topleft = GAMEAREA.topleft,\
@@ -157,8 +157,8 @@ player = classes.Player(name = "player", \
                         image = playerImg, \
                         collisionBoxImage = playerCollisionBoxImg, \
                         playerBulletImage = (playerBulletImg, playerBulletTrackingImg), \
-                        playerSpeed = (4, 2), \
-                        playerDamage = (4, 4), \
+                        playerSpeed = (6, 3), \
+                        playerDamage = (6, 4), \
                         putBulletPattern = (custom.playerPutbulletPattern, custom.playerPutBulletPattern_tracking), \
                         shootBulletPattern = (custom.playerShootBulletPattern, custom.playerShootBulletPattern_tracking), \
                         gamearea = GAMEAREA)
@@ -168,7 +168,7 @@ player = classes.Player(name = "player", \
 
 def newEnemy_1():
     enemy = classes.Enemy(name = "enemy", \
-                          Hp = 100, \
+                          Hp = 150, \
                           image = enemyImg, \
                           movePattern = custom.enemyMovePattern_1, \
                           enemyBulletImage = enemyBulletImg, \
@@ -280,22 +280,23 @@ while running:
     use 'blit' to draw sprites one by one
     """
     for i in parameter.getAllSprites():
-        try:
+        if i in parameter.getEnemyBulletSprites() or i in parameter.getPlayerBulletSprites():
             if parameter.getTimer() - i.generateTime > 1:
                 windowSurface.blit(i.image, i.rect)
 
-        except:
+        else:
             windowSurface.blit(i.image, i.rect)
 
   
 
     windowSurface.blit(background, background_rect)
 
-    drawText("Point  {0:0>12}".format(point), Inconsolata_24, BLACK, windowSurface, 540, 40)
-    drawText("Lifes  {0:0>3}".format(player.lifes), Inconsolata_24, BLACK, windowSurface, 540, 80)
-    drawText("Power  {0:0>3}".format(player.power), Inconsolata_24, BLACK, windowSurface, 540, 120)
+    drawText("Point  {0:0>12}".format(point), Inconsolata_32, BLACK, windowSurface, 864, 64)
+    drawText("Lifes  {0:0>3}".format(player.lifes), Inconsolata_32, BLACK, windowSurface, 864, 128)
+    drawText("Power  {0:0>3}".format(player.power), Inconsolata_32, BLACK, windowSurface, 864, 192)
 
     pygame.display.update()
+
 
     mainClock.tick(FPS)
     parameter.accTimer()
