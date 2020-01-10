@@ -44,6 +44,8 @@ def findMostCloseEnemy(playerCenter):
             minimunIndex = i
     return enemyList[minimunIndex].rect.center
 
+# def as_polar(x, y):
+
 
 
 if __name__ == "__main__":

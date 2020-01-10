@@ -8,6 +8,8 @@ def get_parameter(parameter):
         return parameter
     except NameError:
         return None
+# def rotate(x, y, img):
+
 
 class Background(pygame.sprite.Sprite):
     def __init__(self, image, topleft, speed):
@@ -75,7 +77,7 @@ class Player(pygame.sprite.Sprite):
 
         self.lastShootingTime = parameter.getTimer()
         
-        self.power = 0
+        self.power = 9
 
         self.hidden = False
         self.hiddenTime = parameter.getTimer()
@@ -309,9 +311,8 @@ class PlayerBullet_tracking(PlayerBullet):
     def rotate(self):
         v = pygame.math.Vector2(self.dx, self.dy)
         axis = 90 - v.as_polar()[1]
-        newImage = pygame.transform.rotate(self.image_origin, axis)
         oldCenter = self.rect.center
-        self.image = newImage
+        self.image = pygame.transform.rotate(self.image_origin, axis)
         self.rect = self.image.get_rect(center = oldCenter)
 
 
