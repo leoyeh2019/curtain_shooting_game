@@ -207,7 +207,21 @@ def newEnemy_3():
 parameter.getAllSprites().add(player)
 parameter.getAllSprites().add(player.collisionBox)
 
+def newEnemy_4():
+    enemy = classes.Enemy(name = "enemy", \
+                          Hp = 2000, \
+                          image = enemyImg, \
+                          movePattern = custom.enemyMovePattern_4, \
+                          enemyBulletImage = enemyBulletImg, \
+                          putBulletPattern = custom.enemyPutBulletPattern_4, \
+                          shootBulletPattern = custom.enemyshootBulletPattern_4, \
+                          dropItem = (0, 6), \
+                          gamearea = GAMEAREA)
+    parameter.getAllSprites().add(enemy)
+    parameter.getEnemySprites().add(enemy)
 
+parameter.getAllSprites().add(player)
+parameter.getAllSprites().add(player.collisionBox)
 
 # Game loop
 while running:
@@ -228,6 +242,10 @@ while running:
             newEnemy_2()
             newEnemy_3()
     
+    if parameter.getTimer() == 3500:
+        newEnemy_4()
+    
+    
     parameter.getBackgroundSprites().update()
     parameter.getAllSprites().update()
 
@@ -245,7 +263,7 @@ while running:
             
             generateItem(e, e.dropItem[1], "point", pointItemImg)
             e.kill()
-            point += 10000000
+            point += 10000
                     
                     
                     
@@ -294,9 +312,9 @@ while running:
     drawText("Point  {0:0>12}".format(point), Inconsolata_32, BLACK, windowSurface, 864, 64)
     drawText("Lifes  {0:0>3}".format(player.lifes), Inconsolata_32, BLACK, windowSurface, 864, 128)
     drawText("Power  {0:0>3}".format(player.power), Inconsolata_32, BLACK, windowSurface, 864, 192)
+    drawText("Timer  {0:0>3}".format(parameter.getTimer()), Inconsolata_32, BLACK, windowSurface, 864, 256)
 
     pygame.display.update()
-
 
     mainClock.tick(FPS)
     parameter.accTimer()

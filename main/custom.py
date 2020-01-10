@@ -155,3 +155,40 @@ def enemyshootBulletPattern_3(putPattern):
     
     return {"f(x)" : lambda time : (dx * time, dy * time), \
             "f'(x)" : lambda time : (dx, dy)}
+
+
+def enemyMovePattern_4(time):
+    if time < 0:
+        return 384, -10
+    elif time < 50:
+        return 0, 4
+    elif time < 1000:
+        return 0, 0
+    else:
+        return 0, -2
+
+def enemyPutBulletPattern_4(time):
+    r = 50
+    θ = (time ** 2) / 60
+    ways = 4
+    Δθ = 360 / ways 
+    positionList = []
+    for i in range(ways):
+        θ_i = math.radians((θ + (i * Δθ)) % 360)
+        positionList.append((r * math.cos(θ_i), r * math.sin(θ_i)))
+
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 50, \
+            "intermediateTime" : 2}
+
+ 
+
+def enemyshootBulletPattern_4(putPattern):
+    speed = 8
+    vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
+    dx = speed / vectorLength * putPattern[0]
+    dy = speed / vectorLength * putPattern[1]
+    
+    return {"f(x)" : lambda time : (dx * time, dy * time), \
+            "f'(x)" : lambda time : (dx, dy)}
