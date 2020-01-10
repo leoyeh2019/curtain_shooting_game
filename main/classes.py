@@ -55,7 +55,8 @@ class Player(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.lifes = lifes
-        self.image = image
+        self.image_origin = image
+        self.image = self.image_origin.copy()
         self.collisionBoxImage = collisionBoxImage
         self.playerBulletImage = playerBulletImage
         self.playerDamage = playerDamage
@@ -70,6 +71,7 @@ class Player(pygame.sprite.Sprite):
         self.collisionBox = playerCollisionBox(collisionBoxImage = self.collisionBoxImage, playerRect = self.rect)
 
         self.radius = int(self.collisionBox.rect.width / 2)
+        
 
         self.lastShootingTime = parameter.getTimer()
         
@@ -85,9 +87,21 @@ class Player(pygame.sprite.Sprite):
             for eb in parameter.getEnemyBulletSprites():
                 eb.kill()
         elif self.hidden and now - self.hiddenTime == 30:
-            
-            self.hidden = False 
+            self.radius = 0
             self.rect.center = (self.gamearea.centerx, self.gamearea.bottom - 50)
+        elif self.hidden and now - self.hiddenTime < 120:
+            self.radius = 0
+            if ((now - self.hiddenTime) % 6) in [0, 1, 2]:
+                transparentImg = self.image_origin.copy()
+                transparentImg.set_alpha(64)
+                self.image = transparentImg
+            else:
+                self.image = self.image_origin
+        else:
+            self.image = self.image_origin
+            self.radius = int(self.collisionBox.rect.width / 2)
+            self.hidden = False 
+            
 
         keystate = pygame.key.get_pressed()
         if keystate[pygame.K_LSHIFT]:
@@ -176,6 +190,10 @@ class Player(pygame.sprite.Sprite):
         self.hidden = True 
         self.hiddenTime = parameter.getTimer()
         self.rect.center = (self.gamearea.centerx, self.gamearea.top - 200)
+        if self.power > 8:
+            self.power -= 8
+        else:
+             self.power = 0
             
 
 

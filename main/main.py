@@ -71,9 +71,11 @@ enemyImg = pygame.transform.scale(enemyImg_raw, (ENEMY_WIDTH, ENEMY_HEIGHT))
 
 playerBulletImg_raw = pygame.image.load(path.join(img_dir, 'bullet1.png')).convert()
 playerBulletImg = pygame.transform.scale(playerBulletImg_raw, (PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT))
+playerBulletImg.set_alpha(192) # Transparent
 
 playerBulletTrackingImg_raw = pygame.image.load(path.join(img_dir, 'bullet3.png')).convert()
 playerBulletTrackingImg = pygame.transform.scale(playerBulletTrackingImg_raw, (PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT))
+playerBulletTrackingImg.set_alpha(192) # Transparent
 
 enemyBulletImg_raw = pygame.image.load(path.join(img_dir, 'bullet2.png')).convert()
 enemyBulletImg = pygame.transform.scale(enemyBulletImg_raw, (ENEMY_BULLET_WIDTH, ENEMY_BULLET_HEIGHT))
@@ -244,6 +246,13 @@ while running:
     
     if parameter.getTimer() == 3500:
         newEnemy_4()
+    
+    if parameter.getTimer() > 50 and not bool(parameter.getEnemySprites()):
+        for i in parameter.getBackgroundSprites():
+            i.speed = 5
+    else:
+        for i in parameter.getBackgroundSprites():
+            i.speed = 2
     
     
     parameter.getBackgroundSprites().update()
