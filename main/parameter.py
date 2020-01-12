@@ -8,6 +8,13 @@ def getGamearea():
     global GAMEAREA
     return GAMEAREA
 
+BULLETGAMEAREA = pygame.Rect(0, 0, GAMEAREAWIDTH * 2, GAMEAREAHEIGHT * 1.5)
+BULLETGAMEAREA.center = GAMEAREA.center
+
+def getBulletGamearea():
+    global BULLETGAMEAREA
+    return BULLETGAMEAREA
+
 
 timer = 0
 

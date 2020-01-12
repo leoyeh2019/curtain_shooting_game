@@ -77,7 +77,7 @@ class Player(pygame.sprite.Sprite):
 
         self.lastShootingTime = parameter.getTimer()
         
-        self.power = 0
+        self.power = 48
 
         self.hidden = False
         self.hiddenTime = parameter.getTimer()
@@ -327,7 +327,7 @@ class EnemyBullet(PlayerBullet):
         self.rect.center = (self.shootBulletPattern["f(x)"](now - self.generateTime)[0] + self.generateCenter[0], \
                             self.shootBulletPattern["f(x)"](now - self.generateTime)[1] + self.generateCenter[1])
 
-        if not self.rect.colliderect(parameter.getGamearea()):
+        if not self.rect.colliderect(parameter.getBulletGamearea()):
             self.kill()
             
     def rotate(self, now):
@@ -400,6 +400,8 @@ class BossStage():
         self.ifGenerateBoss = False
         self.ifBonus = True
         self.timer = 0
+
+
     def generateBoss(self):
         if not self.ifGenerateBoss:
             self.boss = Enemy(name = self.order, \

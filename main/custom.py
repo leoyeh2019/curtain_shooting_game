@@ -214,7 +214,7 @@ def bossPutBulletPattern_1(time):
 
     return {"numbers" : ways, \
             "position" : positionList, \
-            "delateTime" : 50, \
+            "delateTime" : 150, \
             "intermediateTime" : 1}
 
  
@@ -228,6 +228,112 @@ def bossShootBulletPattern_1(putPattern):
     return {"f(x)" : lambda time : (dx * time, dy * time), \
             "f'(x)" : lambda time : (dx, dy)}
 
+
+def bossMovePattern_2(time):
+    if time < 0:
+        return 384, 200
+    else:
+        return 0, 0
+
+def bossPutBulletPattern_2_1(time):
+    ax = 1
+    ay = 2
+    b = -300
+    ways = 20
+    difficulty = time // 150
+    if difficulty > 5:
+        difficulty = 5
+    Δ = 15
+    
+    positionList = []
+    for i in range(ways):
+        entropy = random.randint(-difficulty * 15, difficulty * 15)
+        positionList.append((i * Δ * ax + entropy, i * Δ * ay + b + entropy))
+
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 0, \
+            "intermediateTime" : 150}
+
+def bossPutBulletPattern_2_2(time):
+    ax = 1
+    ay = 2
+    b = -150
+    ways = 20
+    difficulty = time // 150
+    if difficulty > 5:
+        difficulty = 5
+    Δ = 15
+    
+    positionList = []
+    for i in range(ways):
+        entropy = random.randint(-difficulty * 15, difficulty * 15)
+        positionList.append((i * Δ * ax + entropy, i * Δ * ay + b + entropy))
+
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 0, \
+            "intermediateTime" : 150}
+
+def bossPutBulletPattern_2_3(time):
+    ax = -1
+    ay = 2
+    b = -300
+    ways = 20
+    difficulty = time // 150
+    if difficulty > 5:
+        difficulty = 5
+    Δ = 15
+    
+    positionList = []
+    for i in range(ways):
+        entropy = random.randint(-difficulty * 15, difficulty * 15)
+        positionList.append((i * Δ * ax + entropy, i * Δ * ay + b + entropy))
+
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 0, \
+            "intermediateTime" : 150}
+
+def bossPutBulletPattern_2_4(time):
+    ax = -1
+    ay = 2
+    b = -150
+    ways = 20
+    difficulty = time // 150
+    if difficulty > 5:
+        difficulty = 5
+    Δ = 15
+    
+    positionList = []
+    for i in range(ways):
+        entropy = random.randint(-difficulty * 15, difficulty * 15)
+        positionList.append((i * Δ * ax + entropy, i * Δ * ay + b + entropy))
+
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 0, \
+            "intermediateTime" : 150}
+
+def bossShootBulletPattern_2_1(putPattern):
+    speed = 10
+    dx1 = speed / math.sqrt(5) * -2
+    dy1 = speed / math.sqrt(5) * 1
+    dx2 = speed / math.sqrt(5) * 1
+    dy2 = speed / math.sqrt(5) * 2
+    
+    return {"f(x)" : lambda time : (dx1 * time, dy1 * time) if time < 50 else  (dx2 * (time - 50) + dx1 * 50, dy2 * (time - 50) + dy1 * 50), \
+            "f'(x)" : lambda time : (dx1, dy1) if time < 50 else  (dx2, dy2)}
+
+def bossShootBulletPattern_2_3(putPattern):
+    speed = 10
+    dx1 = speed / math.sqrt(5) * 2
+    dy1 = speed / math.sqrt(5) * 1
+    dx2 = speed / math.sqrt(5) * -1
+    dy2 = speed / math.sqrt(5) * 2
+    
+    return {"f(x)" : lambda time : (dx1 * time, dy1 * time) if time < 50 else  (dx2 * (time - 50) + dx1 * 50, dy2 * (time - 50) + dy1 * 50), \
+            "f'(x)" : lambda time : (dx1, dy1) if time < 50 else  (dx2, dy2)}
 
 def bossMovePattern_3(time):
     if time < 0:
@@ -247,7 +353,7 @@ def bossPutBulletPattern_3(time):
 
     return {"numbers" : ways, \
             "position" : positionList, \
-            "delateTime" : 50, \
+            "delateTime" : 150, \
             "intermediateTime" : 30}
 
  
