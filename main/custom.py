@@ -366,3 +366,30 @@ def bossShootBulletPattern_3(putPattern):
     
     return {"f(x)" : lambda time : (dx * time, dy * time), \
             "f'(x)" : lambda time : (dx, dy)}
+
+
+def bossMovePattern_4(time):
+    if time < 0:
+        return 384, 200
+    else:
+        return 0, 0
+
+def bossPutBulletPattern_4_1(time):
+    ways = 1
+    positionList = []
+    for i in range(ways):
+        positionList.append((0, 50))
+
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 150, \
+            "intermediateTime" : 10, \
+            "tracking" : True}
+
+ 
+
+def bossShootBulletPattern_4_1(putPattern):
+
+    speed = 10
+    
+    return speed

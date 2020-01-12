@@ -131,6 +131,7 @@ class Player(pygame.sprite.Sprite):
         
         self.collisionBox.rect.center = self.rect.center
         # self.collisionBox.rotate()
+        parameter.returnPlayerPosition(self.rect.center)
 
     def newPlayerBullet(self, putBulletPattern):
         playerBullet = PlayerBullet(name = "playerBullet", \
@@ -234,15 +235,26 @@ class Enemy(pygame.sprite.Sprite):
                     for i in range(self.putBulletPattern[j](now)["numbers"]):
                         x = self.putBulletPattern[j](now)["position"][i][0]
                         y = self.putBulletPattern[j](now)["position"][i][1]
-                        enemyBullet = EnemyBullet(name = "enemyBullet", \
-                                                  image = self.enemyBulletImage[j], \
-                                                  bulletRadius = 1, \
-                                                  bulletDamage = None, \
-                                                  putBulletPattern = (x + self.rect.center[0], \
-                                                                      y + self.rect.center[1]), \
-                                                  shootBulletPattern = self.shootBulletPattern[j]((x, y)))
-                        parameter.getAllSprites().add(enemyBullet)
-                        parameter.getEnemyBulletSprites().add(enemyBullet)
+                        if "tracking" in self.putBulletPattern[j](now).keys():
+                            enemyBullet = EnemyBullet_tracking(name = "enemyBullet", \
+                                                               image = self.enemyBulletImage[j], \
+                                                               bulletRadius = 1, \
+                                                               bulletDamage = None, \
+                                                               putBulletPattern = (x + self.rect.center[0], \
+                                                                                   y + self.rect.center[1]), \
+                                                               shootBulletPattern = self.shootBulletPattern[j]((x, y)))
+                            parameter.getAllSprites().add(enemyBullet)
+                            parameter.getEnemyBulletSprites().add(enemyBullet)
+                        else:
+                            enemyBullet = EnemyBullet(name = "enemyBullet", \
+                                                      image = self.enemyBulletImage[j], \
+                                                      bulletRadius = 1, \
+                                                      bulletDamage = None, \
+                                                      putBulletPattern = (x + self.rect.center[0], \
+                                                                          y + self.rect.center[1]), \
+                                                      shootBulletPattern = self.shootBulletPattern[j]((x, y)))
+                            parameter.getAllSprites().add(enemyBullet)
+                            parameter.getEnemyBulletSprites().add(enemyBullet)
                     self.lastShootingTime[j] = now
     def kill(self):
         super().kill()
@@ -341,6 +353,32 @@ class EnemyBullet(PlayerBullet):
         self.image = newImage
         self.rect = self.image.get_rect(center = oldCenter)
 
+class EnemyBullet_tracking(EnemyBullet):
+    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern):
+        EnemyBullet.__init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern)
+        self.speed = shootBulletPattern
+        self.playerPosition = parameter.getPlayerPosition()
+
+        vectorLength = pygame.math.Vector2(self.playerPosition[0] - self.generateCenter[0], self.playerPosition[1] - self.generateCenter[1]).length()
+        self.dx = self.speed / vectorLength * (self.playerPosition[0] - self.generateCenter[0])
+        self.dy = self.speed / vectorLength * (self.playerPosition[1] - self.generateCenter[1])
+
+
+    def update(self):
+        now = parameter.getTimer()
+
+        self.rotate()
+        self.rect.center = (self.dx * (now - self.generateTime) + self.generateCenter[0], \
+                            self.dy * (now - self.generateTime) + self.generateCenter[1])
+
+        if not self.rect.colliderect(parameter.getBulletGamearea()):
+            self.kill()
+    def rotate(self):
+        v = pygame.math.Vector2(self.dx, self.dy)
+        axis = 90 - v.as_polar()[1]
+        oldCenter = self.rect.center
+        self.image = pygame.transform.rotate(self.image_origin, axis)
+        self.rect = self.image.get_rect(center = oldCenter)
 
 
 
@@ -391,6 +429,7 @@ class BossStage():
         self.bossShootBulletPattern = BossShootBulletPattern
         self.dropItem = dropItem
         self.background = background
+        
         if not self.background == None:
             self.background_rect = self.background.get_rect(topleft = parameter.getGamearea().topleft)
 
@@ -444,6 +483,11 @@ class BossStage():
     def drawBackground(self, surface):
         if self.isAlive:
             if not self.background == None:
+                if self.timer < 150:
+                    alpha = self.timer
+                else:
+                    alpha = 150
+                self.background.set_alpha(alpha)
                 surface.blit(self.background, self.background_rect) 
 
 

@@ -51,6 +51,8 @@ def getAllSprites():
     return allSprites
 
 
+
+
 playerBulletSprites =  pygame.sprite.Group()
 
 def getPlayerBulletSprites():
@@ -81,3 +83,15 @@ itemSprites = pygame.sprite.Group()
 def getItemSprites():
     global itemSprites
     return itemSprites
+
+
+playerPosition = [0, 0]
+
+def getPlayerPosition():
+    global playerPosition
+    return playerPosition
+
+def returnPlayerPosition(center):
+    global playerPosition
+    playerPosition[0] = center[0]
+    playerPosition[1] = center[1]

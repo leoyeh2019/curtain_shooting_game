@@ -24,8 +24,8 @@ FPS = 60
 BACKGROUND_WIDTH = 768
 BACKGROUND_HEIGHT = 1440
 
-PLAYER_WIDTH = 50
-PLAYER_HEIGHT = 50
+PLAYER_WIDTH = 100
+PLAYER_HEIGHT = 120
 PLAYER_COLLISION_BOXSIZE = 15
 PLAYER_BULLET_WIDTH = 10
 PLAYER_BULLET_HEIGHT = 20
@@ -35,8 +35,8 @@ ENEMY_HEIGHT = 50
 ENEMY_BULLET_WIDTH = 10
 ENEMY_BULLET_HEIGHT = 20
 
-BOSS_WIDTH = 100
-BOSS_HEIGHT = 100
+BOSS_WIDTH = 200
+BOSS_HEIGHT = 200
 
 BOSS_BULLET_1_WIDTH = 51
 BOSS_BULLET_1_HEIGHT = 66
@@ -66,8 +66,9 @@ background_rect = background.get_rect()
 gameareaBackgroundImg_raw = pygame.image.load(path.join(img_dir, 'background.png')).convert()
 gameareaBackgroundImg = pygame.transform.scale(gameareaBackgroundImg_raw, (BACKGROUND_WIDTH, BACKGROUND_HEIGHT))
 
-playerImg_raw = pygame.image.load(path.join(img_dir, 'player1.png')).convert()
+playerImg_raw = pygame.image.load(path.join(img_dir, 'player.png')).convert()
 playerImg = pygame.transform.scale(playerImg_raw, (PLAYER_WIDTH, PLAYER_HEIGHT))
+playerImg.set_colorkey(WHITE)
 playerCollisionBoxImg_raw = pygame.image.load(path.join(img_dir, 'playerCollisionBox.png')).convert()
 playerCollisionBoxImg = pygame.transform.scale(playerCollisionBoxImg_raw, (PLAYER_COLLISION_BOXSIZE, PLAYER_COLLISION_BOXSIZE))
 playerCollisionBoxImg.set_colorkey(WHITE)
@@ -75,13 +76,13 @@ playerCollisionBoxImg.set_colorkey(WHITE)
 enemyImg_raw = pygame.image.load(path.join(img_dir, 'enemy1.png')).convert()
 enemyImg = pygame.transform.scale(enemyImg_raw, (ENEMY_WIDTH, ENEMY_HEIGHT))
 
-playerBulletImg_raw = pygame.image.load(path.join(img_dir, 'bullet1.png')).convert()
-playerBulletImg = pygame.transform.scale(playerBulletImg_raw, (PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT))
-playerBulletImg.set_alpha(192) # Transparent
+playerBulletImg = pygame.image.load(path.join(img_dir, 'player_bullet.png')).convert()
+playerBulletImg.set_colorkey(WHITE)
+playerBulletImg.set_alpha(128) # Transparent
 
-playerBulletTrackingImg_raw = pygame.image.load(path.join(img_dir, 'bullet3.png')).convert()
-playerBulletTrackingImg = pygame.transform.scale(playerBulletTrackingImg_raw, (PLAYER_BULLET_WIDTH, PLAYER_BULLET_HEIGHT))
-playerBulletTrackingImg.set_alpha(192) # Transparent
+playerBulletTrackingImg = pygame.image.load(path.join(img_dir, 'player_bullet_tracking.png')).convert()
+playerBulletTrackingImg.set_colorkey(WHITE)
+playerBulletTrackingImg.set_alpha(128) # Transparent
 
 enemyBulletImg_raw = pygame.image.load(path.join(img_dir, 'bullet2.png')).convert()
 enemyBulletImg = pygame.transform.scale(enemyBulletImg_raw, (ENEMY_BULLET_WIDTH, ENEMY_BULLET_HEIGHT))
@@ -100,7 +101,14 @@ bossImg.set_colorkey(WHITE)
 bossBullet_1_Img_raw = pygame.image.load(path.join(img_dir, 'boss_bullet_1.png')).convert()
 bossBullet_1_Img = pygame.transform.scale(bossBullet_1_Img_raw, (BOSS_BULLET_1_WIDTH, BOSS_BULLET_1_HEIGHT))
 bossBullet_1_Img.set_colorkey(WHITE)
- 
+
+bossBulletImgList = []
+
+for i in range(1, 5):
+    image = pygame.image.load(path.join(img_dir, 'boss_bullet_{}.png'.format(i))).convert()
+    image.set_colorkey(WHITE)
+    bossBulletImgList.append(image)
+
 # ----------------------Fonts----------------------
 
 Helvetica_24 = pygame.font.Font(path.join(font_dir, "Helvetica.ttf"), 24)
@@ -236,7 +244,7 @@ boss_stage_1 = classes.BossStage(order = 1, \
                                  Hp = 3000, \
                                  bossImage = bossImg, \
                                  bossMovement = custom.bossMovePattern_1, \
-                                 bossBulletImage = [bossBullet_1_Img], \
+                                 bossBulletImage = [bossBulletImgList[0]], \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_1], \
                                  BossShootBulletPattern = [custom.bossShootBulletPattern_1], \
                                  dropItem = (0, 0), \
@@ -253,7 +261,7 @@ boss_stage_2 = classes.BossStage(order = 2, \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_2_1, custom.bossPutBulletPattern_2_2, custom.bossPutBulletPattern_2_3, custom.bossPutBulletPattern_2_4], \
                                  BossShootBulletPattern = [custom.bossShootBulletPattern_2_1, custom.bossShootBulletPattern_2_1, custom.bossShootBulletPattern_2_3, custom.bossShootBulletPattern_2_3], \
                                  dropItem = (8, 16), \
-                                 background = pygame.transform.scale(bossBullet_1_Img, (510, 660)))
+                                 background = pygame.transform.scale(bossBulletImgList[0], (510, 660)))
 stageList.append(boss_stage_2)
 boss_stage_3 = classes.BossStage(order = 3, \
                                  time = 60 * 60, \
@@ -262,12 +270,25 @@ boss_stage_3 = classes.BossStage(order = 3, \
                                  Hp = 3000, \
                                  bossImage = bossImg, \
                                  bossMovement = custom.bossMovePattern_3, \
-                                 bossBulletImage = [bossBullet_1_Img], \
+                                 bossBulletImage = [bossBulletImgList[1]], \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_3], \
                                  BossShootBulletPattern = [custom.bossShootBulletPattern_3], \
                                  dropItem = (0, 0), \
                                  background = None)
 stageList.append(boss_stage_3)
+boss_stage_4 = classes.BossStage(order = 4, \
+                                 time = 60 * 60, \
+                                 ifSpellCard = True, \
+                                 bonus = 100000000, \
+                                 Hp = 4500, \
+                                 bossImage = bossImg, \
+                                 bossMovement = custom.bossMovePattern_4, \
+                                 bossBulletImage = [bossBulletImgList[1]], \
+                                 bossPutBulletPattern = [custom.bossPutBulletPattern_4_1], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_4_1], \
+                                 dropItem = (0, 0), \
+                                 background = None)
+stageList.append(boss_stage_4)
 
 # Game loop
 while running:
