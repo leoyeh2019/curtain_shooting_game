@@ -8,7 +8,7 @@ def get_parameter(parameter):
         return parameter
     except NameError:
         return None
-# def rotate(x, y, img):
+
 
 
 class Background(pygame.sprite.Sprite):
@@ -53,7 +53,7 @@ class playerCollisionBox(pygame.sprite.Sprite):
         
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, name, lifes, image, collisionBoxImage, playerBulletImage, playerSpeed, playerDamage, putBulletPattern, shootBulletPattern, gamearea):
+    def __init__(self, name, lifes, image, collisionBoxImage, playerBulletImage, playerSpeed, playerDamage, putBulletPattern, shootBulletPattern):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.lifes = lifes
@@ -66,9 +66,9 @@ class Player(pygame.sprite.Sprite):
         self.playerSlowSpeed = playerSpeed[1]
         self.putBulletPattern = putBulletPattern
         self.shootBulletPattern = shootBulletPattern
-        self.gamearea = gamearea
 
-        self.rect = self.image.get_rect(center = (self.gamearea.centerx, self.gamearea.bottom - 50))
+
+        self.rect = self.image.get_rect(center = (parameter.getGamearea().centerx, parameter.getGamearea().bottom - 50))
         
         self.collisionBox = playerCollisionBox(collisionBoxImage = self.collisionBoxImage, playerRect = self.rect)
 
@@ -77,7 +77,7 @@ class Player(pygame.sprite.Sprite):
 
         self.lastShootingTime = parameter.getTimer()
         
-        self.power = 9
+        self.power = 48
 
         self.hidden = False
         self.hiddenTime = parameter.getTimer()
@@ -90,7 +90,7 @@ class Player(pygame.sprite.Sprite):
                 eb.kill()
         elif self.hidden and now - self.hiddenTime == 30:
             self.radius = 0
-            self.rect.center = (self.gamearea.centerx, self.gamearea.bottom - 50)
+            self.rect.center = (parameter.getGamearea().centerx, parameter.getGamearea().bottom - 50)
         elif self.hidden and now - self.hiddenTime < 120:
             self.radius = 0
             if ((now - self.hiddenTime) % 6) in [0, 1, 2]:
@@ -110,22 +110,22 @@ class Player(pygame.sprite.Sprite):
             speed = self.playerSlowSpeed
         else:
             speed = self.playerFastSpeed
-        if keystate[pygame.K_LEFT] and self.rect.left > self.gamearea.left:
+        if keystate[pygame.K_LEFT] and self.rect.left > parameter.getGamearea().left:
             self.rect.move_ip(-1 * speed, 0)
-            if self.rect.left < self.gamearea.left:
-                self.rect.left = self.gamearea.left
-        if keystate[pygame.K_RIGHT] and self.rect.right < self.gamearea.right:
+            if self.rect.left < parameter.getGamearea().left:
+                self.rect.left = parameter.getGamearea().left
+        if keystate[pygame.K_RIGHT] and self.rect.right < parameter.getGamearea().right:
             self.rect.move_ip(speed, 0)
-            if self.rect.right > self.gamearea.right:
-                self.rect.right = self.gamearea.right
-        if keystate[pygame.K_UP] and self.rect.top > self.gamearea.top:
+            if self.rect.right > parameter.getGamearea().right:
+                self.rect.right = parameter.getGamearea().right
+        if keystate[pygame.K_UP] and self.rect.top > parameter.getGamearea().top:
             self.rect.move_ip(0, -1 * speed)
-            if self.rect.top < self.gamearea.top:
-                self.rect.top = self.gamearea.top
-        if keystate[pygame.K_DOWN] and self.rect.bottom < self.gamearea.bottom:
+            if self.rect.top < parameter.getGamearea().top:
+                self.rect.top = parameter.getGamearea().top
+        if keystate[pygame.K_DOWN] and self.rect.bottom < parameter.getGamearea().bottom:
             self.rect.move_ip(0, speed)
-            if self.rect.bottom > self.gamearea.bottom:
-                self.rect.bottom = self.gamearea.bottom
+            if self.rect.bottom > parameter.getGamearea().bottom:
+                self.rect.bottom = parameter.getGamearea().bottom
         if keystate[pygame.K_z]:
             self.shoot()  
         
@@ -135,22 +135,20 @@ class Player(pygame.sprite.Sprite):
     def newPlayerBullet(self, putBulletPattern):
         playerBullet = PlayerBullet(name = "playerBullet", \
                                     image = self.playerBulletImage[0], \
-                                    bulletRadius = 1, \
+                                    bulletRadius = 5, \
                                     bulletDamage = self.playerDamage[0], \
                                     putBulletPattern = putBulletPattern, \
-                                    shootBulletPattern = self.shootBulletPattern[0], \
-                                    gamearea = self.gamearea)
+                                    shootBulletPattern = self.shootBulletPattern[0])
         parameter.getAllSprites().add(playerBullet)
         parameter.getPlayerBulletSprites().add(playerBullet)
 
     def newPlayerBullet_tracking(self, putBulletPattern, shootBulletPattern):
         playerBullet = PlayerBullet_tracking(name = "playerBullet_tracking", \
                                              image = self.playerBulletImage[1], \
-                                             bulletRadius = 1, \
+                                             bulletRadius = 5, \
                                              bulletDamage = self.playerDamage[1], \
                                              putBulletPattern = putBulletPattern, \
                                              shootBulletPattern = shootBulletPattern, \
-                                             gamearea = self.gamearea, \
                                              playerRectCenter = self.rect.center)
         parameter.getAllSprites().add(playerBullet)
         parameter.getPlayerBulletSprites().add(playerBullet)
@@ -191,7 +189,7 @@ class Player(pygame.sprite.Sprite):
                 eb.kill()
         self.hidden = True 
         self.hiddenTime = parameter.getTimer()
-        self.rect.center = (self.gamearea.centerx, self.gamearea.top - 200)
+        self.rect.center = (parameter.getGamearea().centerx, parameter.getGamearea().top - 200)
         if self.power > 8:
             self.power -= 8
         else:
@@ -200,7 +198,7 @@ class Player(pygame.sprite.Sprite):
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, name, Hp, image, movePattern, enemyBulletImage, putBulletPattern, shootBulletPattern, dropItem, gamearea):
+    def __init__(self, name, Hp, image, movePattern, enemyBulletImage, putBulletPattern, shootBulletPattern, dropItem):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.Hp = Hp
@@ -210,20 +208,19 @@ class Enemy(pygame.sprite.Sprite):
         self.putBulletPattern = putBulletPattern
         self.shootBulletPattern = shootBulletPattern
         self.dropItem = dropItem
-        self.gamearea = gamearea
 
-        self.rect = self.image.get_rect(center = (movePattern(-1)[0] + self.gamearea.left, \
-                                                  movePattern(-1)[1] + self.gamearea.top))
+        self.rect = self.image.get_rect(center = (movePattern(-1)[0] + parameter.getGamearea().left, \
+                                                  movePattern(-1)[1] + parameter.getGamearea().top))
         self.radius = int((self.rect.width / 2) * 0.5)
 
         self.generateTime = parameter.getTimer()
-        self.lastShootingTime = parameter.getTimer()
+        self.lastShootingTime = [parameter.getTimer() for i in range(len(self.enemyBulletImage))]
 
 
     def update(self):
         now = parameter.getTimer()
         self.rect.move_ip(self.movePattern(now - self.generateTime))
-        if not self.rect.colliderect(self.gamearea):
+        if not self.rect.colliderect(parameter.getGamearea()):
             self.kill()
 
         self.shoot()
@@ -231,31 +228,30 @@ class Enemy(pygame.sprite.Sprite):
 
     def shoot(self):
         now =  parameter.getTimer()
-        if now - self.generateTime > self.putBulletPattern(now - self.generateTime)["delateTime"]:
-            if now - self.lastShootingTime > self.putBulletPattern(now - self.generateTime)["intermediateTime"]:
-                for i in range(self.putBulletPattern(now)["numbers"]):
-                    x = self.putBulletPattern(now)["position"][i][0]
-                    y = self.putBulletPattern(now)["position"][i][1]
-                    enemyBullet = EnemyBullet(name = "enemyBullet", \
-                                              image = self.enemyBulletImage, \
-                                              bulletRadius = 1, \
-                                              bulletDamage = None, \
-                                              putBulletPattern = (x + self.rect.center[0], \
-                                                                  y + self.rect.center[1]), \
-                                              shootBulletPattern = self.shootBulletPattern((x, y)), \
-                                              gamearea = self.gamearea)
-                    parameter.getAllSprites().add(enemyBullet)
-                    parameter.getEnemyBulletSprites().add(enemyBullet)
-                self.lastShootingTime = now
+        for j in range(len(self.enemyBulletImage)):
+            if now - self.generateTime > self.putBulletPattern[j](now - self.generateTime)["delateTime"]:
+                if now - self.lastShootingTime[j] > self.putBulletPattern[j](now - self.generateTime)["intermediateTime"]:
+                    for i in range(self.putBulletPattern[j](now)["numbers"]):
+                        x = self.putBulletPattern[j](now)["position"][i][0]
+                        y = self.putBulletPattern[j](now)["position"][i][1]
+                        enemyBullet = EnemyBullet(name = "enemyBullet", \
+                                                  image = self.enemyBulletImage[j], \
+                                                  bulletRadius = 1, \
+                                                  bulletDamage = None, \
+                                                  putBulletPattern = (x + self.rect.center[0], \
+                                                                      y + self.rect.center[1]), \
+                                                  shootBulletPattern = self.shootBulletPattern[j]((x, y)))
+                        parameter.getAllSprites().add(enemyBullet)
+                        parameter.getEnemyBulletSprites().add(enemyBullet)
+                    self.lastShootingTime[j] = now
                 
                 
-
 
 
 
         
 class PlayerBullet(pygame.sprite.Sprite):
-    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern, gamearea):
+    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.image_origin = image
@@ -264,7 +260,6 @@ class PlayerBullet(pygame.sprite.Sprite):
         self.damage = bulletDamage
         self.shootBulletPattern = shootBulletPattern
         self.generateCenter = putBulletPattern
-        self.gamearea = gamearea
 
         self.rect = self.image.get_rect(center = self.generateCenter)
 
@@ -276,15 +271,15 @@ class PlayerBullet(pygame.sprite.Sprite):
 
         self.rect.move_ip(self.shootBulletPattern(now - self.generateTime))
 
-        if not self.rect.colliderect(self.gamearea):
+        if not self.rect.colliderect(parameter.getGamearea()):
             self.kill()
 
      
 
 
 class PlayerBullet_tracking(PlayerBullet):
-    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern, gamearea, playerRectCenter):
-        PlayerBullet.__init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern, gamearea)
+    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern, playerRectCenter):
+        PlayerBullet.__init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern)
         self.playerRectCenter = playerRectCenter
         self.speed = function.distance(self.shootBulletPattern, (0, 0))
         self.dx = self.shootBulletPattern[0]
@@ -305,7 +300,7 @@ class PlayerBullet_tracking(PlayerBullet):
         self.rect.move_ip(function.returnTheComponentOfVectorX(self.dx, self.dy, self.speed), \
                           function.returnTheComponentOfVectorY(self.dx, self.dy, self.speed))
 
-        if not self.rect.colliderect(self.gamearea):
+        if not self.rect.colliderect(parameter.getGamearea()):
             self.kill() 
     
     def rotate(self):
@@ -319,8 +314,9 @@ class PlayerBullet_tracking(PlayerBullet):
 
 
 class EnemyBullet(PlayerBullet):
-    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern, gamearea):
-        PlayerBullet.__init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern, gamearea)
+    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern):
+        PlayerBullet.__init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern)
+        self.radius = int(self.rect.width / 2)
 
     def update(self):
         now = parameter.getTimer()
@@ -329,7 +325,7 @@ class EnemyBullet(PlayerBullet):
         self.rect.center = (self.shootBulletPattern["f(x)"](now - self.generateTime)[0] + self.generateCenter[0], \
                             self.shootBulletPattern["f(x)"](now - self.generateTime)[1] + self.generateCenter[1])
 
-        if not self.rect.colliderect(self.gamearea):
+        if not self.rect.colliderect(parameter.getGamearea()):
             self.kill()
             
     def rotate(self, now):
@@ -347,12 +343,11 @@ class EnemyBullet(PlayerBullet):
 
 
 class Item(pygame.sprite.Sprite):
-    def __init__(self, name, image, generatePosition, gamearea):
+    def __init__(self, name, image, generatePosition):
         pygame.sprite.Sprite.__init__(self)
         self.name = name
         self.image = image
         self.generatePosition = generatePosition
-        self.gamearea = gamearea
         self.rect = self.image.get_rect(center = self.generatePosition)
 
         self.generateTime = parameter.getTimer()
@@ -375,8 +370,88 @@ class Item(pygame.sprite.Sprite):
             
         
         itemMovement(time)
-        if self.rect.top > self.gamearea.bottom:
+        if self.rect.top > parameter.getGamearea().bottom:
             self.kill()
         
 
+
+class BossStage(pygame.sprite.Group):
+    def __init__(self, order, time, ifSpellCard, bonus, Hp, bossImage, bossMovement, bossBulletImage, bossPutBulletPattern, BossShootBulletPattern, dropItem, background):
+        pygame.sprite.Group.__init__(self)
+        self.order = order 
+        self.time = time
+        self.ifSpellCard = ifSpellCard
+        self.bonus = bonus
+        self.Hp = Hp
+        self.bossImage = bossImage
+        self.bossMovement = bossMovement
+        self.bossBulletImage = bossBulletImage
+        self.bossPutBulletPattern = bossPutBulletPattern
+        self.bossShootBulletPattern = BossShootBulletPattern
+        self.dropItem = dropItem
+        self.background = background
+        if not self.background == None:
+            self.background_rect = self.background.get_rect(topleft = parameter.getGamearea().topleft)
+
+        self.ifUpdate = False
+        self.ifGenerateBoss = False
+        self.ifBonus = True
+        self.timer = 0
+    def generateBoss(self):
+        if not self.ifGenerateBoss:
+            self.boss = Enemy(name = self.order, \
+                            Hp = self.Hp, \
+                            image = self.bossImage, \
+                            movePattern = self.bossMovement, \
+                            enemyBulletImage = self.bossBulletImage, \
+                            putBulletPattern = self.bossPutBulletPattern, \
+                            shootBulletPattern = self.bossShootBulletPattern, \
+                            dropItem = self.dropItem)
+            parameter.getEnemySprites().add(self.boss)
+            parameter.getBossSprites().add(self.boss)
+            parameter.getAllSprites().add(self.boss)
+            self.ifGenerateBoss = True
+    def update(self, player):
+        if self.ifUpdate:
+            self.generateBoss()
+            self.timer += 1
+
+            
+            if player.rect.top < 0:
+                self.ifBonus = False
+                self.bonus = 0
+
+
+            if self.boss.Hp <= 0 :
+                self.ifUpdate = False
+                if self.ifBonus:
+                    parameter.addPoint(self.bonus)
+            elif self.timer > self.time:
+                self.ifUpdate = False
+                for i in (parameter.getEnemySprites() or parameter.getEnemyBulletSprites()):
+                    i.kill()
+
+
+    def drawBackground(self, surface):
+        if self.ifUpdate:
+            if not self.background == None:
+                surface.blit(self.background, self.background_rect) 
+
+
+    def drawInfo(self, surface, font):
+        if self.ifUpdate:
+            percentage = self.boss.Hp / self.Hp
+            HpBar = pygame.Rect(128, 64, 640 * percentage, 10)
+            if self.ifSpellCard:
+                HpBarColor = (245, 168, 140)
+            else:
+                HpBarColor = (255, 255, 255)
+            pygame.draw.rect(surface, HpBarColor, HpBar)
+
+            if self.time - self.timer <= 10 * 60:
+                textColor = (255, 0, 0)
+            else:
+                textColor = (255, 255, 255)
+            function.drawText(str(int(self.order)), font, (255, 255, 255), surface, 80, 48)
+            function.drawText("{0:2}".format(int((self.time - self.timer) / 60)), font, textColor, surface, 784, 48)
 

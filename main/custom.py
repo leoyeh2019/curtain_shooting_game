@@ -63,7 +63,8 @@ def playerShootBulletPattern_tracking(time):
 #     return {"f(x)" : lambda time : (dx * time, dy * time), \
 #             "f'(x)" : lambda time : (dx, dy)}
     
-    
+
+
 def enemyMovePattern_1(time):
     if time < 0:
         return 384, -10
@@ -186,6 +187,40 @@ def enemyPutBulletPattern_4(time):
 
 def enemyshootBulletPattern_4(putPattern):
     speed = 8
+    vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
+    dx = speed / vectorLength * putPattern[0]
+    dy = speed / vectorLength * putPattern[1]
+    
+    return {"f(x)" : lambda time : (dx * time, dy * time), \
+            "f'(x)" : lambda time : (dx, dy)}
+
+def bossMovePattern_1(time):
+    if time < 0:
+        return 384, -50
+    if time <= 50:
+        return 0, 5
+    else:
+        return 0, 0
+
+def bossPutBulletPattern_1(time):
+    r = 50
+    θ = time * 10
+    ways = 1
+    Δθ = random.randint(-15, 15)
+    positionList = []
+    for i in range(ways):
+        θ_i = math.radians((θ + ((i+1) * Δθ)) % 360)
+        positionList.append((r * math.cos(θ_i), r * math.sin(θ_i)))
+
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 50, \
+            "intermediateTime" : 1}
+
+ 
+
+def bossShootBulletPattern_4(putPattern):
+    speed = random.randint(10, 20)
     vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
     dx = speed / vectorLength * putPattern[0]
     dy = speed / vectorLength * putPattern[1]

@@ -6,11 +6,11 @@ import classes
 import custom 
 import function
 
+
 # ----------------------Constants----------------------
 WINDOWWIDTH = 1280
 WINDOWHEIGHT = 960
-GAMEAREAWIDTH = 768
-GAMEAREAHEIGHT = 896
+
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -34,6 +34,12 @@ ENEMY_WIDTH = 50
 ENEMY_HEIGHT = 50
 ENEMY_BULLET_WIDTH = 10
 ENEMY_BULLET_HEIGHT = 20
+
+BOSS_WIDTH = 100
+BOSS_HEIGHT = 100
+
+BOSS_BULLET_1_WIDTH = 51
+BOSS_BULLET_1_HEIGHT = 66
 
 ITEM_WIDTH = 20
 ITEM_HEIGHT = 20
@@ -86,7 +92,14 @@ powerItemImg = pygame.transform.scale(powerItemImg_raw, (ITEM_WIDTH, ITEM_HEIGHT
 
 pointItemImg_raw = pygame.image.load(path.join(img_dir, 'point_item.png')).convert()
 pointItemImg = pygame.transform.scale(pointItemImg_raw, (ITEM_WIDTH, ITEM_HEIGHT))           
-                
+
+bossImg_raw = pygame.image.load(path.join(img_dir, 'boss.png')).convert()
+bossImg = pygame.transform.scale(bossImg_raw, (BOSS_WIDTH, BOSS_HEIGHT))
+bossImg.set_colorkey(WHITE)
+
+bossBullet_1_Img_raw = pygame.image.load(path.join(img_dir, 'boss_bullet_1.png')).convert()
+bossBullet_1_Img = pygame.transform.scale(bossBullet_1_Img_raw, (BOSS_BULLET_1_WIDTH, BOSS_BULLET_1_HEIGHT))
+bossBullet_1_Img.set_colorkey(WHITE)
  
 # ----------------------Fonts----------------------
 
@@ -111,8 +124,7 @@ def generateItem(enemy, number, name, image):
             item = classes.Item(name = name, \
                                 image = image, \
                                 generatePosition = (enemy.rect.center[0] + random.randint(-enemy.rect.width * 1, enemy.rect.width *1), \
-                                                    enemy.rect.center[1] + random.randint(-enemy.rect.height *1, enemy.rect.height *1)), \
-                                gamearea = GAMEAREA)
+                                                    enemy.rect.center[1] + random.randint(-enemy.rect.height *1, enemy.rect.height *1)))
             itemList.append(item)
         for i in range(len(itemList)):
             for j in range(len(itemList) - i - 1):
@@ -125,30 +137,25 @@ def generateItem(enemy, number, name, image):
         parameter.getItemSprites().add(itemList[i])
 
 
-def drawText(text, font, color, surface, x, y):
-    textobj = font.render(text, 1, color)
-    textrect = textobj.get_rect()
-    textrect.topleft = (x, y)
-    surface.blit(textobj, textrect)
 
 
 # ----------------------Main----------------------
 
 # Set Gamearea
-GAMEAREA = pygame.Rect(64, 32, GAMEAREAWIDTH, GAMEAREAHEIGHT)
+    # Set in parameter.py
 
 
 # Set parameter
 running = True 
-point = 0
+
 
 
 # Set player, enemy, bullet
 gameareaBackground1 = classes.Background(image = gameareaBackgroundImg, \
-                                         topleft = function.raletivePosition(GAMEAREA.topleft, (0, -1440)),\
+                                         topleft = function.raletivePosition(parameter.getGamearea().topleft, (0, -1440)),\
                                          speed = 1)
 gameareaBackground2 = classes.Background(image = gameareaBackgroundImg, \
-                                         topleft = GAMEAREA.topleft,\
+                                         topleft = parameter.getGamearea().topleft,\
                                          speed = 1)
                                     
 parameter.getBackgroundSprites().add(gameareaBackground1)
@@ -162,8 +169,7 @@ player = classes.Player(name = "player", \
                         playerSpeed = (6, 3), \
                         playerDamage = (6, 4), \
                         putBulletPattern = (custom.playerPutbulletPattern, custom.playerPutBulletPattern_tracking), \
-                        shootBulletPattern = (custom.playerShootBulletPattern, custom.playerShootBulletPattern_tracking), \
-                        gamearea = GAMEAREA)
+                        shootBulletPattern = (custom.playerShootBulletPattern, custom.playerShootBulletPattern_tracking))
 
 
 
@@ -173,11 +179,10 @@ def newEnemy_1():
                           Hp = 150, \
                           image = enemyImg, \
                           movePattern = custom.enemyMovePattern_1, \
-                          enemyBulletImage = enemyBulletImg, \
-                          putBulletPattern = custom.enemyPutBulletPattern_1, \
-                          shootBulletPattern = custom.enemyshootBulletPattern_1, \
-                          dropItem = (2, 2), \
-                          gamearea = GAMEAREA)
+                          enemyBulletImage = [enemyBulletImg], \
+                          putBulletPattern = [custom.enemyPutBulletPattern_1], \
+                          shootBulletPattern = [custom.enemyshootBulletPattern_1], \
+                          dropItem = (2, 2))
     parameter.getAllSprites().add(enemy)
     parameter.getEnemySprites().add(enemy)
 
@@ -186,11 +191,10 @@ def newEnemy_2():
                           Hp = 30, \
                           image = enemyImg, \
                           movePattern = custom.enemyMovePattern_2, \
-                          enemyBulletImage = enemyBulletImg, \
-                          putBulletPattern = custom.enemyPutBulletPattern_2, \
-                          shootBulletPattern = custom.enemyshootBulletPattern_2, \
-                          dropItem = (2, 4), \
-                          gamearea = GAMEAREA)
+                          enemyBulletImage = [enemyBulletImg], \
+                          putBulletPattern = [custom.enemyPutBulletPattern_2], \
+                          shootBulletPattern = [custom.enemyshootBulletPattern_2], \
+                          dropItem = (2, 4))
     parameter.getAllSprites().add(enemy)
     parameter.getEnemySprites().add(enemy)
 def newEnemy_3():
@@ -198,11 +202,10 @@ def newEnemy_3():
                           Hp = 30, \
                           image = enemyImg, \
                           movePattern = custom.enemyMovePattern_3, \
-                          enemyBulletImage = enemyBulletImg, \
-                          putBulletPattern = custom.enemyPutBulletPattern_3, \
-                          shootBulletPattern = custom.enemyshootBulletPattern_3, \
-                          dropItem = (1, 4), \
-                          gamearea = GAMEAREA)
+                          enemyBulletImage = [enemyBulletImg], \
+                          putBulletPattern = [custom.enemyPutBulletPattern_3], \
+                          shootBulletPattern = [custom.enemyshootBulletPattern_3], \
+                          dropItem = (1, 4))
     parameter.getAllSprites().add(enemy)
     parameter.getEnemySprites().add(enemy)
 
@@ -211,19 +214,34 @@ parameter.getAllSprites().add(player.collisionBox)
 
 def newEnemy_4():
     enemy = classes.Enemy(name = "enemy", \
-                          Hp = 2000, \
+                          Hp = 200, \
                           image = enemyImg, \
                           movePattern = custom.enemyMovePattern_4, \
-                          enemyBulletImage = enemyBulletImg, \
-                          putBulletPattern = custom.enemyPutBulletPattern_4, \
-                          shootBulletPattern = custom.enemyshootBulletPattern_4, \
-                          dropItem = (0, 6), \
-                          gamearea = GAMEAREA)
+                          enemyBulletImage = [enemyBulletImg], \
+                          putBulletPattern = [custom.enemyPutBulletPattern_4], \
+                          shootBulletPattern = [custom.enemyshootBulletPattern_4], \
+                          dropItem = (0, 6))
     parameter.getAllSprites().add(enemy)
     parameter.getEnemySprites().add(enemy)
 
 parameter.getAllSprites().add(player)
 parameter.getAllSprites().add(player.collisionBox)
+
+
+stageList = []
+boss_stage_1 = classes.BossStage(order = 1, \
+                                 time = 5 * 60, \
+                                 ifSpellCard = False, \
+                                 bonus = 0, \
+                                 Hp = 3000, \
+                                 bossImage = bossImg, \
+                                 bossMovement = custom.bossMovePattern_1, \
+                                 bossBulletImage = [bossBullet_1_Img], \
+                                 bossPutBulletPattern = [custom.bossPutBulletPattern_1], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_4], \
+                                 dropItem = (0, 0), \
+                                 background = None)
+stageList.append(boss_stage_1)
 
 # Game loop
 while running:
@@ -235,17 +253,24 @@ while running:
             if event.key == K_ESCAPE:
                 running = False
     # Generate Enemy
-    if parameter.getTimer() >= 100 and parameter.getTimer() <= 1600:
-        if (parameter.getTimer()  - 100) % 500 == 0:
-            newEnemy_1()
+    # if parameter.getTimer() >= 100 and parameter.getTimer() <= 1600:
+    #     if (parameter.getTimer()  - 100) % 500 == 0:
+    #         newEnemy_1()
     
-    if parameter.getTimer() >= 2200 and parameter.getTimer() <= 3200:
-        if (parameter.getTimer()  - 2200) % 50 == 0:
-            newEnemy_2()
-            newEnemy_3()
+    # if parameter.getTimer() >= 2200 and parameter.getTimer() <= 3200:
+    #     if (parameter.getTimer()  - 2200) % 50 == 0:
+    #         newEnemy_2()
+    #         newEnemy_3()
     
-    if parameter.getTimer() == 3500:
-        newEnemy_4()
+    # if parameter.getTimer() == 3500:
+    #     newEnemy_4()
+
+    if parameter.getTimer() >= 100:
+        stageList[0].ifUpdate = True
+        for i in range(len(stageList)):
+            stageList[i].update(player)
+
+    
     
     if parameter.getTimer() > 50 and not bool(parameter.getEnemySprites()):
         for i in parameter.getBackgroundSprites():
@@ -259,20 +284,21 @@ while running:
     parameter.getAllSprites().update()
 
     # Collidision Destction
+
     # Player_Bullet v.s. Enemy
     for e in parameter.getEnemySprites():
         for pb in parameter.getPlayerBulletSprites():
             if pygame.sprite.collide_rect(e, pb):
                 pb.kill()
                 e.Hp -= pb.damage
-                point += 100
+                parameter.addPoint(100)
         if e.Hp < 0:
             
             generateItem(e, e.dropItem[0], "power", powerItemImg)
             
             generateItem(e, e.dropItem[1], "point", pointItemImg)
             e.kill()
-            point += 10000
+            parameter.addPoint(10000)
                     
                     
                     
@@ -287,7 +313,7 @@ while running:
     for p in parameter.getItemSprites():
         if pygame.sprite.collide_circle(p, player):
             if p.name == "point":
-                point += 100000
+                parameter.addPoint(100000)
             if p.name == "power":
                 player.power += 1
                 if player.power > 48:
@@ -300,9 +326,10 @@ while running:
 
     # Draw
     windowSurface.fill(BLACK)
-    pygame.draw.rect(windowSurface, BLUE, GAMEAREA)
+    pygame.draw.rect(windowSurface, WHITE, parameter.getGamearea())
     parameter.getBackgroundSprites().draw(windowSurface)
-
+    for i in stageList:
+        i.drawBackground(windowSurface)
     """
     check if the bullet just generated
     use 'blit' to draw sprites one by one
@@ -319,10 +346,13 @@ while running:
 
     windowSurface.blit(background, background_rect)
 
-    drawText("Point  {0:0>12}".format(point), Inconsolata_32, BLACK, windowSurface, 864, 64)
-    drawText("Lifes  {0:0>3}".format(player.lifes), Inconsolata_32, BLACK, windowSurface, 864, 128)
-    drawText("Power  {0:0>3}".format(player.power), Inconsolata_32, BLACK, windowSurface, 864, 192)
-    drawText("Timer  {0:0>3}".format(parameter.getTimer()), Inconsolata_32, BLACK, windowSurface, 864, 256)
+    for i in stageList:
+        i.drawInfo(windowSurface, Inconsolata_32)
+
+    function.drawText("Point  {0:0>12}".format(parameter.getPoint()), Inconsolata_32, BLACK, windowSurface, 864, 64)
+    function.drawText("Lifes  {0:0>3}".format(player.lifes), Inconsolata_32, BLACK, windowSurface, 864, 128)
+    function.drawText("Power  {0:0>3}".format(player.power), Inconsolata_32, BLACK, windowSurface, 864, 192)
+    function.drawText("Timer  {0:0>3}".format(parameter.getTimer()), Inconsolata_32, BLACK, windowSurface, 864, 256)
 
     pygame.display.update()
 

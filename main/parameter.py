@@ -1,5 +1,12 @@
 import pygame
 
+GAMEAREAWIDTH = 768
+GAMEAREAHEIGHT = 896
+GAMEAREA = pygame.Rect(64, 32, GAMEAREAWIDTH, GAMEAREAHEIGHT)
+
+def getGamearea():
+    global GAMEAREA
+    return GAMEAREA
 
 
 timer = 0
@@ -11,6 +18,17 @@ def accTimer():
 def getTimer():
     global timer
     return timer
+
+
+point = 0
+
+def getPoint():
+    global point
+    return point
+
+def addPoint(add):
+    global point
+    point += add
 
 backgroundSprites = pygame.sprite.Group()
 
@@ -39,6 +57,11 @@ def getEnemySprites():
     global enemySprites
     return enemySprites
 
+bossSprites = pygame.sprite.Group()
+
+def getBossSprites():
+    global bossSprites
+    return bossSprites
 
 enemyBulletSprites = pygame.sprite.Group()
 

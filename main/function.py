@@ -1,6 +1,13 @@
 import pygame, random, math
 import parameter
 
+
+def drawText(text, font, color, surface, x, y):
+    textobj = font.render(text, 1, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
+    
 def raletivePosition(pointA, pointB):
     """
     raletivePosition(pointA = tuple, pointB = tuple)
@@ -44,9 +51,15 @@ def findMostCloseEnemy(playerCenter):
             minimunIndex = i
     return enemyList[minimunIndex].rect.center
 
-# def as_polar(x, y):
+def as_polar_degree(x, y):
+    r = math.sqrt(x ** 2 + y ** 2)
+    θ = math.acos(x / r)
+    if y < 0:
+        θ = 2 * math.pi - abs(θ)
 
+    return r, math.degrees(θ)
 
+    
 
 if __name__ == "__main__":
     print(distance([8, 7], (-5, 6)))
