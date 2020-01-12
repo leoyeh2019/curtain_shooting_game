@@ -77,7 +77,7 @@ class Player(pygame.sprite.Sprite):
 
         self.lastShootingTime = parameter.getTimer()
         
-        self.power = 48
+        self.power = 0
 
         self.hidden = False
         self.hiddenTime = parameter.getTimer()
@@ -244,6 +244,8 @@ class Enemy(pygame.sprite.Sprite):
                         parameter.getAllSprites().add(enemyBullet)
                         parameter.getEnemyBulletSprites().add(enemyBullet)
                     self.lastShootingTime[j] = now
+    def kill(self):
+        super().kill()
                 
                 
 
@@ -375,9 +377,8 @@ class Item(pygame.sprite.Sprite):
         
 
 
-class BossStage(pygame.sprite.Group):
+class BossStage():
     def __init__(self, order, time, ifSpellCard, bonus, Hp, bossImage, bossMovement, bossBulletImage, bossPutBulletPattern, BossShootBulletPattern, dropItem, background):
-        pygame.sprite.Group.__init__(self)
         self.order = order 
         self.time = time
         self.ifSpellCard = ifSpellCard
@@ -393,7 +394,9 @@ class BossStage(pygame.sprite.Group):
         if not self.background == None:
             self.background_rect = self.background.get_rect(topleft = parameter.getGamearea().topleft)
 
-        self.ifUpdate = False
+
+        self.isAlive = False
+        self.isDead = False
         self.ifGenerateBoss = False
         self.ifBonus = True
         self.timer = 0
@@ -412,7 +415,7 @@ class BossStage(pygame.sprite.Group):
             parameter.getAllSprites().add(self.boss)
             self.ifGenerateBoss = True
     def update(self, player):
-        if self.ifUpdate:
+        if self.isAlive:
             self.generateBoss()
             self.timer += 1
 
@@ -423,23 +426,27 @@ class BossStage(pygame.sprite.Group):
 
 
             if self.boss.Hp <= 0 :
-                self.ifUpdate = False
+                self.isAlive = False
+                self.isDead = True
+                for i in (parameter.getEnemySprites() or parameter.getEnemyBulletSprites()):
+                    i.kill()
                 if self.ifBonus:
                     parameter.addPoint(self.bonus)
             elif self.timer > self.time:
-                self.ifUpdate = False
+                self.isAlive = False
+                self.isDead = True
                 for i in (parameter.getEnemySprites() or parameter.getEnemyBulletSprites()):
                     i.kill()
 
 
     def drawBackground(self, surface):
-        if self.ifUpdate:
+        if self.isAlive:
             if not self.background == None:
                 surface.blit(self.background, self.background_rect) 
 
 
     def drawInfo(self, surface, font):
-        if self.ifUpdate:
+        if self.isAlive:
             percentage = self.boss.Hp / self.Hp
             HpBar = pygame.Rect(128, 64, 640 * percentage, 10)
             if self.ifSpellCard:

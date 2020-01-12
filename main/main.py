@@ -147,7 +147,7 @@ def generateItem(enemy, number, name, image):
 
 # Set parameter
 running = True 
-
+stageInitiated = True
 
 
 # Set player, enemy, bullet
@@ -166,7 +166,7 @@ player = classes.Player(name = "player", \
                         image = playerImg, \
                         collisionBoxImage = playerCollisionBoxImg, \
                         playerBulletImage = (playerBulletImg, playerBulletTrackingImg), \
-                        playerSpeed = (6, 3), \
+                        playerSpeed = (7, 4), \
                         playerDamage = (6, 4), \
                         putBulletPattern = (custom.playerPutbulletPattern, custom.playerPutBulletPattern_tracking), \
                         shootBulletPattern = (custom.playerShootBulletPattern, custom.playerShootBulletPattern_tracking))
@@ -230,7 +230,7 @@ parameter.getAllSprites().add(player.collisionBox)
 
 stageList = []
 boss_stage_1 = classes.BossStage(order = 1, \
-                                 time = 5 * 60, \
+                                 time = 60 * 60, \
                                  ifSpellCard = False, \
                                  bonus = 0, \
                                  Hp = 3000, \
@@ -238,10 +238,23 @@ boss_stage_1 = classes.BossStage(order = 1, \
                                  bossMovement = custom.bossMovePattern_1, \
                                  bossBulletImage = [bossBullet_1_Img], \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_1], \
-                                 BossShootBulletPattern = [custom.bossShootBulletPattern_4], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_1], \
                                  dropItem = (0, 0), \
                                  background = None)
 stageList.append(boss_stage_1)
+boss_stage_3 = classes.BossStage(order = 2, \
+                                 time = 60 * 60, \
+                                 ifSpellCard = False, \
+                                 bonus = 0, \
+                                 Hp = 3000, \
+                                 bossImage = bossImg, \
+                                 bossMovement = custom.bossMovePattern_3, \
+                                 bossBulletImage = [bossBullet_1_Img], \
+                                 bossPutBulletPattern = [custom.bossPutBulletPattern_3], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_3], \
+                                 dropItem = (0, 0), \
+                                 background = None)
+stageList.append(boss_stage_3)
 
 # Game loop
 while running:
@@ -253,22 +266,27 @@ while running:
             if event.key == K_ESCAPE:
                 running = False
     # Generate Enemy
-    # if parameter.getTimer() >= 100 and parameter.getTimer() <= 1600:
-    #     if (parameter.getTimer()  - 100) % 500 == 0:
-    #         newEnemy_1()
+    if parameter.getTimer() >= 100 and parameter.getTimer() <= 1600:
+        if (parameter.getTimer()  - 100) % 500 == 0:
+            newEnemy_1()
     
-    # if parameter.getTimer() >= 2200 and parameter.getTimer() <= 3200:
-    #     if (parameter.getTimer()  - 2200) % 50 == 0:
-    #         newEnemy_2()
-    #         newEnemy_3()
+    if parameter.getTimer() >= 2200 and parameter.getTimer() <= 3200:
+        if (parameter.getTimer()  - 2200) % 50 == 0:
+            newEnemy_2()
+            newEnemy_3()
     
-    # if parameter.getTimer() == 3500:
-    #     newEnemy_4()
-
-    if parameter.getTimer() >= 100:
-        stageList[0].ifUpdate = True
-        for i in range(len(stageList)):
-            stageList[i].update(player)
+    if parameter.getTimer() == 3500:
+        newEnemy_4()
+    
+    if parameter.getTimer() >= 5000 and stageInitiated:
+        stageList[0].isAlive = True
+        stageInitiated = False
+        
+    for i in range(len(stageList)):
+        if stageList[i].isDead:
+            stageList[i+1].isAlive = True
+            stageList[i].isDead = False
+        stageList[i].update(player)
 
     
     
