@@ -494,3 +494,96 @@ def bossShootBulletPattern_6(putPattern):
     speed = 10
     return {"f(x)" : lambda time : (0, speed * time), \
             "f'(x)" : lambda time : (0, speed)}
+
+
+def bossMovePattern_7(time):
+    if time < 0:
+        return 384, 200
+    else:
+        return 0, 0
+
+def bossPutBulletPattern_7_1(time):
+    r = 10
+    θ = time * 10
+    ways = 1
+    Δθ = random.randint(-15, 15)
+    positionList = []
+    for i in range(ways):
+        θ_i = math.radians((θ + ((i+1) * Δθ)) % 360)
+        positionList.append((r * math.cos(θ_i), r * math.sin(θ_i)))
+
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 150, \
+            "intermediateTime" : 1}
+
+def bossPutBulletPattern_7_2(time):
+    r = 10
+    θ = time * 10
+    ways = 1
+    Δθ = random.randint(-15, 15)
+    positionList = []
+    for i in range(ways):
+        θ_i = - math.radians((θ + ((i+1) * Δθ)) % 360)
+        positionList.append((r * math.cos(θ_i), r * math.sin(θ_i)))
+
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 150, \
+            "intermediateTime" : 1}
+
+def bossShootBulletPattern_7_1(putPattern):
+    speed = random.randint(10, 20)
+    vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
+    dx = speed / vectorLength * putPattern[0]
+    dy = speed / vectorLength * putPattern[1]
+    
+    return {"f(x)" : lambda time : (dx * time, dy * time), \
+            "f'(x)" : lambda time : (dx, dy)}
+
+def bossShootBulletPattern_7_2(putPattern):
+    speed = random.randint(5, 10)
+    vectorLength = pygame.math.Vector2(putPattern[0], putPattern[1]).length()
+    dx = speed / vectorLength * putPattern[0]
+    dy = speed / vectorLength * putPattern[1]
+    
+    return {"f(x)" : lambda time : (dx * time, dy * time), \
+            "f'(x)" : lambda time : (dx, dy)}
+
+
+def bossMovePattern_8_1(time):
+    if time < 0:
+        return 384, 200
+    else:
+        return 0, 0
+
+
+def bossPutBulletPattern_8_1(time):
+    ways = 1
+    generateRangeX = 400
+    generateRangeY = 200
+    positionList = []
+    for i in range(ways):
+        positionList.append((random.randint(-generateRangeX, generateRangeX), random.randint(-generateRangeY, 0)))
+
+    deathGenerateBullet = {}
+    deathGenerateBullet["generateBulletNumber"] = 1
+    deathGenerateBullet["putPattern"] = (0, 0)
+    deathGenerateBullet["shootPattern"] = bossShootBulletPattern_8_1_1
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 150, \
+            "intermediateTime" : 15, \
+            "deathGenerate" : True, \
+            "generateBullet" : deathGenerateBullet}
+
+def bossShootBulletPattern_8_1_1(putPattern):
+    speed = - math.sqrt(700 * 2 * 0.20)
+    g = 0.25
+    return {"f(x)" : lambda time : (0, speed * time + 0.5 * g * (time ** 2)), \
+            "f'(x)" : lambda time : (0, speed + g * time)}
+def bossShootBulletPattern_8_1(putPattern):
+    speed = 0
+    g = 0.20
+    return {"f(x)" : lambda time : (0, speed * time + 0.5 * g * (time ** 2)), \
+            "f'(x)" : lambda time : (0, speed + g * time)}

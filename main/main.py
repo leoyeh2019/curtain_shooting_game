@@ -102,7 +102,7 @@ bossBullet_1_Img.set_colorkey(WHITE)
 
 enemyBulletImgList = []
 
-for i in range(0, 4):
+for i in range(0, 8):
     image = pygame.image.load(path.join(img_dir, 'enemy_bullet_{}.png'.format(i))).convert()
     image.set_colorkey(WHITE)
     enemyBulletImgList.append(image)
@@ -298,7 +298,7 @@ stageList = []
 #                                  time = 60 * 60, \
 #                                  ifSpellCard = False, \
 #                                  bonus = 0, \
-#                                  Hp = 4500, \
+#                                  Hp = 3000, \
 #                                  bossImage = bossImg, \
 #                                  bossMovement = custom.bossMovePattern_5, \
 #                                  bossBulletImage = [bossBulletImgList[2]], \
@@ -307,19 +307,45 @@ stageList = []
 #                                  dropItem = (0, 0), \
 #                                  background = None)
 # stageList.append(boss_stage_5)
-boss_stage_6 = classes.BossStage(order = 6, \
+# boss_stage_6 = classes.BossStage(order = 6, \
+#                                  time = 60 * 60, \
+#                                  ifSpellCard = True, \
+#                                  bonus = 100000000, \
+#                                  Hp = 4500, \
+#                                  bossImage = bossImg, \
+#                                  bossMovement = custom.bossMovePattern_6, \
+#                                  bossBulletImage = [(enemyBulletImgList[2], enemyBulletImgList[3])], \
+#                                  bossPutBulletPattern = [custom.bossPutBulletPattern_6], \
+#                                  BossShootBulletPattern = [custom.bossShootBulletPattern_6], \
+#                                  dropItem = (8, 16), \
+#                                  background = None)
+# stageList.append(boss_stage_6)
+# boss_stage_7 = classes.BossStage(order = 7, \
+#                                  time = 60 * 60, \
+#                                  ifSpellCard = False, \
+#                                  bonus = 0, \
+#                                  Hp = 3000, \
+#                                  bossImage = bossImg, \
+#                                  bossMovement = custom.bossMovePattern_7, \
+#                                  bossBulletImage = [bossBulletImgList[3], bossBulletImgList[3]], \
+#                                  bossPutBulletPattern = [custom.bossPutBulletPattern_7_1, custom.bossPutBulletPattern_7_2], \
+#                                  BossShootBulletPattern = [custom.bossShootBulletPattern_7_1, custom.bossShootBulletPattern_7_2], \
+#                                  dropItem = (0, 0), \
+#                                  background = None)
+# stageList.append(boss_stage_7)
+boss_stage_8 = classes.BossStage(order = 8, \
                                  time = 60 * 60, \
                                  ifSpellCard = True, \
                                  bonus = 100000000, \
                                  Hp = 4500, \
                                  bossImage = bossImg, \
-                                 bossMovement = custom.bossMovePattern_6, \
-                                 bossBulletImage = [(enemyBulletImgList[2], enemyBulletImgList[3])], \
-                                 bossPutBulletPattern = [custom.bossPutBulletPattern_6], \
-                                 BossShootBulletPattern = [custom.bossShootBulletPattern_6], \
+                                 bossMovement = custom.bossMovePattern_8_1, \
+                                 bossBulletImage = [(enemyBulletImgList[4], enemyBulletImgList[5]), (enemyBulletImgList[6], enemyBulletImgList[7])], \
+                                 bossPutBulletPattern = [custom.bossPutBulletPattern_8_1, custom.bossPutBulletPattern_8_1], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_8_1, custom.bossShootBulletPattern_8_1], \
                                  dropItem = (8, 16), \
                                  background = None)
-stageList.append(boss_stage_6)
+stageList.append(boss_stage_8)
 
 
 
