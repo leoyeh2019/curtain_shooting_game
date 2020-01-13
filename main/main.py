@@ -240,7 +240,7 @@ if __name__ == "__main__":
         parameter.getBackgroundSprites().add(gameareaBackground2)
 
         player = classes.Player(name = "player", \
-                                lifes = 1, \
+                                lifes = 9, \
                                 image = playerImg, \
                                 collisionBoxImage = playerCollisionBoxImg, \
                                 playerBulletImage = (playerBulletImg, playerBulletTrackingImg), \
@@ -420,7 +420,7 @@ if __name__ == "__main__":
                                         time = 120 * 60, \
                                         ifSpellCard = True, \
                                         bonus = 30000000, \
-                                        Hp = 9, \
+                                        Hp = 9000, \
                                         bossImage = bossImg, \
                                         bossMovement = custom.bossMovePattern_9, \
                                         bossBulletImage = [bossBulletImgList[0], bossBulletImgList[1], bossBulletImgList[2], bossBulletImgList[3]], \
@@ -537,7 +537,7 @@ if __name__ == "__main__":
 
             # Draw
             windowSurface.fill(BLACK)
-            pygame.draw.rect(windowSurface, WHITE, parameter.getGamearea())
+            pygame.draw.rect(windowSurface, (131, 141, 121), parameter.getGamearea())
             parameter.getBackgroundSprites().draw(windowSurface)
             for i in stageList:
                 i.drawBackground(windowSurface)

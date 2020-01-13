@@ -1,9 +1,28 @@
 # Final Project - Bullet Hell
-## Game Design
+## Instructions
 - [Install Pygame](http://kidscancode.org/blog/2015/09/pygame_install/)
+
 ```
 注意在安裝Python時要將"Add Python to PATH"點選開來，否則建議重灌
+
+點選：Clone or download -> Download ZIP
+
+使用IDLE開啟"main"資料夾的"main.py"，並執行此程式
+
+若遊戲視窗顯示過大，至：顯示設定->縮放與版面配置->變更文字、應用程式與其他項目的大小，
+將縮放比例調整成100% (win10)
+
+若有任何技術上的問題，歡迎來信聯絡：leoyeh2013@gmail.com
 ```
+## Key Control
+```
+z : 射擊
+shift : 按住移動速度變慢
+方向鍵 : 移動
+exc : 退出遊戲
+```
+## Game Design
+
 - [Flow Chart](https://www.plectica.com/maps/2PZGOB4YP/edit/XVO8LRCRA?fbclid=IwAR2TEoxdSrXTuMBWuuYm5yJp0RdAc9uVFAxQt_G-pHPismyqgdYlE3BYOx0)
 
 ```
