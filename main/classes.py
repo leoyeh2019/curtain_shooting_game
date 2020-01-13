@@ -520,11 +520,13 @@ class Item(pygame.sprite.Sprite):
 
 
 class BossStage():
-    def __init__(self, order, time, ifSpellCard, bonus, Hp, bossImage, bossMovement, bossBulletImage, bossPutBulletPattern, BossShootBulletPattern, dropItem, background):
+    def __init__(self, order, time, ifSpellCard, bonus, Hp, bossImage, bossMovement, bossBulletImage, bossPutBulletPattern, BossShootBulletPattern, dropItem, background, spellCardName = None):
         self.order = order 
         self.time = time
         self.ifSpellCard = ifSpellCard
-        self.bonus = bonus
+        self.spellCardName = spellCardName
+        self.bonus_origin = bonus
+        self.bonus = self.bonus_origin
         self.Hp = Hp
         self.bossImage = bossImage
         self.bossMovement = bossMovement
@@ -561,8 +563,12 @@ class BossStage():
             self.ifGenerateBoss = True
     def update(self, player):
         if self.isAlive:
+            if self.timer < 10:
+                for i in parameter.getEnemyBulletSprites():
+                    i.kill()
             self.generateBoss()
-            self.timer += 1
+            
+
 
             
             if player.rect.top < 0:
@@ -582,6 +588,9 @@ class BossStage():
                 self.isDead = True
                 for i in (parameter.getEnemySprites() or parameter.getEnemyBulletSprites()):
                     i.kill()
+            if self.ifBonus:
+                self.bonus -= int(self.bonus_origin / 4000)
+            self.timer += 1
 
 
     def drawBackground(self, surface):
@@ -598,7 +607,7 @@ class BossStage():
     def drawInfo(self, surface, font):
         if self.isAlive:
             percentage = self.boss.Hp / self.Hp
-            HpBar = pygame.Rect(128, 64, 640 * percentage, 10)
+            HpBar = pygame.Rect(128, 64, 640 * percentage, 8)
             if self.ifSpellCard:
                 HpBarColor = (245, 168, 140)
             else:
@@ -611,4 +620,8 @@ class BossStage():
                 textColor = (255, 255, 255)
             function.drawText(str(int(self.order)), font, (255, 255, 255), surface, 80, 48)
             function.drawText("{0:2}".format(int((self.time - self.timer) / 60)), font, textColor, surface, 784, 48)
+            if self.ifSpellCard:
+                function.drawText(str(self.spellCardName), font, (255, 255, 255), surface, 128, 80)
+                function.drawText(("bonus : {0:>7}".format(self.bonus)), font, (255, 255, 255), surface, 384, 80)
+
 

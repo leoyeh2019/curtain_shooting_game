@@ -114,6 +114,12 @@ for i in range(0, 4):
     image.set_colorkey(WHITE)
     bossBulletImgList.append(image)
 
+bossSpellCardBackgroundImgList = []
+
+for i in range(0, 4):
+    image = pygame.image.load(path.join(img_dir, 'boss_spell_card_background_{}.png'.format(i))).convert()
+    bossSpellCardBackgroundImgList.append(image)
+
 # ----------------------Fonts----------------------
 
 Helvetica_24 = pygame.font.Font(path.join(font_dir, "Helvetica.ttf"), 24)
@@ -258,7 +264,7 @@ stageList.append(boss_stage_1)
 boss_stage_2 = classes.BossStage(order = 2, \
                                  time = 60 * 60, \
                                  ifSpellCard = True, \
-                                 bonus = 100000000, \
+                                 bonus = 10000000, \
                                  Hp = 4500, \
                                  bossImage = bossImg, \
                                  bossMovement = custom.bossMovePattern_2, \
@@ -266,7 +272,7 @@ boss_stage_2 = classes.BossStage(order = 2, \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_2_1, custom.bossPutBulletPattern_2_2, custom.bossPutBulletPattern_2_3, custom.bossPutBulletPattern_2_4], \
                                  BossShootBulletPattern = [custom.bossShootBulletPattern_2_1, custom.bossShootBulletPattern_2_1, custom.bossShootBulletPattern_2_3, custom.bossShootBulletPattern_2_3], \
                                  dropItem = (8, 16), \
-                                 background = pygame.transform.scale(bossBulletImgList[0], (510, 660)))
+                                 background = bossSpellCardBackgroundImgList[0])
 stageList.append(boss_stage_2)
 boss_stage_3 = classes.BossStage(order = 3, \
                                  time = 60 * 60, \
@@ -284,7 +290,7 @@ stageList.append(boss_stage_3)
 boss_stage_4 = classes.BossStage(order = 4, \
                                  time = 60 * 60, \
                                  ifSpellCard = True, \
-                                 bonus = 100000000, \
+                                 bonus = 10000000, \
                                  Hp = 4500, \
                                  bossImage = bossImg, \
                                  bossMovement = custom.bossMovePattern_4, \
@@ -292,7 +298,7 @@ boss_stage_4 = classes.BossStage(order = 4, \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_4_1, custom.bossPutBulletPattern_4_2], \
                                  BossShootBulletPattern = [custom.bossShootBulletPattern_4_1, custom.bossShootBulletPattern_4_2], \
                                  dropItem = (8, 16), \
-                                 background = None)
+                                 background = bossSpellCardBackgroundImgList[1])
 stageList.append(boss_stage_4)
 boss_stage_5 = classes.BossStage(order = 5, \
                                  time = 60 * 60, \
@@ -310,7 +316,7 @@ stageList.append(boss_stage_5)
 boss_stage_6 = classes.BossStage(order = 6, \
                                  time = 60 * 60, \
                                  ifSpellCard = True, \
-                                 bonus = 100000000, \
+                                 bonus = 10000000, \
                                  Hp = 4500, \
                                  bossImage = bossImg, \
                                  bossMovement = custom.bossMovePattern_6, \
@@ -318,7 +324,7 @@ boss_stage_6 = classes.BossStage(order = 6, \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_6], \
                                  BossShootBulletPattern = [custom.bossShootBulletPattern_6], \
                                  dropItem = (8, 16), \
-                                 background = None)
+                                 background = bossSpellCardBackgroundImgList[2])
 stageList.append(boss_stage_6)
 boss_stage_7 = classes.BossStage(order = 7, \
                                  time = 60 * 60, \
@@ -336,7 +342,7 @@ stageList.append(boss_stage_7)
 boss_stage_8 = classes.BossStage(order = 8, \
                                  time = 60 * 60, \
                                  ifSpellCard = True, \
-                                 bonus = 100000000, \
+                                 bonus = 10000000, \
                                  Hp = 4500, \
                                  bossImage = bossImg, \
                                  bossMovement = custom.bossMovePattern_8_1, \
@@ -344,13 +350,13 @@ boss_stage_8 = classes.BossStage(order = 8, \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_8_1, custom.bossPutBulletPattern_8_1], \
                                  BossShootBulletPattern = [custom.bossShootBulletPattern_8_1, custom.bossShootBulletPattern_8_1], \
                                  dropItem = (8, 16), \
-                                 background = None)
+                                 background = bossSpellCardBackgroundImgList[3])
 stageList.append(boss_stage_8)
 
 boss_stage_9 = classes.BossStage(order = 9, \
                                  time = 120 * 60, \
                                  ifSpellCard = True, \
-                                 bonus = 100000000, \
+                                 bonus = 30000000, \
                                  Hp = 9000, \
                                  bossImage = bossImg, \
                                  bossMovement = custom.bossMovePattern_9, \
