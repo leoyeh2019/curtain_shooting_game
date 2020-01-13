@@ -1,6 +1,7 @@
 import pygame, json, math
 import parameter
 import function
+import sound
 
 
 def get_parameter(parameter):
@@ -77,7 +78,7 @@ class Player(pygame.sprite.Sprite):
 
         self.lastShootingTime = parameter.getTimer()
         
-        self.power = 48
+        self.power = 0
 
         self.hidden = False
         self.hiddenTime = parameter.getTimer()
@@ -157,6 +158,7 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
         now = parameter.getTimer()
         if now - self.lastShootingTime > 6:
+            sound.bullet_SE_list[0].play()
             # powerup
             if self.power in range(0, 8):
                 # line 1 way
@@ -245,6 +247,7 @@ class Enemy(pygame.sprite.Sprite):
         for j in range(len(self.enemyBulletImage)):
             if now - self.generateTime > self.putBulletPattern[j](now - self.generateTime)["delateTime"]:
                 if now - self.lastShootingTime[j] > self.putBulletPattern[j](now - self.generateTime)["intermediateTime"]:
+                    sound.bullet_SE_list[2].play()
                     for i in range(self.putBulletPattern[j](now)["numbers"]):
                         x = self.putBulletPattern[j](now)["position"][i][0]
                         y = self.putBulletPattern[j](now)["position"][i][1]
@@ -618,10 +621,10 @@ class BossStage():
                 textColor = (255, 0, 0)
             else:
                 textColor = (255, 255, 255)
-            function.drawText(str(int(self.order)), font, (255, 255, 255), surface, 80, 48)
-            function.drawText("{0:2}".format(int((self.time - self.timer) / 60)), font, textColor, surface, 784, 48)
+            function.drawText(str(int(self.order)), font[0], (255, 255, 255), surface, 80, 48)
+            function.drawText("{0:2}".format(int((self.time - self.timer) / 60)), font[0], textColor, surface, 784, 48)
             if self.ifSpellCard:
-                function.drawText(str(self.spellCardName), font, (255, 255, 255), surface, 128, 80)
-                function.drawText(("bonus : {0:>7}".format(self.bonus)), font, (255, 255, 255), surface, 384, 80)
+                function.drawText(str(self.spellCardName), font[1], (255, 255, 255), surface, 824, 80, topRight = True)
+                function.drawText(("bonus : {0:>7}".format(self.bonus)), font[0], (255, 255, 255), surface, 824, 112, topRight = True)
 
 

@@ -48,6 +48,7 @@ ITEM_HEIGHT = 20
 
 # ----------------------Pygame Initiate----------------------
 pygame.init()
+pygame.mixer.init()
 mainClock = pygame.time.Clock()
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 pygame.display.set_caption("Curtain_Shooting_Game")
@@ -56,6 +57,7 @@ pygame.mouse.set_visible(False)
 
 # ----------------------Loading----------------------
 img_dir = path.join(path.dirname(__file__), "img")
+music_dir = path.join(path.dirname(__file__), "music")
 font_dir = path.join(path.dirname(__file__), "font")
 
 background_raw = pygame.image.load(path.join(img_dir, 'background2.png')).convert()
@@ -72,9 +74,6 @@ playerImg.set_colorkey(WHITE)
 playerCollisionBoxImg_raw = pygame.image.load(path.join(img_dir, 'playerCollisionBox.png')).convert()
 playerCollisionBoxImg = pygame.transform.scale(playerCollisionBoxImg_raw, (PLAYER_COLLISION_BOXSIZE, PLAYER_COLLISION_BOXSIZE))
 playerCollisionBoxImg.set_colorkey(WHITE)
-
-enemyImg_raw = pygame.image.load(path.join(img_dir, 'enemy1.png')).convert()
-enemyImg = pygame.transform.scale(enemyImg_raw, (ENEMY_WIDTH, ENEMY_HEIGHT))
 
 playerBulletImg = pygame.image.load(path.join(img_dir, 'player_bullet.png')).convert()
 playerBulletImg.set_colorkey(WHITE)
@@ -96,9 +95,14 @@ bossImg_raw = pygame.image.load(path.join(img_dir, 'boss.png')).convert()
 bossImg = pygame.transform.scale(bossImg_raw, (BOSS_WIDTH, BOSS_HEIGHT))
 bossImg.set_colorkey(WHITE)
 
-bossBullet_1_Img_raw = pygame.image.load(path.join(img_dir, 'boss_bullet_1.png')).convert()
-bossBullet_1_Img = pygame.transform.scale(bossBullet_1_Img_raw, (BOSS_BULLET_1_WIDTH, BOSS_BULLET_1_HEIGHT))
-bossBullet_1_Img.set_colorkey(WHITE)
+
+
+enemyImgList = []
+
+for i in range(0, 2):
+    image = pygame.image.load(path.join(img_dir, 'enemy_{}.png'.format(i))).convert()
+    image.set_colorkey(WHITE)
+    enemyImgList.append(image)
 
 enemyBulletImgList = []
 
@@ -116,15 +120,22 @@ for i in range(0, 4):
 
 bossSpellCardBackgroundImgList = []
 
-for i in range(0, 4):
+for i in range(0, 5):
     image = pygame.image.load(path.join(img_dir, 'boss_spell_card_background_{}.png'.format(i))).convert()
     bossSpellCardBackgroundImgList.append(image)
+
+bgmList = []
+for i in range(1, 3):
+    bgm = path.join(music_dir, 'bgm_{}.mp3'.format(i))
+    bgmList.append(bgm)
+
 
 # ----------------------Fonts----------------------
 
 Helvetica_24 = pygame.font.Font(path.join(font_dir, "Helvetica.ttf"), 24)
 Inconsolata_24 = pygame.font.Font(path.join(font_dir, "Inconsolata.otf"), 24)
 Inconsolata_32 = pygame.font.Font(path.join(font_dir, "Inconsolata.otf"), 32)
+DFXingShu_32 = pygame.font.Font(path.join(font_dir, "DFXingShu-B5 DFFT-S5.TTC"), 32)
 
 
 # ----------------------Functions----------------------
@@ -195,10 +206,10 @@ player = classes.Player(name = "player", \
 
 def newEnemy_1():
     enemy = classes.Enemy(name = "enemy", \
-                          Hp = 150, \
-                          image = enemyImg, \
+                          Hp = 250, \
+                          image = enemyImgList[0], \
                           movePattern = custom.enemyMovePattern_1, \
-                          enemyBulletImage = [enemyBulletImg], \
+                          enemyBulletImage = [enemyBulletImgList[1]], \
                           putBulletPattern = [custom.enemyPutBulletPattern_1], \
                           shootBulletPattern = [custom.enemyshootBulletPattern_1], \
                           dropItem = (2, 2))
@@ -208,9 +219,9 @@ def newEnemy_1():
 def newEnemy_2():
     enemy = classes.Enemy(name = "enemy", \
                           Hp = 30, \
-                          image = enemyImg, \
+                          image = enemyImgList[1], \
                           movePattern = custom.enemyMovePattern_2, \
-                          enemyBulletImage = [enemyBulletImg], \
+                          enemyBulletImage = [enemyBulletImgList[8]], \
                           putBulletPattern = [custom.enemyPutBulletPattern_2], \
                           shootBulletPattern = [custom.enemyshootBulletPattern_2], \
                           dropItem = (2, 4))
@@ -219,9 +230,9 @@ def newEnemy_2():
 def newEnemy_3():
     enemy = classes.Enemy(name = "enemy", \
                           Hp = 30, \
-                          image = enemyImg, \
+                          image = enemyImgList[1], \
                           movePattern = custom.enemyMovePattern_3, \
-                          enemyBulletImage = [enemyBulletImg], \
+                          enemyBulletImage = [enemyBulletImgList[8]], \
                           putBulletPattern = [custom.enemyPutBulletPattern_3], \
                           shootBulletPattern = [custom.enemyshootBulletPattern_3], \
                           dropItem = (1, 4))
@@ -233,13 +244,13 @@ parameter.getAllSprites().add(player.collisionBox)
 
 def newEnemy_4():
     enemy = classes.Enemy(name = "enemy", \
-                          Hp = 1000, \
-                          image = enemyImg, \
+                          Hp = 1500, \
+                          image = enemyImgList[0], \
                           movePattern = custom.enemyMovePattern_4, \
-                          enemyBulletImage = [enemyBulletImg], \
+                          enemyBulletImage = [enemyBulletImgList[9]], \
                           putBulletPattern = [custom.enemyPutBulletPattern_4], \
                           shootBulletPattern = [custom.enemyshootBulletPattern_4], \
-                          dropItem = (0, 6))
+                          dropItem = (8, 10))
     parameter.getAllSprites().add(enemy)
     parameter.getEnemySprites().add(enemy)
 
@@ -272,7 +283,8 @@ boss_stage_2 = classes.BossStage(order = 2, \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_2_1, custom.bossPutBulletPattern_2_2, custom.bossPutBulletPattern_2_3, custom.bossPutBulletPattern_2_4], \
                                  BossShootBulletPattern = [custom.bossShootBulletPattern_2_1, custom.bossShootBulletPattern_2_1, custom.bossShootBulletPattern_2_3, custom.bossShootBulletPattern_2_3], \
                                  dropItem = (8, 16), \
-                                 background = bossSpellCardBackgroundImgList[0])
+                                 background = bossSpellCardBackgroundImgList[0], \
+                                 spellCardName = "喜形　最是滿城飛絮時")
 stageList.append(boss_stage_2)
 boss_stage_3 = classes.BossStage(order = 3, \
                                  time = 60 * 60, \
@@ -298,7 +310,8 @@ boss_stage_4 = classes.BossStage(order = 4, \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_4_1, custom.bossPutBulletPattern_4_2], \
                                  BossShootBulletPattern = [custom.bossShootBulletPattern_4_1, custom.bossShootBulletPattern_4_2], \
                                  dropItem = (8, 16), \
-                                 background = bossSpellCardBackgroundImgList[1])
+                                 background = bossSpellCardBackgroundImgList[1], \
+                                 spellCardName = "怒面　夜夢幽回碎月處")
 stageList.append(boss_stage_4)
 boss_stage_5 = classes.BossStage(order = 5, \
                                  time = 60 * 60, \
@@ -324,7 +337,8 @@ boss_stage_6 = classes.BossStage(order = 6, \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_6], \
                                  BossShootBulletPattern = [custom.bossShootBulletPattern_6], \
                                  dropItem = (8, 16), \
-                                 background = bossSpellCardBackgroundImgList[2])
+                                 background = bossSpellCardBackgroundImgList[2], \
+                                 spellCardName = "哀意　似水寂情溢於表")
 stageList.append(boss_stage_6)
 boss_stage_7 = classes.BossStage(order = 7, \
                                  time = 60 * 60, \
@@ -350,7 +364,8 @@ boss_stage_8 = classes.BossStage(order = 8, \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_8_1, custom.bossPutBulletPattern_8_1], \
                                  BossShootBulletPattern = [custom.bossShootBulletPattern_8_1, custom.bossShootBulletPattern_8_1], \
                                  dropItem = (8, 16), \
-                                 background = bossSpellCardBackgroundImgList[3])
+                                 background = bossSpellCardBackgroundImgList[3], \
+                                 spellCardName = "樂符　暮色天光落如塵")
 stageList.append(boss_stage_8)
 
 boss_stage_9 = classes.BossStage(order = 9, \
@@ -364,9 +379,14 @@ boss_stage_9 = classes.BossStage(order = 9, \
                                  bossPutBulletPattern = [custom.bossPutBulletPattern_9_1, custom.bossPutBulletPattern_9_1, custom.bossPutBulletPattern_9_1, custom.bossPutBulletPattern_9_1], \
                                  BossShootBulletPattern = [custom.bossShootBulletPattern_9_1, custom.bossShootBulletPattern_9_1, custom.bossShootBulletPattern_9_1, custom.bossShootBulletPattern_9_1], \
                                  dropItem = (8, 16), \
-                                 background = None)
+                                 background = bossSpellCardBackgroundImgList[4], \
+                                 spellCardName = "終符　紛情亂緒點空明")
 stageList.append(boss_stage_9)
 
+# Play Music
+pygame.mixer.music.load(bgmList[0])
+pygame.mixer.music.set_volume(0.4)
+pygame.mixer.music.play(loops=1)
 
 # Game loop
 while running:
@@ -378,19 +398,23 @@ while running:
             if event.key == K_ESCAPE:
                 running = False
     # Generate Enemy
-    # if parameter.getTimer() >= 100 and parameter.getTimer() <= 1600:
-    #     if (parameter.getTimer()  - 100) % 500 == 0:
-    #         newEnemy_1()
+    if parameter.getTimer() >= 500 and parameter.getTimer() <= 2000:
+        if (parameter.getTimer()  - 500) % 500 == 0:
+            newEnemy_1()
     
-    # if parameter.getTimer() >= 2200 and parameter.getTimer() <= 3200:
-    #     if (parameter.getTimer()  - 2200) % 50 == 0:
-    #         newEnemy_2()
-    #         newEnemy_3()
+    if parameter.getTimer() >= 2600 and parameter.getTimer() <= 3600:
+        if (parameter.getTimer()  - 2600) % 50 == 0:
+            newEnemy_2()
+            newEnemy_3()
     
-    # if parameter.getTimer() == 3500:
-    #     newEnemy_4()
+    if parameter.getTimer() == 3900:
+        newEnemy_4()
     
-    if parameter.getTimer() >= 50 and stageInitiated:
+    if parameter.getTimer() >= 5000 and stageInitiated:
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load(bgmList[1])
+        pygame.mixer.music.set_volume(0.4)
+        pygame.mixer.music.play(loops=-1)
         stageList[0].isAlive = True
         stageInitiated = False
         
@@ -478,7 +502,7 @@ while running:
     windowSurface.blit(background, background_rect)
 
     for i in stageList:
-        i.drawInfo(windowSurface, Inconsolata_32)
+        i.drawInfo(windowSurface, [Inconsolata_32, DFXingShu_32])
 
     function.drawText("Point  {0:0>12}".format(parameter.getPoint()), Inconsolata_32, BLACK, windowSurface, 864, 64)
     function.drawText("Lifes  {0:0>3}".format(player.lifes), Inconsolata_32, BLACK, windowSurface, 864, 128)

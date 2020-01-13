@@ -2,11 +2,17 @@ import pygame, random, math
 import parameter
 
 
-def drawText(text, font, color, surface, x, y):
-    textobj = font.render(text, 1, color)
-    textrect = textobj.get_rect()
-    textrect.topleft = (x, y)
-    surface.blit(textobj, textrect)
+def drawText(text, font, color, surface, x, y, topRight = False):
+    if topRight:
+        textobj = font.render(text, 1, color)
+        textrect = textobj.get_rect()
+        textrect.topright = (x, y)
+        surface.blit(textobj, textrect)
+    else:
+        textobj = font.render(text, 1, color)
+        textrect = textobj.get_rect()
+        textrect.topleft = (x, y)
+        surface.blit(textobj, textrect)
     
 def raletivePosition(pointA, pointB):
     """
