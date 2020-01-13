@@ -1,6 +1,9 @@
 # Final Project - Bullet Hell
 ## Game Design
-
+- [Install Pygame](http://kidscancode.org/blog/2015/09/pygame_install/)
+```
+注意在安裝Python時要將"Add Python to PATH"點選開來，否則建議重灌
+```
 - [Flow Chart](https://www.plectica.com/maps/2PZGOB4YP/edit/XVO8LRCRA?fbclid=IwAR2TEoxdSrXTuMBWuuYm5yJp0RdAc9uVFAxQt_G-pHPismyqgdYlE3BYOx0)
 
 ```
