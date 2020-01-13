@@ -574,7 +574,7 @@ class BossStage():
 
 
             
-            if player.rect.top < 0:
+            if player.rect.top < 0 and self.timer > 100:
                 self.ifBonus = False
                 self.bonus = 0
 

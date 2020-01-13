@@ -26,6 +26,9 @@ def getTimer():
     global timer
     return timer
 
+def clearTimer():
+    global timer
+    timer = 0
 
 point = 0
 
@@ -36,6 +39,10 @@ def getPoint():
 def addPoint(add):
     global point
     point += add
+
+def clearPoint():
+    global point
+    point = 0
 
 backgroundSprites = pygame.sprite.Group()
 
