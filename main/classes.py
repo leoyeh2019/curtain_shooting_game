@@ -245,6 +245,17 @@ class Enemy(pygame.sprite.Sprite):
                                                                shootBulletPattern = self.shootBulletPattern[j]((x, y)))
                             parameter.getAllSprites().add(enemyBullet)
                             parameter.getEnemyBulletSprites().add(enemyBullet)
+                        if "deathGenerate" in self.putBulletPattern[j](now).keys():
+                            enemyBullet = EnemyBullet_deathGenerate(name = "enemyBullet", \
+                                                               image = self.enemyBulletImage[j], \
+                                                               bulletRadius = 1, \
+                                                               bulletDamage = None, \
+                                                               putBulletPattern = (x + self.rect.center[0], \
+                                                                                   y + self.rect.center[1]), \
+                                                               shootBulletPattern = self.shootBulletPattern[j]((x, y)), \
+                                                               death = self.putBulletPattern[j](now)["generateBullet"])
+                            parameter.getAllSprites().add(enemyBullet)
+                            parameter.getEnemyBulletSprites().add(enemyBullet)
                         else:
                             enemyBullet = EnemyBullet(name = "enemyBullet", \
                                                       image = self.enemyBulletImage[j], \
@@ -330,7 +341,7 @@ class PlayerBullet_tracking(PlayerBullet):
 class EnemyBullet(PlayerBullet):
     def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern):
         PlayerBullet.__init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern)
-        self.radius = int(self.rect.width / 2)
+        self.radius = int(self.rect.width / 2 * 0.75)
 
     def update(self):
         now = parameter.getTimer()
@@ -380,7 +391,46 @@ class EnemyBullet_tracking(EnemyBullet):
         self.image = pygame.transform.rotate(self.image_origin, axis)
         self.rect = self.image.get_rect(center = oldCenter)
 
+class EnemyBullet_deathGenerate(EnemyBullet):
+    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern, death):
+        pygame.sprite.Sprite.__init__(self)
+        self.name = name
+        self.image_origin = image[0]
+        self.image = self.image_origin.copy()
+        
+        self.damage = bulletDamage
+        self.shootBulletPattern = shootBulletPattern
+        self.generateCenter = putBulletPattern
 
+        self.rect = self.image.get_rect(center = self.generateCenter)
+        self.radius = int(self.rect.width / 2 * 0.75)
+        
+        self.generateTime = parameter.getTimer()
+
+        self.deathGenerateImage = image[1]
+        self.deathGenerate = death
+        self.generateBulletNumber = self.deathGenerate["generateBulletNumber"]
+
+
+    def update(self):
+        super().update()
+        if self.rect.bottom > parameter.getGamearea().bottom:
+            self.kill()
+
+    def kill(self):
+        for i in range(self.generateBulletNumber):
+            x = self.deathGenerate["putPattern"][0]
+            y = self.deathGenerate["putPattern"][1]
+            enemyBullet = EnemyBullet(name = "enemyBullet", \
+                                    image = self.deathGenerateImage, \
+                                    bulletRadius = 1, \
+                                    bulletDamage = None, \
+                                    putBulletPattern = (x + self.rect.center[0], \
+                                                        y + self.rect.center[1]), \
+                                    shootBulletPattern = self.deathGenerate["shootPattern"]((x, y)))
+            parameter.getAllSprites().add(enemyBullet)
+            parameter.getEnemyBulletSprites().add(enemyBullet)
+        super().kill()
 
 class Item(pygame.sprite.Sprite):
     def __init__(self, name, image, generatePosition):

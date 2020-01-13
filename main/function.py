@@ -58,6 +58,8 @@ def as_polar_degree(x, y):
         θ = 2 * math.pi - abs(θ)
 
     return r, math.degrees(θ)
+def form_polar_degree(r, θ):
+    return r * math.cos(math.radians(θ)), r * math.sin(math.radians(θ))
 
     
 
