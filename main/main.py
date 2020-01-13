@@ -319,7 +319,7 @@ if __name__ == "__main__":
                                         BossShootBulletPattern = [custom.bossShootBulletPattern_1], \
                                         dropItem = (0, 0), \
                                         background = None)
-        # stageList.append(boss_stage_1)
+        stageList.append(boss_stage_1)
         boss_stage_2 = classes.BossStage(order = 2, \
                                         time = 60 * 60, \
                                         ifSpellCard = True, \
@@ -333,7 +333,7 @@ if __name__ == "__main__":
                                         dropItem = (8, 16), \
                                         background = bossSpellCardBackgroundImgList[0], \
                                         spellCardName = "喜形　最是滿城飛絮時")
-        # stageList.append(boss_stage_2)
+        stageList.append(boss_stage_2)
         boss_stage_3 = classes.BossStage(order = 3, \
                                         time = 60 * 60, \
                                         ifSpellCard = False, \
@@ -346,7 +346,7 @@ if __name__ == "__main__":
                                         BossShootBulletPattern = [custom.bossShootBulletPattern_3], \
                                         dropItem = (0, 0), \
                                         background = None)
-        # stageList.append(boss_stage_3)
+        stageList.append(boss_stage_3)
         boss_stage_4 = classes.BossStage(order = 4, \
                                         time = 60 * 60, \
                                         ifSpellCard = True, \
@@ -360,7 +360,7 @@ if __name__ == "__main__":
                                         dropItem = (8, 16), \
                                         background = bossSpellCardBackgroundImgList[1], \
                                         spellCardName = "怒面　夜夢幽回碎月處")
-        # stageList.append(boss_stage_4)
+        stageList.append(boss_stage_4)
         boss_stage_5 = classes.BossStage(order = 5, \
                                         time = 60 * 60, \
                                         ifSpellCard = False, \
@@ -373,7 +373,7 @@ if __name__ == "__main__":
                                         BossShootBulletPattern = [custom.bossShootBulletPattern_5], \
                                         dropItem = (0, 0), \
                                         background = None)
-        # stageList.append(boss_stage_5)
+        stageList.append(boss_stage_5)
         boss_stage_6 = classes.BossStage(order = 6, \
                                         time = 60 * 60, \
                                         ifSpellCard = True, \
@@ -387,7 +387,7 @@ if __name__ == "__main__":
                                         dropItem = (8, 16), \
                                         background = bossSpellCardBackgroundImgList[2], \
                                         spellCardName = "哀意　似水寂情溢於表")
-        # stageList.append(boss_stage_6)
+        stageList.append(boss_stage_6)
         boss_stage_7 = classes.BossStage(order = 7, \
                                         time = 60 * 60, \
                                         ifSpellCard = False, \
@@ -400,7 +400,7 @@ if __name__ == "__main__":
                                         BossShootBulletPattern = [custom.bossShootBulletPattern_7_1, custom.bossShootBulletPattern_7_2], \
                                         dropItem = (0, 0), \
                                         background = None)
-        # stageList.append(boss_stage_7)
+        stageList.append(boss_stage_7)
         boss_stage_8 = classes.BossStage(order = 8, \
                                         time = 60 * 60, \
                                         ifSpellCard = True, \
@@ -414,7 +414,7 @@ if __name__ == "__main__":
                                         dropItem = (8, 16), \
                                         background = bossSpellCardBackgroundImgList[3], \
                                         spellCardName = "樂符　暮色天光落如塵")
-        # stageList.append(boss_stage_8)
+        stageList.append(boss_stage_8)
 
         boss_stage_9 = classes.BossStage(order = 9, \
                                         time = 120 * 60, \
