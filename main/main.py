@@ -102,14 +102,14 @@ bossBullet_1_Img.set_colorkey(WHITE)
 
 enemyBulletImgList = []
 
-for i in range(0, 8):
+for i in range(0, 10):
     image = pygame.image.load(path.join(img_dir, 'enemy_bullet_{}.png'.format(i))).convert()
     image.set_colorkey(WHITE)
     enemyBulletImgList.append(image)
 
 bossBulletImgList = []
 
-for i in range(1, 5):
+for i in range(0, 4):
     image = pygame.image.load(path.join(img_dir, 'boss_bullet_{}.png'.format(i))).convert()
     image.set_colorkey(WHITE)
     bossBulletImgList.append(image)
@@ -242,97 +242,97 @@ parameter.getAllSprites().add(player.collisionBox)
 
 
 stageList = []
-# boss_stage_1 = classes.BossStage(order = 1, \
-#                                  time = 60 * 60, \
-#                                  ifSpellCard = False, \
-#                                  bonus = 0, \
-#                                  Hp = 3000, \
-#                                  bossImage = bossImg, \
-#                                  bossMovement = custom.bossMovePattern_1, \
-#                                  bossBulletImage = [bossBulletImgList[0]], \
-#                                  bossPutBulletPattern = [custom.bossPutBulletPattern_1], \
-#                                  BossShootBulletPattern = [custom.bossShootBulletPattern_1], \
-#                                  dropItem = (0, 0), \
-#                                  background = None)
-# stageList.append(boss_stage_1)
-# boss_stage_2 = classes.BossStage(order = 2, \
-#                                  time = 60 * 60, \
-#                                  ifSpellCard = True, \
-#                                  bonus = 100000000, \
-#                                  Hp = 4500, \
-#                                  bossImage = bossImg, \
-#                                  bossMovement = custom.bossMovePattern_2, \
-#                                  bossBulletImage = [enemyBulletImg, enemyBulletImg, enemyBulletImg, enemyBulletImg], \
-#                                  bossPutBulletPattern = [custom.bossPutBulletPattern_2_1, custom.bossPutBulletPattern_2_2, custom.bossPutBulletPattern_2_3, custom.bossPutBulletPattern_2_4], \
-#                                  BossShootBulletPattern = [custom.bossShootBulletPattern_2_1, custom.bossShootBulletPattern_2_1, custom.bossShootBulletPattern_2_3, custom.bossShootBulletPattern_2_3], \
-#                                  dropItem = (8, 16), \
-#                                  background = pygame.transform.scale(bossBulletImgList[0], (510, 660)))
-# stageList.append(boss_stage_2)
-# boss_stage_3 = classes.BossStage(order = 3, \
-#                                  time = 60 * 60, \
-#                                  ifSpellCard = False, \
-#                                  bonus = 0, \
-#                                  Hp = 3000, \
-#                                  bossImage = bossImg, \
-#                                  bossMovement = custom.bossMovePattern_3, \
-#                                  bossBulletImage = [bossBulletImgList[1]], \
-#                                  bossPutBulletPattern = [custom.bossPutBulletPattern_3], \
-#                                  BossShootBulletPattern = [custom.bossShootBulletPattern_3], \
-#                                  dropItem = (0, 0), \
-#                                  background = None)
-# stageList.append(boss_stage_3)
-# boss_stage_4 = classes.BossStage(order = 4, \
-#                                  time = 60 * 60, \
-#                                  ifSpellCard = True, \
-#                                  bonus = 100000000, \
-#                                  Hp = 4500, \
-#                                  bossImage = bossImg, \
-#                                  bossMovement = custom.bossMovePattern_4, \
-#                                  bossBulletImage = [enemyBulletImgList[0], enemyBulletImgList[1]], \
-#                                  bossPutBulletPattern = [custom.bossPutBulletPattern_4_1, custom.bossPutBulletPattern_4_2], \
-#                                  BossShootBulletPattern = [custom.bossShootBulletPattern_4_1, custom.bossShootBulletPattern_4_2], \
-#                                  dropItem = (8, 16), \
-#                                  background = None)
-# stageList.append(boss_stage_4)
-# boss_stage_5 = classes.BossStage(order = 5, \
-#                                  time = 60 * 60, \
-#                                  ifSpellCard = False, \
-#                                  bonus = 0, \
-#                                  Hp = 3000, \
-#                                  bossImage = bossImg, \
-#                                  bossMovement = custom.bossMovePattern_5, \
-#                                  bossBulletImage = [bossBulletImgList[2]], \
-#                                  bossPutBulletPattern = [custom.bossPutBulletPattern_5], \
-#                                  BossShootBulletPattern = [custom.bossShootBulletPattern_5], \
-#                                  dropItem = (0, 0), \
-#                                  background = None)
-# stageList.append(boss_stage_5)
-# boss_stage_6 = classes.BossStage(order = 6, \
-#                                  time = 60 * 60, \
-#                                  ifSpellCard = True, \
-#                                  bonus = 100000000, \
-#                                  Hp = 4500, \
-#                                  bossImage = bossImg, \
-#                                  bossMovement = custom.bossMovePattern_6, \
-#                                  bossBulletImage = [(enemyBulletImgList[2], enemyBulletImgList[3])], \
-#                                  bossPutBulletPattern = [custom.bossPutBulletPattern_6], \
-#                                  BossShootBulletPattern = [custom.bossShootBulletPattern_6], \
-#                                  dropItem = (8, 16), \
-#                                  background = None)
-# stageList.append(boss_stage_6)
-# boss_stage_7 = classes.BossStage(order = 7, \
-#                                  time = 60 * 60, \
-#                                  ifSpellCard = False, \
-#                                  bonus = 0, \
-#                                  Hp = 3000, \
-#                                  bossImage = bossImg, \
-#                                  bossMovement = custom.bossMovePattern_7, \
-#                                  bossBulletImage = [bossBulletImgList[3], bossBulletImgList[3]], \
-#                                  bossPutBulletPattern = [custom.bossPutBulletPattern_7_1, custom.bossPutBulletPattern_7_2], \
-#                                  BossShootBulletPattern = [custom.bossShootBulletPattern_7_1, custom.bossShootBulletPattern_7_2], \
-#                                  dropItem = (0, 0), \
-#                                  background = None)
-# stageList.append(boss_stage_7)
+boss_stage_1 = classes.BossStage(order = 1, \
+                                 time = 60 * 60, \
+                                 ifSpellCard = False, \
+                                 bonus = 0, \
+                                 Hp = 3000, \
+                                 bossImage = bossImg, \
+                                 bossMovement = custom.bossMovePattern_1, \
+                                 bossBulletImage = [bossBulletImgList[0]], \
+                                 bossPutBulletPattern = [custom.bossPutBulletPattern_1], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_1], \
+                                 dropItem = (0, 0), \
+                                 background = None)
+stageList.append(boss_stage_1)
+boss_stage_2 = classes.BossStage(order = 2, \
+                                 time = 60 * 60, \
+                                 ifSpellCard = True, \
+                                 bonus = 100000000, \
+                                 Hp = 4500, \
+                                 bossImage = bossImg, \
+                                 bossMovement = custom.bossMovePattern_2, \
+                                 bossBulletImage = [enemyBulletImgList[9], enemyBulletImgList[9], enemyBulletImgList[9], enemyBulletImgList[9]], \
+                                 bossPutBulletPattern = [custom.bossPutBulletPattern_2_1, custom.bossPutBulletPattern_2_2, custom.bossPutBulletPattern_2_3, custom.bossPutBulletPattern_2_4], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_2_1, custom.bossShootBulletPattern_2_1, custom.bossShootBulletPattern_2_3, custom.bossShootBulletPattern_2_3], \
+                                 dropItem = (8, 16), \
+                                 background = pygame.transform.scale(bossBulletImgList[0], (510, 660)))
+stageList.append(boss_stage_2)
+boss_stage_3 = classes.BossStage(order = 3, \
+                                 time = 60 * 60, \
+                                 ifSpellCard = False, \
+                                 bonus = 0, \
+                                 Hp = 3000, \
+                                 bossImage = bossImg, \
+                                 bossMovement = custom.bossMovePattern_3, \
+                                 bossBulletImage = [bossBulletImgList[1]], \
+                                 bossPutBulletPattern = [custom.bossPutBulletPattern_3], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_3], \
+                                 dropItem = (0, 0), \
+                                 background = None)
+stageList.append(boss_stage_3)
+boss_stage_4 = classes.BossStage(order = 4, \
+                                 time = 60 * 60, \
+                                 ifSpellCard = True, \
+                                 bonus = 100000000, \
+                                 Hp = 4500, \
+                                 bossImage = bossImg, \
+                                 bossMovement = custom.bossMovePattern_4, \
+                                 bossBulletImage = [enemyBulletImgList[0], enemyBulletImgList[1]], \
+                                 bossPutBulletPattern = [custom.bossPutBulletPattern_4_1, custom.bossPutBulletPattern_4_2], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_4_1, custom.bossShootBulletPattern_4_2], \
+                                 dropItem = (8, 16), \
+                                 background = None)
+stageList.append(boss_stage_4)
+boss_stage_5 = classes.BossStage(order = 5, \
+                                 time = 60 * 60, \
+                                 ifSpellCard = False, \
+                                 bonus = 0, \
+                                 Hp = 3000, \
+                                 bossImage = bossImg, \
+                                 bossMovement = custom.bossMovePattern_5, \
+                                 bossBulletImage = [bossBulletImgList[2]], \
+                                 bossPutBulletPattern = [custom.bossPutBulletPattern_5], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_5], \
+                                 dropItem = (0, 0), \
+                                 background = None)
+stageList.append(boss_stage_5)
+boss_stage_6 = classes.BossStage(order = 6, \
+                                 time = 60 * 60, \
+                                 ifSpellCard = True, \
+                                 bonus = 100000000, \
+                                 Hp = 4500, \
+                                 bossImage = bossImg, \
+                                 bossMovement = custom.bossMovePattern_6, \
+                                 bossBulletImage = [(enemyBulletImgList[2], enemyBulletImgList[3])], \
+                                 bossPutBulletPattern = [custom.bossPutBulletPattern_6], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_6], \
+                                 dropItem = (8, 16), \
+                                 background = None)
+stageList.append(boss_stage_6)
+boss_stage_7 = classes.BossStage(order = 7, \
+                                 time = 60 * 60, \
+                                 ifSpellCard = False, \
+                                 bonus = 0, \
+                                 Hp = 3000, \
+                                 bossImage = bossImg, \
+                                 bossMovement = custom.bossMovePattern_7, \
+                                 bossBulletImage = [bossBulletImgList[3], bossBulletImgList[3]], \
+                                 bossPutBulletPattern = [custom.bossPutBulletPattern_7_1, custom.bossPutBulletPattern_7_2], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_7_1, custom.bossShootBulletPattern_7_2], \
+                                 dropItem = (0, 0), \
+                                 background = None)
+stageList.append(boss_stage_7)
 boss_stage_8 = classes.BossStage(order = 8, \
                                  time = 60 * 60, \
                                  ifSpellCard = True, \
@@ -347,6 +347,19 @@ boss_stage_8 = classes.BossStage(order = 8, \
                                  background = None)
 stageList.append(boss_stage_8)
 
+boss_stage_9 = classes.BossStage(order = 9, \
+                                 time = 120 * 60, \
+                                 ifSpellCard = True, \
+                                 bonus = 100000000, \
+                                 Hp = 9000, \
+                                 bossImage = bossImg, \
+                                 bossMovement = custom.bossMovePattern_9, \
+                                 bossBulletImage = [bossBulletImgList[0], bossBulletImgList[1], bossBulletImgList[2], bossBulletImgList[3]], \
+                                 bossPutBulletPattern = [custom.bossPutBulletPattern_9_1, custom.bossPutBulletPattern_9_1, custom.bossPutBulletPattern_9_1, custom.bossPutBulletPattern_9_1], \
+                                 BossShootBulletPattern = [custom.bossShootBulletPattern_9_1, custom.bossShootBulletPattern_9_1, custom.bossShootBulletPattern_9_1, custom.bossShootBulletPattern_9_1], \
+                                 dropItem = (8, 16), \
+                                 background = None)
+stageList.append(boss_stage_9)
 
 
 # Game loop
@@ -416,9 +429,10 @@ while running:
 
     # Enemy_Bullet v.s. Player
     for eb in parameter.getEnemyBulletSprites():
-        if pygame.sprite.collide_circle(eb, player):
-            player.hide()
-            player.lifes -= 1
+        if eb.radius > 0:
+            if pygame.sprite.collide_circle(eb, player):
+                player.hide()
+                player.lifes -= 1
 
     # Point_Item v.s. Player
     for p in parameter.getItemSprites():

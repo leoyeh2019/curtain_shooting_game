@@ -16,12 +16,14 @@ def playerShootBulletPattern(time):
 
 
 def playerPutBulletPattern_tracking(time, power):
-    if power in range(8, 49):
+    if power in range(8, 48):
         return [(-30, 0), (30, 0)]
+    if power == 48:
+        return [(-30, 0), (30, 0), (-30, 0), (30, 0)]
 
 def playerShootBulletPattern_tracking(time):
     speed = 15
-    return (-speed / math.sqrt(2), -speed / math.sqrt(2)), (speed / math.sqrt(2), -speed / math.sqrt(2))
+    return (-speed / math.sqrt(2), -speed / math.sqrt(2)), (speed / math.sqrt(2), -speed / math.sqrt(2)), (-speed, 0), (speed, 0)
 
 
 
@@ -587,3 +589,41 @@ def bossShootBulletPattern_8_1(putPattern):
     g = 0.20
     return {"f(x)" : lambda time : (0, speed * time + 0.5 * g * (time ** 2)), \
             "f'(x)" : lambda time : (0, speed + g * time)}
+
+
+
+def bossMovePattern_9(time):
+    if time < 0:
+        return 384, 200
+    else:
+        return 0, 0
+
+
+def bossPutBulletPattern_9_1(time):
+    ways = 1
+    generateRangeX = 400
+    generateRangeY1 = 200
+    generateRangeY2 = 700
+    positionList = []
+    for i in range(ways):
+        while True:
+            a = random.randint(-generateRangeX, generateRangeX)
+            b = random.randint(-generateRangeY1, generateRangeY2)
+            if not ((parameter.getPlayerPosition()[0] in range(a + 384 - 50, a + 384 + 50)) and (parameter.getPlayerPosition()[1] in range(b + 200 - 50, b + 200 + 50))):
+                break
+            
+        positionList.append((a, b))
+
+    return {"numbers" : ways, \
+            "position" : positionList, \
+            "delateTime" : 150, \
+            "intermediateTime" : 20, \
+            "decay" : True}
+
+def bossShootBulletPattern_9_1(putPattern):
+    r = 1
+    θ = random.randint(0, 360)
+    dx = function.form_polar_degree(r, θ)[0]
+    dy = function.form_polar_degree(r, θ)[1]  
+    return {"f(x)" : lambda time : (0, 0), \
+            "f'(x)" : lambda time : (dx, dy)}

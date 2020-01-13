@@ -173,7 +173,7 @@ class Player(pygame.sprite.Sprite):
                 
                 self.lastShootingTime = now
 
-            if self.power in range(24, 49):
+            if self.power in range(24, 48):
                 # line 3 way
                 for i in range(len(self.putBulletPattern[0](now, self.power))):
                     self.newPlayerBullet(putBulletPattern = function.raletivePosition(self.putBulletPattern[0](now, self.power)[i], self.rect.center))
@@ -185,14 +185,27 @@ class Player(pygame.sprite.Sprite):
                 
                 self.lastShootingTime = now
 
+            if self.power == 48:
+                # line 3 way
+                for i in range(len(self.putBulletPattern[0](now, self.power))):
+                    self.newPlayerBullet(putBulletPattern = function.raletivePosition(self.putBulletPattern[0](now, self.power)[i], self.rect.center))
+                    
+                # tracking 4 way
+                for i in range(len(self.putBulletPattern[1](now, self.power))):
+                    self.newPlayerBullet_tracking(putBulletPattern = function.raletivePosition(self.putBulletPattern[1](now, self.power)[i], self.rect.center), \
+                                                  shootBulletPattern = self.shootBulletPattern[1](now)[i])
+                
+                self.lastShootingTime = now
+
+
     def hide(self):
         for eb in parameter.getEnemyBulletSprites():
                 eb.kill()
         self.hidden = True 
         self.hiddenTime = parameter.getTimer()
         self.rect.center = (parameter.getGamearea().centerx, parameter.getGamearea().top - 200)
-        if self.power > 8:
-            self.power -= 8
+        if self.power > 4:
+            self.power -= 4
         else:
              self.power = 0
             
@@ -245,7 +258,7 @@ class Enemy(pygame.sprite.Sprite):
                                                                shootBulletPattern = self.shootBulletPattern[j]((x, y)))
                             parameter.getAllSprites().add(enemyBullet)
                             parameter.getEnemyBulletSprites().add(enemyBullet)
-                        if "deathGenerate" in self.putBulletPattern[j](now).keys():
+                        elif "deathGenerate" in self.putBulletPattern[j](now).keys():
                             enemyBullet = EnemyBullet_deathGenerate(name = "enemyBullet", \
                                                                image = self.enemyBulletImage[j], \
                                                                bulletRadius = 1, \
@@ -254,6 +267,16 @@ class Enemy(pygame.sprite.Sprite):
                                                                                    y + self.rect.center[1]), \
                                                                shootBulletPattern = self.shootBulletPattern[j]((x, y)), \
                                                                death = self.putBulletPattern[j](now)["generateBullet"])
+                            parameter.getAllSprites().add(enemyBullet)
+                            parameter.getEnemyBulletSprites().add(enemyBullet)
+                        elif "decay" in self.putBulletPattern[j](now).keys():
+                            enemyBullet = EnemyBullet_decay(name = "enemyBullet", \
+                                                               image = self.enemyBulletImage[j], \
+                                                               bulletRadius = 1, \
+                                                               bulletDamage = None, \
+                                                               putBulletPattern = (x + self.rect.center[0], \
+                                                                                   y + self.rect.center[1]), \
+                                                               shootBulletPattern = self.shootBulletPattern[j]((x, y)))
                             parameter.getAllSprites().add(enemyBullet)
                             parameter.getEnemyBulletSprites().add(enemyBullet)
                         else:
@@ -382,7 +405,7 @@ class EnemyBullet_tracking(EnemyBullet):
         self.rect.center = (self.dx * (now - self.generateTime) + self.generateCenter[0], \
                             self.dy * (now - self.generateTime) + self.generateCenter[1])
 
-        if not self.rect.colliderect(parameter.getBulletGamearea()):
+        if not self.rect.colliderect(parameter.getGamearea()):
             self.kill()
     def rotate(self):
         v = pygame.math.Vector2(self.dx, self.dy)
@@ -431,6 +454,37 @@ class EnemyBullet_deathGenerate(EnemyBullet):
             parameter.getAllSprites().add(enemyBullet)
             parameter.getEnemyBulletSprites().add(enemyBullet)
         super().kill()
+    
+class EnemyBullet_decay(EnemyBullet):
+    def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern):
+        EnemyBullet.__init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern)
+        self.radius = 0
+        self.radius_origin = int(self.rect.width / 2 * 0.5)
+        self.px = self.rect.centerx
+        self.py = self.rect.centery
+        self.dx = self.shootBulletPattern["f'(x)"](self.generateTime)[0]
+        self.dy = self.shootBulletPattern["f'(x)"](self.generateTime)[1]
+
+    
+    def update(self):
+        self.rotate(self.generateTime)
+        now = parameter.getTimer()
+        if now - self.generateTime < 128:
+            self.image.set_alpha((now - self.generateTime) * 2)
+            self.radius = 0
+        else:
+            self.image.set_alpha(255)
+            self.radius = self.radius_origin
+
+        if now - self.generateTime > 300:
+            self.px += self.dx
+            self.py += self.dy
+            self.rect.center = (self.px, self.py)
+
+        if not self.rect.colliderect(parameter.getGamearea()):
+            self.kill()
+            
+
 
 class Item(pygame.sprite.Sprite):
     def __init__(self, name, image, generatePosition):
