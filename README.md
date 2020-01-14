@@ -1,11 +1,17 @@
-# Final Project - Bullet Hell
+# Final Project - Curtain Shooting Game
+## Introduction
+```
+此遊戲以經典彈幕遊戲東方project為參考，
+希望藉由此遊戲讓大家感受到躲避子彈並欣賞彈幕美感的樂趣。
+若對這類遊戲有興趣，歡迎上網搜尋"東方project系列"(如：東方妖妖夢、東方永夜抄......)。
+```
 ## Instructions
 - [Install Pygame](http://kidscancode.org/blog/2015/09/pygame_install/)
 
 ```
 注意在安裝Python時要將"Add Python to PATH"點選開來，否則建議重灌
 
-點選：Clone or download -> Download ZIP
+於github頁面點選：Clone or download -> Download ZIP
 
 使用IDLE開啟"main"資料夾的"main.py"，並執行此程式
 
@@ -14,6 +20,8 @@
 
 若有任何技術上的問題，歡迎來信聯絡：leoyeh2013@gmail.com
 ```
+![](https://datatofish.com/wp-content/uploads/2019/03/000_pyinstaller.png)
+![](https://i.imgur.com/BDPzXC9.png)
 ## Key Control
 ```
 z : 射擊
@@ -21,52 +29,178 @@ shift : 按住移動速度變慢
 方向鍵 : 移動
 exc : 退出遊戲
 ```
+## Update
+```
+5.1.0 (2020/01/14) : 新增註解
+	
+```
+## Object-Oriented Programming Introduction
+- [OOP](https://codertw.com/%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80/117823/?fbclid=IwAR2c-kSx1kGrDHfgfBiEN6_WS506O-G0yl6X2_UfaxPQQUIKCFZQx-eMXtc#outline__1_4_2)
+## Pygame Introduction
+- [Pygame](http://kidscancode.org/blog/2016/08/pygame_1-1_getting-started/)
+- [Pygame Sprites - 1](http://kidscancode.org/blog/2016/08/pygame_1-2_working-with-sprites/)
+- [Pygame Sprites - 2](http://kidscancode.org/blog/2016/08/pygame_1-3_more-about-sprites/)
+
 ## Game Design
 
 - [Flow Chart](https://www.plectica.com/maps/2PZGOB4YP/edit/XVO8LRCRA?fbclid=IwAR2TEoxdSrXTuMBWuuYm5yJp0RdAc9uVFAxQt_G-pHPismyqgdYlE3BYOx0)
 
+### Main
 ```
-class(attribute, function...)
-state(object) # using JSON
-main(load data, logic)
-view(draw)
+設定遊戲參數
+匯入所需圖片、音樂
+遊戲主迴圈
+	Update -> Draw -> Flip
+邏輯判斷
+	碰撞偵測
 ```
+### Class
+#### Background
 ```
-class body(name, ):
+Update
+	遊戲背板的移動控制
+	當移動到視窗外時，叫出新的背板並自殺
 ```
+#### Player
 ```
-class bullet(name, rect, image, damage):
-	void bulletMove(pattern(x(t), y(t)))
+Update
+	當玩家被判定為死亡時 -> 暫時將玩家隱藏，並給予一段無敵時間
+	接收鍵盤的Input -> 做出相對應的移動或射擊
+	回傳自身位置給parameter.py
+
+Shoot
+	當符合條件時生成子彈
+	依照自身的power值決定生成多少子彈
+
+Hide
+	當玩家撞到子彈死亡時執行此函數 -> 隱藏玩家
 ```
+#### Enemy
 ```
-class player(name, rect, image, hp, fastspeed, slowspeed, bulletList, bulletPattern(x(t), y(t))):
-	void playerMove(gamearea, slowModeKeyControl, movingKeyControl(moveLeft, moveRight, moveUp, moveDown))
-		self.rect.move_ip(bulletPattern(x(t), y(t)))
-	void shootBullet(shootingKeyControl, time, gamearea, movingPattern(x(t), y(t)))
-		append bullet in bulletList
-	
+Update
+	由輸入的函數決定移動方式
+		move_ip(x, y) : 每幀移動(x, y)格
+	當enemy移出螢幕外 -> 自殺
+
+Shoot
+	由輸入的函數決定生成的子彈
 ```
+#### Player Bullet
 ```
-class enemy(name, rect, image, hp, movingPattern(x(t), y(t))):
-	void enemyMove()
-		# self.rect.move_ip(movingPattern(x(t), y(t)))
+Update
+	由輸入的函數決定移動方式
 ```
+#### PlayerBullet_tracking
 ```
-class boss:
-	enemy          #*
-	stage          #記錄不同符卡
+Update
+	嘗試找到與自身位置最接近的敵人 -> 修正自身的移動方向使得更靠近敵人
+Rotate
+	依照自身的移動方向進行旋轉
+		決定旋轉軸向 -> 紀錄旋轉前中心 -> 由原始圖片旋轉
 ```
+- [Rotate](http://kidscancode.org/blog/2016/08/pygame_shmup_part_6/)
+#### EnemyBullet
 ```
-class item:
-	name
-	box
-	speed          #掉落速度
+Update
+	由輸入的函數決定移動方式
+		但由於使用move_ip會無法移動小數點距離，
+		因此採用將enemy.rect.center隨時間放到函數設定好的移動軌跡上
+
+Rotate
+	依照自身的移動方向進行旋轉
 ```
+#### EnemyBullet_tracking
 ```
-class bomb:
-	damage
-	timer          #紀錄放bomb時間
-	animate()      #放bomb動畫
+Update
+	由玩家的位置決定移動方向
+
+Rotate
+	依照自身的移動方向進行旋轉
+```
+#### EnemyBullet_deathGenerate
+```
+Update
+	繼承EnemyBullet父類別的update()，
+	並於接觸到遊戲範圍底部時自殺 
+
+Kill
+	當自殺時，生成新的子彈
+	繼承pygame.sprite.Sprite父類別的kill()
+```
+#### EnemyBullet_decay
+```
+Update
+	隨時間生成而從透明(無判定)變不透明(有判定)
+	一定時間後開始移動
+```
+#### Item
+```
+Update
+	控制Item的掉落速度
+```
+#### BossStage
+```
+由內部參數控制階段
+self.isAlive -> 是否更新此階段
+self.isDead -> 是否呼叫下一個階段
+
+GenerateBoss
+	生成Boss
+
+Update
+	清除上一階段的子彈
+	生成Boss
+	判斷玩家是否有死亡過(作為給bonus的依據)
+	當Boss血量歸零 or 超過時間 -> 結束這個stage
+	隨著時間降低bonus
+
+DrawBackground
+	於符卡戰時 -> 新增背景
+
+DrawInfo
+	畫血條、剩餘血條數、時間、符卡名、bonus
+```
+### Custom
+```
+建立玩家、敵人的移動函數、子彈放置函數與子彈移動函數
+
+MovePattern
+	每幀移動多少(x, y)
+
+PutBulletPattern 
+	numbers : 一次放多少顆子彈
+	position : 子彈放在哪裡(相對自己)
+	delateTime : enemy生成幾幀才開始放子彈
+	intermediateTime : 間隔幾幀放子彈
+
+ShootBulletPattern
+	f(x) : 紀錄子彈移動軌跡(x, y 對於t的參數式)
+	f'(x) :  紀錄子彈移動方向 -> 作為rotate的依據
+
+DeathGenerate
+	判定是否是EnemyBullet_deathGenerate
+
+generateBullet
+	EnemyBullet_deathGenerate自殺後生成的子彈pattern
+
+Decay
+	判定是否是EnemyBullet_decay
+```
+### Function
+```
+存放常用自定義函數
+```
+### Sound
+```
+存放音效
+```
+### Parameter
+```
+存放各個參數，使得每個程式都能存取
+```
+### Config
+```
+紀錄最高分數
 ```
 ## Objects Design
 

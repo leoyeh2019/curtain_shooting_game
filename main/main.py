@@ -307,7 +307,7 @@ if __name__ == "__main__":
 
 
         stageList = []
-        boss_stage_1 = classes.BossStage(order = 1, \
+        boss_stage_1 = classes.BossStage(order = 8, \
                                         time = 60 * 60, \
                                         ifSpellCard = False, \
                                         bonus = 0, \
@@ -320,7 +320,7 @@ if __name__ == "__main__":
                                         dropItem = (0, 0), \
                                         background = None)
         stageList.append(boss_stage_1)
-        boss_stage_2 = classes.BossStage(order = 2, \
+        boss_stage_2 = classes.BossStage(order = 7, \
                                         time = 60 * 60, \
                                         ifSpellCard = True, \
                                         bonus = 10000000, \
@@ -334,7 +334,7 @@ if __name__ == "__main__":
                                         background = bossSpellCardBackgroundImgList[0], \
                                         spellCardName = "喜形　最是滿城飛絮時")
         stageList.append(boss_stage_2)
-        boss_stage_3 = classes.BossStage(order = 3, \
+        boss_stage_3 = classes.BossStage(order = 6, \
                                         time = 60 * 60, \
                                         ifSpellCard = False, \
                                         bonus = 0, \
@@ -347,7 +347,7 @@ if __name__ == "__main__":
                                         dropItem = (0, 0), \
                                         background = None)
         stageList.append(boss_stage_3)
-        boss_stage_4 = classes.BossStage(order = 4, \
+        boss_stage_4 = classes.BossStage(order = 5, \
                                         time = 60 * 60, \
                                         ifSpellCard = True, \
                                         bonus = 10000000, \
@@ -361,7 +361,7 @@ if __name__ == "__main__":
                                         background = bossSpellCardBackgroundImgList[1], \
                                         spellCardName = "怒面　夜夢幽回碎月處")
         stageList.append(boss_stage_4)
-        boss_stage_5 = classes.BossStage(order = 5, \
+        boss_stage_5 = classes.BossStage(order = 4, \
                                         time = 60 * 60, \
                                         ifSpellCard = False, \
                                         bonus = 0, \
@@ -374,7 +374,7 @@ if __name__ == "__main__":
                                         dropItem = (0, 0), \
                                         background = None)
         stageList.append(boss_stage_5)
-        boss_stage_6 = classes.BossStage(order = 6, \
+        boss_stage_6 = classes.BossStage(order = 3, \
                                         time = 60 * 60, \
                                         ifSpellCard = True, \
                                         bonus = 10000000, \
@@ -388,7 +388,7 @@ if __name__ == "__main__":
                                         background = bossSpellCardBackgroundImgList[2], \
                                         spellCardName = "哀意　似水寂情溢於表")
         stageList.append(boss_stage_6)
-        boss_stage_7 = classes.BossStage(order = 7, \
+        boss_stage_7 = classes.BossStage(order = 2, \
                                         time = 60 * 60, \
                                         ifSpellCard = False, \
                                         bonus = 0, \
@@ -401,7 +401,7 @@ if __name__ == "__main__":
                                         dropItem = (0, 0), \
                                         background = None)
         stageList.append(boss_stage_7)
-        boss_stage_8 = classes.BossStage(order = 8, \
+        boss_stage_8 = classes.BossStage(order = 1, \
                                         time = 60 * 60, \
                                         ifSpellCard = True, \
                                         bonus = 10000000, \
@@ -416,7 +416,7 @@ if __name__ == "__main__":
                                         spellCardName = "樂符　暮色天光落如塵")
         stageList.append(boss_stage_8)
 
-        boss_stage_9 = classes.BossStage(order = 9, \
+        boss_stage_9 = classes.BossStage(order = 0, \
                                         time = 120 * 60, \
                                         ifSpellCard = True, \
                                         bonus = 30000000, \
@@ -478,7 +478,7 @@ if __name__ == "__main__":
                 stageList[i].update(player)
 
             
-            
+            # Move background fast if no enemy
             if parameter.getTimer() > 50 and not bool(parameter.getEnemySprites()):
                 for i in parameter.getBackgroundSprites():
                     i.speed = 5
@@ -582,7 +582,7 @@ if __name__ == "__main__":
                 json.dump(config_dic, config)
 
 
-        # Game end cover
+        # End game cover
         if goodending:
             startGameScreen(goodendingImage, bgmList[3], (64, 32))
         else:

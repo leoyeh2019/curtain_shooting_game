@@ -21,7 +21,10 @@ class Background(pygame.sprite.Sprite):
         self.speed = speed
 
     def update(self):
+        # Moving Background
         self.rect.move_ip(0, self.speed)
+
+        # Generate new background when out of screen
         if self.rect.top > 928:
             newBackground = Background(image = self.image, \
                                        topleft = (64, -1930), \
@@ -84,8 +87,9 @@ class Player(pygame.sprite.Sprite):
         self.hiddenTime = parameter.getTimer()
 
     def update(self):
-
         now = parameter.getTimer()
+
+        #　Hide player for a while when player died
         if self.hidden and now - self.hiddenTime < 30:
             for eb in parameter.getEnemyBulletSprites():
                 eb.kill()
@@ -105,7 +109,7 @@ class Player(pygame.sprite.Sprite):
             self.radius = int(self.collisionBox.rect.width / 2)
             self.hidden = False 
             
-
+        # Key control
         keystate = pygame.key.get_pressed()
         if keystate[pygame.K_LSHIFT]:
             speed = self.playerSlowSpeed
@@ -130,8 +134,11 @@ class Player(pygame.sprite.Sprite):
         if keystate[pygame.K_z]:
             self.shoot()  
         
+        # Stick player collision box to the player center
         self.collisionBox.rect.center = self.rect.center
         # self.collisionBox.rotate()
+
+        # Return player position
         parameter.returnPlayerPosition(self.rect.center)
 
     def newPlayerBullet(self, putBulletPattern):
@@ -159,7 +166,7 @@ class Player(pygame.sprite.Sprite):
         now = parameter.getTimer()
         if now - self.lastShootingTime > 6:
             sound.bullet_SE_list[0].play()
-            # powerup
+            # powerups
             if self.power in range(0, 8):
                 # line 1 way
                 self.newPlayerBullet(putBulletPattern = function.raletivePosition(self.putBulletPattern[0](now, self.power), self.rect.center))
@@ -201,11 +208,13 @@ class Player(pygame.sprite.Sprite):
 
 
     def hide(self):
+        # Hide player
         for eb in parameter.getEnemyBulletSprites():
                 eb.kill()
         self.hidden = True 
         self.hiddenTime = parameter.getTimer()
         self.rect.center = (parameter.getGamearea().centerx, parameter.getGamearea().top - 200)
+        # Decrease player power
         if self.power > 4:
             self.power -= 4
         else:
@@ -235,10 +244,12 @@ class Enemy(pygame.sprite.Sprite):
 
     def update(self):
         now = parameter.getTimer()
+        # Moving enemy
         self.rect.move_ip(self.movePattern(now - self.generateTime))
+        # Kill enemy if out of screen
         if not self.rect.colliderect(parameter.getGamearea()):
             self.kill()
-
+        # Shoot bullet
         self.shoot()
 
 
@@ -338,7 +349,7 @@ class PlayerBullet_tracking(PlayerBullet):
 
     def update(self):
         now = parameter.getTimer()
-
+        # Find the nearest enemy
         try:
             enemyCenter = function.findMostCloseEnemy(self.playerRectCenter)
             self.dx += (enemyCenter[0] - self.rect.center[0]) / 5000 * (now - self.generateTime) ** 2
@@ -348,6 +359,7 @@ class PlayerBullet_tracking(PlayerBullet):
             pass
             
         self.rotate()
+        
         self.rect.move_ip(function.returnTheComponentOfVectorX(self.dx, self.dy, self.speed), \
                           function.returnTheComponentOfVectorY(self.dx, self.dy, self.speed))
 
@@ -373,6 +385,7 @@ class EnemyBullet(PlayerBullet):
         now = parameter.getTimer()
 
         self.rotate(now)
+        # Placing bullet on the orbit that caculated by functions
         self.rect.center = (self.shootBulletPattern["f(x)"](now - self.generateTime)[0] + self.generateCenter[0], \
                             self.shootBulletPattern["f(x)"](now - self.generateTime)[1] + self.generateCenter[1])
 
@@ -394,6 +407,7 @@ class EnemyBullet_tracking(EnemyBullet):
     def __init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern):
         EnemyBullet.__init__(self, name, image, bulletRadius, bulletDamage, putBulletPattern, shootBulletPattern)
         self.speed = shootBulletPattern
+        # Get player position from parameter.py
         self.playerPosition = parameter.getPlayerPosition()
 
         vectorLength = pygame.math.Vector2(self.playerPosition[0] - self.generateCenter[0], self.playerPosition[1] - self.generateCenter[1]).length()
@@ -444,6 +458,7 @@ class EnemyBullet_deathGenerate(EnemyBullet):
             self.kill()
 
     def kill(self):
+        # Generate new bullet when killed
         for i in range(self.generateBulletNumber):
             x = self.deathGenerate["putPattern"][0]
             y = self.deathGenerate["putPattern"][1]
@@ -472,9 +487,11 @@ class EnemyBullet_decay(EnemyBullet):
     def update(self):
         self.rotate(self.generateTime)
         now = parameter.getTimer()
+        # Becoming non-transparent by time
         if now - self.generateTime < 128:
             self.image.set_alpha((now - self.generateTime) * 2)
             self.radius = 0
+        # Can collide detect with player as  being opaque
         else:
             self.image.set_alpha(255)
             self.radius = self.radius_origin
@@ -564,21 +581,23 @@ class BossStage():
             parameter.getBossSprites().add(self.boss)
             parameter.getAllSprites().add(self.boss)
             self.ifGenerateBoss = True
+
     def update(self, player):
+        # execute if this stage isAlive
         if self.isAlive:
+            # Thoroughly kill the bullet generated by last stage
             if self.timer < 10:
                 for i in parameter.getEnemyBulletSprites():
                     i.kill()
+            # Generate Boss
             self.generateBoss()
             
-
-
-            
+            # If player has dead in this stage, no bonus
             if player.rect.top < 0 and self.timer > 100:
                 self.ifBonus = False
                 self.bonus = 0
 
-
+            # Turn of this stage if boss's Hp < 0 or run out of time
             if self.boss.Hp <= 0 :
                 self.isAlive = False
                 self.isDead = True
@@ -591,6 +610,7 @@ class BossStage():
                 self.isDead = True
                 for i in (parameter.getEnemySprites() or parameter.getEnemyBulletSprites()):
                     i.kill()
+            # bonus decay by time
             if self.ifBonus:
                 self.bonus -= int(self.bonus_origin / 4000)
             self.timer += 1
@@ -598,7 +618,9 @@ class BossStage():
 
     def drawBackground(self, surface):
         if self.isAlive:
+            # Draw background in spell card
             if not self.background == None:
+                # Background fade in 
                 if self.timer < 150:
                     alpha = self.timer
                 else:
